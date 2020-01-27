@@ -6,6 +6,18 @@ const { openExternal } = shell;
 
 export const defaultTemplate = [
   {
+    id: "0",
+    label: "View",
+    modules: false,
+    submenu: [
+      {
+        id: "22",
+        label: "modules",
+        show: false
+      }
+    ]
+  },
+  {
     id: "1",
     label: "App",
     submenu: [
