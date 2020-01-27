@@ -21,7 +21,7 @@ function createWindow() {
     minWidth: 600,
     minHeight: 300,
     frame: false,
-    titleBarStyle: "hidden",
+    //titleBarStyle: "hiddenInset",
     webPreferences: { nodeIntegration: true }
   });
   mainWindow.loadURL(

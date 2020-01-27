@@ -11,7 +11,10 @@ const defaultTemplate = [
       {
         id: "22",
         label: "modules",
-        show: false
+        show: false,
+        click: () => {
+          mainWindow.webContents.send('toggle-sidebar');
+        }
       }
     ]
   },
