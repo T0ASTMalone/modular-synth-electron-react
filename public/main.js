@@ -10,8 +10,6 @@ const { ipcMain, Menu } = electron;
 
 const template = require("./app-menu");
 
-console.log(template);
-
 let mainWindow;
 
 function createWindow() {

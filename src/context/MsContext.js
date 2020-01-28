@@ -18,12 +18,10 @@ export class MsProvider extends Component {
     };
   }
 
-  toggleSidebar = show => {
-    if (show === null) {
-      this.setState({ sidebar: true });
-    } else if (show === true) {
-      this.setState({ sidebar: false });
-    }
+  toggleSidebar = () => {
+    console.log("toggling sidebar");
+    let sidebar = this.state.sidebar;
+    this.setState({ sidebar: !sidebar });
   };
 
   clearContext = () => {

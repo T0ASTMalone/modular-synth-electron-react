@@ -1,8 +1,10 @@
-const { ipcRenderer, shell, app, template, dialog } = window.require(
-  "electron"
-).remote;
+const { ipcRenderer, shell } = window.require("electron").remote;
 
 const { openExternal } = shell;
+
+const mainWindow = window.require("electron").remote.getCurrentWindow();
+
+console.log(mainWindow);
 
 export const defaultTemplate = [
   {
@@ -13,7 +15,10 @@ export const defaultTemplate = [
       {
         id: "22",
         label: "modules",
-        show: false
+        show: false,
+        click: () => {
+          return mainWindow.webContents.send("toggle-sidebar");
+        }
       }
     ]
   },
@@ -533,12 +538,12 @@ export const slackTemplate = [
   }
 ];
 
-const showOpen = function() {
-  dialog.showOpenDialog({
-    properties: ["openFile"],
-    filters: [{ name: "GPX", extensions: ["gpx"] }]
-  });
-};
+// const showOpen = function() {
+//   dialog.showOpenDialog({
+//     properties: ["openFile"],
+//     filters: [{ name: "GPX", extensions: ["gpx"] }]
+//   });
+// };
 
 // export const steveKinneyMenu = [
 //   {

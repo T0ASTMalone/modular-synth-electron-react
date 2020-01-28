@@ -1,4 +1,11 @@
-const { ipcRenderer, shell, app, template, dialog } = require("electron");
+const {
+  ipcRenderer,
+  shell,
+  app,
+  template,
+  dialog,
+  mainWindow
+} = require("electron");
 
 const { openExternal } = shell;
 
@@ -12,9 +19,7 @@ const defaultTemplate = [
         id: "22",
         label: "modules",
         show: false,
-        click: () => {
-          mainWindow.webContents.send('toggle-sidebar');
-        }
+        click: () => {}
       }
     ]
   },

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import "./App.css";
 
 // TitleBar imports
@@ -13,31 +13,32 @@ const TitleBar = window.require("frameless-titlebar");
 
 const electron = window.require("electron").remote;
 
-const {ipcRenderer }= window.require("electron")
+const { ipcRenderer } = window.require("electron");
 
 const menu = electron.app.newMenu;
-
 
 function App() {
   const context = useContext(MsContext);
 
-  ipcRenderer.on('toggle-sidebar', () => {
-    // set sidebare in context
-    console.log('ran toggle-sidebar')
+  ipcRenderer.once("toggle-sidebar", () => {
+    console.log("ran toggle-sidebar");
+    context.toggleSidebar();
   });
-
 
   let titleBar = React.useRef();
 
+  console.log(context.sidebar);
+
   return (
-    <div className='App'>
-      <TitleBar icon={github} app='Electron' menu={menu} ref={titleBar} />
-      {titleBar.current ? (
-        console.log(titleBar.current.Menu.getKeyById("4", "visible"))
-      ) : (
-        <></>
-      )}
-      <Sidebar />
+    <div className="App">
+      <TitleBar
+        icon={github}
+        app="Electron"
+        menu={defaultTemplate}
+        ref={titleBar}
+      />
+      {context.sidebar ? <Sidebar /> : <></>}
+
       <Rack />
     </div>
   );
