@@ -96,11 +96,7 @@ const template = [
   }
 ];
 
-console.log(template);
-
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
-
-console.log(Menu.getApplicationMenu());
 
 module.exports = { template };

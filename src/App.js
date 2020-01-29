@@ -1,18 +1,19 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import { steveKinneyMenu } from "./app-menu";
 import github from "./assets/images/github.png";
 
 const TitleBar = window.require("frameless-titlebar");
 
-const electron = window.require("electron").remote;
+// const electron = window.require("electron").remote;
 
-const menu = electron.Menu.getApplicationMenu();
+// const menu = electron.Menu.getApplicationMenu();
 
 function App() {
   return (
     <div className="App">
-      <TitleBar icon={github} app="Electron" menu={menu} />
+      <TitleBar icon={github} app="Electron" menu={steveKinneyMenu} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
