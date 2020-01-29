@@ -15,27 +15,51 @@ const TitleBar = window.require("frameless-titlebar");
 
 const { ipcRenderer } = window.require("electron");
 
-const menu = electron.app.newMenu;
+//const menu = electron.app.newMenu;
 
 function App() {
   const context = useContext(MsContext);
 
-  ipcRenderer.on("toggle-sidebar", () => {
-    // set sidebare in context
-    console.log("ran toggle-sidebar");
-  });
+  const { sidebar, sbContent } = context;
 
-  let titleBar = React.useRef();
+  const toggleSidebar = (e, data) => {
+    console.log("ran");
+    // get label of clicked menu item
+    const label = data.label;
+    console.log(label);
+    // if sidebar is open and it's content is the
+    // same as the selected menu item
+    if (sidebar && sbContent === label) {
+      // close sidebar
+      context.toggleSidebar();
+    }
+    // if sidebar is open and it's content
+    // is not the same as the menu item
+    else if (sidebar) {
+      // update the sidebar content
+      context.setSbContent(label);
+    } else if (sidebar === false) {
+      console.log("ran opening sidebar");
+      // set sidebar content
+      context.setSbContent(label);
+      // render sidebar
+      context.toggleSidebar();
+    }
+  };
+
+  useEffect(() => {
+    // remove all listeners for toggle sidebar
+    ipcRenderer.removeAllListeners("toggle-sidebar");
+    // create new listener for toggle sidebar
+    ipcRenderer.on("toggle-sidebar", (e, data) => toggleSidebar(e, data));
+  }, [sidebar, sbContent]);
 
   return (
     <div className="App">
-      <TitleBar icon={github} app="Electron" menu={menu} ref={titleBar} />
-      {titleBar.current ? (
-        console.log(titleBar.current.Menu.getKeyById("4", "visible"))
-      ) : (
-        <></>
-      )}
-      <Sidebar />
+      <TitleBar icon={github} app="Electron" menu={defaultTemplate} />
+
+      {sidebar ? <Sidebar /> : <></>}
+
       <Rack />
     </div>
   );

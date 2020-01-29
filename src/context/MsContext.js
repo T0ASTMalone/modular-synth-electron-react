@@ -2,8 +2,10 @@ import React, { Component } from "react";
 
 const MsContext = React.createContext({
   error: null,
-  sidebar: false,
+  sidebar: null,
+  sbContent: "",
   clearContext: () => {},
+  setSbContent: () => {},
   toggleSidebar: () => {}
 });
 
@@ -14,16 +16,20 @@ export class MsProvider extends Component {
     super(props);
     this.state = {
       error: null,
-      sidebar: false
+      sidebar: false,
+      sbContent: ""
     };
   }
 
-  toggleSidebar = show => {
-    if (show === null) {
-      this.setState({ sidebar: true });
-    } else if (show === true) {
-      this.setState({ sidebar: false });
-    }
+  setSbContent = sbContent => {
+    this.setState({ sbContent });
+  };
+
+  toggleSidebar = () => {
+    const sidebar = this.state.sidebar;
+    this.setState({
+      sidebar: !sidebar
+    });
   };
 
   clearContext = () => {
@@ -34,6 +40,8 @@ export class MsProvider extends Component {
     const value = {
       error: this.state.error,
       sidebar: this.state.sidebar,
+      sbContent: this.state.sbContent,
+      setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,
       clearContext: this.clearContext
     };

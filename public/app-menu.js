@@ -13,7 +13,7 @@ const defaultTemplate = [
         label: "modules",
         show: false,
         click: () => {
-          mainWindow.webContents.send('toggle-sidebar');
+          mainWindow.webContents.send("toggle-sidebar");
         }
       }
     ]
@@ -282,14 +282,7 @@ const defaultTemplate = [
 ];
 app.newMenu = defaultTemplate;
 
-<<<<<<< HEAD
-const menu = Menu.buildFromTemplate(template);
-Menu.setApplicationMenu(menu);
-
-module.exports = { template };
-=======
 // const menu = Menu.buildFromTemplate(template);
 // Menu.setApplicationMenu(menu);
 
 module.exports = defaultTemplate;
->>>>>>> 55b570b5b4d46dc59b1fa786ae10c5e2056ef8be

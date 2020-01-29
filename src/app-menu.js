@@ -2,6 +2,8 @@ const { ipcRenderer, shell, app, template, dialog } = window.require(
   "electron"
 ).remote;
 
+const electron = window.require("electron").remote;
+const mainWindow = electron.getCurrentWindow();
 const { openExternal } = shell;
 
 export const defaultTemplate = [
@@ -13,7 +15,23 @@ export const defaultTemplate = [
       {
         id: "22",
         label: "modules",
-        show: false
+        click: data => {
+          mainWindow.webContents.send("toggle-sidebar", data);
+        }
+      },
+      {
+        id: "23",
+        label: "search",
+        click: data => {
+          mainWindow.webContents.send("toggle-sidebar", data);
+        }
+      },
+      {
+        id: "24",
+        label: "patches",
+        click: data => {
+          mainWindow.webContents.send("toggle-sidebar", data);
+        }
       }
     ]
   },
