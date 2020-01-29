@@ -10,6 +10,8 @@ const { ipcMain, Menu } = electron;
 
 const template = require("./app-menu");
 
+console.log(template);
+
 let mainWindow;
 
 function createWindow() {
@@ -19,7 +21,7 @@ function createWindow() {
     minWidth: 600,
     minHeight: 300,
     frame: false,
-    titleBarStyle: "hidden",
+    //titleBarStyle: "hiddenInset",
     webPreferences: { nodeIntegration: true }
   });
   mainWindow.loadURL(

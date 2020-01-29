@@ -1,0 +1,9 @@
+.rack {
+  max-width: 80vw;
+  border: 1px solid black;
+  background-color: white;
+  margin: auto;
+  margin-top: 50px;
+  display: flex;
+  flex-wrap: wrap;
+}

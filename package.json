@@ -21,7 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "concurrently \"SET BROWSER=none && npm run start\" \"wait-on http://localhost:3000 && electron .\""
+    "electron": "concurrently \"set BROWSER=none && npm run start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "main": "public/main.js",
   "eslintConfig": {
