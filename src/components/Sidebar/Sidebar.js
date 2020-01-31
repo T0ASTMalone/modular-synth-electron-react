@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./Sidebar.css";
 
-const Sidebar = props => {
-  return <div className='sidebar'></div>;
+import MsContext from "../../context/MsContext";
+
+const Sidebar = () => {
+  const context = useContext(MsContext);
+
+  const content = context.sbContent;
+
+  return (
+    <div className="sidebar">
+      <p className="test-content">{content}</p>
+    </div>
+  );
 };
 
 export default Sidebar;

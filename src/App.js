@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import "./App.css";
 
 // TitleBar imports
@@ -11,11 +11,7 @@ import MsContext from "./context/MsContext";
 
 const TitleBar = window.require("frameless-titlebar");
 
-// const electron = window.require("electron").remote;
-
 const { ipcRenderer } = window.require("electron");
-
-//const menu = electron.app.newMenu;
 
 function App() {
   const context = useContext(MsContext);

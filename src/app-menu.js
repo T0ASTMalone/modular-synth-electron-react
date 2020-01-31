@@ -1,6 +1,4 @@
-const { ipcRenderer, shell, app, template, dialog } = window.require(
-  "electron"
-).remote;
+const { ipcRenderer, shell } = window.require("electron").remote;
 
 const electron = window.require("electron").remote;
 const mainWindow = electron.getCurrentWindow();
@@ -551,12 +549,12 @@ export const slackTemplate = [
   }
 ];
 
-const showOpen = function() {
-  dialog.showOpenDialog({
-    properties: ["openFile"],
-    filters: [{ name: "GPX", extensions: ["gpx"] }]
-  });
-};
+// const showOpen = function() {
+//   dialog.showOpenDialog({
+//     properties: ["openFile"],
+//     filters: [{ name: "GPX", extensions: ["gpx"] }]
+//   });
+// };
 
 // export const steveKinneyMenu = [
 //   {
