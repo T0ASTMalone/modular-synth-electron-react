@@ -3,6 +3,8 @@ import React, { Component } from "react";
 const MsContext = React.createContext({
   error: null,
   sidebar: false,
+  patch: [],
+  sbView: "modules",
   clearContext: () => {},
   toggleSidebar: () => {}
 });
@@ -14,12 +16,18 @@ export class MsProvider extends Component {
     super(props);
     this.state = {
       error: null,
-      sidebar: false
+      sidebar: false,
+      sbView: "modules"
     };
   }
 
+  setSbView = label => {
+    console.log(label, ": context label");
+    let sbView = label;
+    this.setState({ sbView });
+  };
+
   toggleSidebar = () => {
-    console.log("toggling sidebar");
     let sidebar = this.state.sidebar;
     this.setState({ sidebar: !sidebar });
   };
@@ -32,6 +40,8 @@ export class MsProvider extends Component {
     const value = {
       error: this.state.error,
       sidebar: this.state.sidebar,
+      sbView: this.state.sbView,
+      setSbView: this.setSbView,
       toggleSidebar: this.toggleSidebar,
       clearContext: this.clearContext
     };

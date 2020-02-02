@@ -13,11 +13,26 @@ export const defaultTemplate = [
     modules: false,
     submenu: [
       {
-        id: "22",
-        label: "modules",
-        show: false,
-        click: () => {
-          return mainWindow.webContents.send("toggle-sidebar");
+        id: "01",
+        label: "current",
+
+        click: data => {
+          return mainWindow.webContents.send("toggle-sidebar", data);
+        }
+      },
+      {
+        id: "02",
+        label: "patches",
+        click: data => {
+          return mainWindow.webContents.send("toggle-sidebar", data);
+        }
+      },
+      {
+        id: "03",
+        label: "search",
+
+        click: data => {
+          return mainWindow.webContents.send("toggle-sidebar", data);
         }
       }
     ]

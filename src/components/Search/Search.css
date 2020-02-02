@@ -1,0 +1,18 @@
+.search {
+  width: 100%;
+  text-align: left;
+}
+
+.search_label {
+  padding-left: 5px;
+}
+
+.search_input-container {
+  margin-top: 10px;
+  display: flex;
+}
+
+.search_submit {
+  background: none;
+  border: none;
+}
