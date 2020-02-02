@@ -1,0 +1,12 @@
+.out, .in{
+    width: 20px;
+    height: 20px;
+    background-color: grey;
+    border-radius: 10px;
+  }
+
+  .in__text, .out__text{
+    margin: 0;
+    font-size: 14px;
+  }
+  

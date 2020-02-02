@@ -1,4 +1,4 @@
-const { ipcRenderer, shell, app, template, dialog } = require("electron");
+const { ipcRenderer, shell, app, template, dialog} = require("electron");
 
 const { openExternal } = shell;
 
@@ -283,6 +283,6 @@ const defaultTemplate = [
 app.newMenu = defaultTemplate;
 
 // const menu = Menu.buildFromTemplate(template);
-// Menu.setApplicationMenu(menu);
+// Menu.setApplicationMenu(defaultTemplate);
 
 module.exports = defaultTemplate;

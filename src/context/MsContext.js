@@ -4,6 +4,7 @@ const MsContext = React.createContext({
   error: null,
   sidebar: null,
   sbContent: "",
+  loaded: [],
   clearContext: () => {},
   setSbContent: () => {},
   toggleSidebar: () => {}
@@ -17,9 +18,24 @@ export class MsProvider extends Component {
     this.state = {
       error: null,
       sidebar: false,
-      sbContent: ""
+      sbContent: "",
+      loaded: []
     };
   }
+
+  load = name => {
+    const { loaded } = this.state;
+    this.setState({ loaded: [...(loaded ? loaded : []), name] });
+  };
+
+  unload = id => {
+    const { loaded } = this.state;
+    if (loaded.length < 1) {
+      return;
+    }
+    const updatedModules = loaded.filter(mod => mod.id !== id);
+    this.setState({ loaded: [...updatedModules] });
+  };
 
   setSbContent = sbContent => {
     this.setState({ sbContent });
@@ -41,6 +57,9 @@ export class MsProvider extends Component {
       error: this.state.error,
       sidebar: this.state.sidebar,
       sbContent: this.state.sbContent,
+      loaded: this.state.loaded,
+
+      load: this.load,
       setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,
       clearContext: this.clearContext
