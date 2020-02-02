@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./Sidebar.css";
 
-import Search from "../Search/Search";
+import MsContext from "../../context/MsContext";
 
-const Sidebar = props => {
+const Sidebar = () => {
+  const context = useContext(MsContext);
+
+  const content = context.sbContent;
+
   return (
     <div className="sidebar">
-      <Search />
+      <p className="test-content">{content}</p>
     </div>
   );
 };

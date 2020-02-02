@@ -15,29 +15,46 @@ const { ipcRenderer } = window.require("electron");
 function App() {
   const context = useContext(MsContext);
 
-  const { sidebar, sbView } = context;
+  const { sidebar, sbContent } = context;
 
   const toggleSidebar = (e, data) => {
+    console.log("ran");
+    // get label of clicked menu item
     const label = data.label;
-    if (sidebar && sbView === label) {
+    console.log(label);
+    // if sidebar is open and it's content is the
+    // same as the selected menu item
+    if (sidebar && sbContent === label) {
+      // close sidebar
       context.toggleSidebar();
-    } else if (sidebar) {
-      context.setSbView(label);
+    }
+    // if sidebar is open and it's content
+    // is not the same as the menu item
+    else if (sidebar) {
+      // update the sidebar content
+      context.setSbContent(label);
     } else if (sidebar === false) {
-      context.setSbView(label);
+      console.log("ran opening sidebar");
+      // set sidebar content
+      context.setSbContent(label);
+      // render sidebar
       context.toggleSidebar();
     }
   };
 
   useEffect(() => {
+    // remove all listeners for toggle sidebar
     ipcRenderer.removeAllListeners("toggle-sidebar");
+    // create new listener for toggle sidebar
     ipcRenderer.on("toggle-sidebar", (e, data) => toggleSidebar(e, data));
-  }, [sidebar, sbView]);
+  }, [sidebar, sbContent]);
 
   return (
     <div className="App">
       <TitleBar icon={github} app="Electron" menu={defaultTemplate} />
+
       {sidebar ? <Sidebar /> : <></>}
+
       <Rack />
     </div>
   );

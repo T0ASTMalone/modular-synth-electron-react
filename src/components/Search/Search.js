@@ -5,13 +5,9 @@ const Search = () => {
   return (
     <div className="search">
       <form action="#" className="search_modules">
-        <label className="search_label" htmlFor="search_input">
-          Search
-        </label>
-        <div className="search_input-container">
-          <input className="input" type="text" placeholder="module name" />
-          <button className="search_submit">search</button>
-        </div>
+        <label htmlFor="search_input">Search</label>
+
+        <input className="search_input" type="text" placeholder="module name" />
       </form>
     </div>
   );

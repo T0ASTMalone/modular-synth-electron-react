@@ -1,11 +1,4 @@
-const {
-  ipcRenderer,
-  shell,
-  app,
-  template,
-  dialog,
-  mainWindow
-} = require("electron");
+const { ipcRenderer, shell, app, template, dialog } = require("electron");
 
 const { openExternal } = shell;
 
@@ -19,7 +12,9 @@ const defaultTemplate = [
         id: "22",
         label: "modules",
         show: false,
-        click: () => {}
+        click: () => {
+          mainWindow.webContents.send("toggle-sidebar");
+        }
       }
     ]
   },
@@ -288,6 +283,6 @@ const defaultTemplate = [
 app.newMenu = defaultTemplate;
 
 // const menu = Menu.buildFromTemplate(template);
-// Menu.setApplicationMenu(menu);
+// Menu.setApplicationMenu(defaultTemplate);
 
 module.exports = defaultTemplate;

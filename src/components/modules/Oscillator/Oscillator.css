@@ -2,4 +2,45 @@
   min-width: 100px;
   height: 200px;
   border: 1px solid black;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.knob{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+.osc__text{
+  margin: 0;
+  font-size: 14px;
+}
+
+.osc__outputs, .osc__inputs {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.osc__output, .osc__input{
+  width: 20px;
+  height: 20px;
+  background-color: grey;
+  border-radius: 10px;
+}
+
+.osc__inputs{
+  justify-content: center;
+}
+
+
+
+
+#path-5, #path-2 {
+  color: white;
+  fill: white;
 }

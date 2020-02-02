@@ -1,0 +1,20 @@
+.filter {
+  min-width: 100px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px;
+  border: 1px solid black;
+}
+
+.filter__ins {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter__settings,
+.filter__out {
+  display: flex;
+  justify-content: space-between;
+}

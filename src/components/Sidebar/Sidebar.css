@@ -1,6 +1,6 @@
 .sidebar {
   height: calc(100vh - 28px);
   position: absolute;
-  background-color: #424855;
-  padding: 10px;
+  background-color: #282c34;
+  color: white;
 }

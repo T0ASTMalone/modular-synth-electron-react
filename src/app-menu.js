@@ -4,8 +4,6 @@ const { openExternal } = shell;
 
 const mainWindow = window.require("electron").remote.getCurrentWindow();
 
-console.log(mainWindow);
-
 export const defaultTemplate = [
   {
     id: "0",
@@ -15,7 +13,6 @@ export const defaultTemplate = [
       {
         id: "01",
         label: "current",
-
         click: data => {
           return mainWindow.webContents.send("toggle-sidebar", data);
         }
