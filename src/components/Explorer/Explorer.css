@@ -1,0 +1,4 @@
+.explorer__installed {
+  display: flex;
+  flex-direction: column;
+}

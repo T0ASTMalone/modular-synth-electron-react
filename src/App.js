@@ -52,6 +52,7 @@ function App() {
   return (
     <div className="App">
       <TitleBar icon={github} app="Electron" menu={defaultTemplate} />
+      <Sidebar />
 
       {sidebar ? <Sidebar /> : <></>}
 
