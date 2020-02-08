@@ -2,3 +2,13 @@
   display: flex;
   flex-direction: column;
 }
+
+.explorer__module {
+  height: 25px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.explorer__module:hover {
+  background-color: #282c34;
+}

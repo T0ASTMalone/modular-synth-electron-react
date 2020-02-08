@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./Rack.css";
+import MsContext from "../../context/MsContext";
 
 const Rack = () => {
   const [loadedModules, loadModules] = useState([]);
   const [currentModules, setCurrentModules] = useState([]);
 
+  const context = useContext(MsContext);
+
+  console.log(context.loaded);
+
   useEffect(() => {
-    const currentModules = [
-      "Oscillator",
-      "Filter",
-      "Filter",
-      "Oscillator",
-      "Filter"
-    ];
+    const currentModules = context.loaded;
     // reduce array to only contain one of each of the current modules
     const imports = currentModules.filter(
       (item, i) => currentModules.indexOf(item) === i
@@ -27,7 +26,7 @@ const Rack = () => {
       // set currentModules in state to use for rendering once modules have been imported
       setCurrentModules(currentModules);
     });
-  }, []);
+  }, [context.loaded.length]);
 
   // useState to hold current modules array
   // map over current modules in state instead of loaded modules
