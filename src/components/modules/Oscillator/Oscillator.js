@@ -11,12 +11,13 @@ const Oscillator = () => {
 
   const context = useContext(MsContext);
   const audioCtx = context.ctx;
+  const nodes = context.nodes;
 
-  console.log(context.nodes);
-
+  // update frequency using knob
   const checkDistance = val => {
-    let maxDistance = 20;
+    let maxDistance = 200;
     let distance = Math.abs(val - freq);
+    // prevent knob from going past max value
     if (distance > maxDistance) {
       return;
     } else {
@@ -25,19 +26,36 @@ const Oscillator = () => {
   };
 
   useEffect(() => {
+    // create oscillator
     const osc = audioCtx.createOscillator();
+    // give osc unique name
     const oscId = uuid();
+    // start osc
+    osc.start();
+    // add to nodes object in context
+    // uuid as key and osc as value
     context.addNode(oscId, osc);
+    // add uuid to state for use elsewhere
     createId(oscId);
   }, []);
 
+  // in production this will read the connections object in context
+  // and if there is a connection, connect output to the appropriate
+  // input
   const turnOn = () => {
-    context.nodes[id].connect(audioCtx.destination);
-    context.nodes[id].start();
+    // testing audio by connecting to ctx destination
+    nodes[id].connect(audioCtx.destination);
+    // running for five seconds
     setTimeout(() => {
-      context.nodes[id].stop();
-    }, 1000);
+      // disconnecting from audio context
+      nodes[id].disconnect(audioCtx.destination);
+    }, 5000);
   };
+
+  // if audio node exists set frequency to current knob value
+  if (id) {
+    nodes[id].frequency.value = freq;
+  }
 
   return (
     <div className='osc'>
@@ -67,8 +85,8 @@ const Oscillator = () => {
       <div className='knob'>
         <Knob
           onChange={checkDistance.bind(this)}
-          min={0}
-          max={100}
+          min={20}
+          max={2000}
           value={freq}
         />
         <p className='osc__text'>Freq</p>
