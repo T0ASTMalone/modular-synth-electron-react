@@ -50,9 +50,8 @@ function App() {
   }, [sidebar, sbContent]);
 
   return (
-    <div className="App">
-      <TitleBar icon={github} app="Electron" menu={defaultTemplate} />
-      <Sidebar />
+    <div className='App'>
+      <TitleBar icon={github} app='Electron' menu={defaultTemplate} />
 
       {sidebar ? <Sidebar /> : <></>}
 

@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
 import "./Oscillator.css";
-import { Knob, ContextConsumer } from "react-rotary-knob";
+import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import uuid from "uuid";
 
 const Oscillator = () => {
-  const [freq, updateFreq] = useState(0);
+  const [freq, updateFreq] = useState(440);
   const [id, createId] = useState(null);
 
   const context = useContext(MsContext);
