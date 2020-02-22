@@ -29,17 +29,17 @@ const Filter = () => {
   };
 
   return (
-    <div className="filter">
+    <div className='filter'>
       {/* inputs for all filter types */}
-      <div className="filter__ins">
-        <Input title="HP" />
-        <Input title="BP" />
-        <Input title="LP" />
+      <div className='filter__ins'>
+        <Input title='HP' />
+        <Input title='BP' />
+        <Input title='LP' />
       </div>
 
       {/* Frequency and Reso Knob */}
 
-      <div className="filter__settings">
+      <div className='filter__settings'>
         <Knob
           onChange={checkDistance.bind(this, "freq", freq)}
           min={0}
@@ -56,8 +56,8 @@ const Filter = () => {
 
       {/* ouput and vlume */}
 
-      <div className="filter__out">
-        <Output title="out" />
+      <div className='filter__out'>
+        <Output title='out' />
         <Knob
           onChange={checkDistance.bind(this, "vol", vol)}
           min={0}

@@ -4,11 +4,9 @@ import MsContext from "../../context/MsContext";
 
 const Rack = () => {
   const [loadedModules, loadModules] = useState([]);
-  const [currentModules, setCurrentModules] = useState([]);
+  //const [currentModules, setCurrentModules] = useState([]);
 
   const context = useContext(MsContext);
-
-  console.log(context.loaded);
 
   useEffect(() => {
     const currentModules = context.loaded;
@@ -23,38 +21,40 @@ const Rack = () => {
 
     importModules(imports).then(loadedModules => {
       loadModules(loadedModules);
-      // set currentModules in state to use for rendering once modules have been imported
-      setCurrentModules(currentModules);
     });
   }, [context.loaded.length]);
 
   // useState to hold current modules array
   // map over current modules in state instead of loaded modules
 
+  const currentModules = context.loaded;
+
   return (
-    <div className="rack">
-      <div className="rack__controls">
+    <div className='rack'>
+      <div className='rack__controls'>
         {/* rack controls */}
         <button>Stop</button>
         <button>Play</button>
         <button>Rec</button>
       </div>
 
-      <div className="rack__modules">
-        {currentModules ? (
+      <div className='rack__modules'>
+        {currentModules.length > 0 && loadedModules.length > 0 ? (
           currentModules.map((name, i) => {
-            const loadedMod = loadedModules.find(
-              mod => mod.default.name === name
-            );
-            const Module = loadedMod.default;
-            return <Module key={i} />;
+            const loadedMod = loadedModules.find(mod => {
+              return mod.default.name === name;
+            });
+            if (loadedMod) {
+              const Module = loadedMod.default;
+              return <Module key={i} />;
+            }
           })
         ) : (
           <></>
         )}
       </div>
 
-      <div className="rack__visualAudio">
+      <div className='rack__visualAudio'>
         {/* 
           General information about the output 
           i.e. visualization of the output, spectrum analyzer, (kind of like op-1 stuff)
