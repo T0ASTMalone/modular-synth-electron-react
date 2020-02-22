@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Filter.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
+import uuid from "uuid";
 
 const Filter = () => {
   const [freq, updateFreq] = useState(0);
   const [reso, updateReso] = useState(0);
   const [vol, updateVol] = useState(0);
+  const [id, setId] = useState(null);
 
   const checkDistance = (name, currentVal, val) => {
     let maxDistance = 20;
@@ -28,13 +30,18 @@ const Filter = () => {
     }
   };
 
+  useEffect(() => {
+    const id = uuid();
+    setId(id);
+  }, []);
+
   return (
     <div className='filter'>
       {/* inputs for all filter types */}
       <div className='filter__ins'>
-        <Input title='HP' />
-        <Input title='BP' />
-        <Input title='LP' />
+        <Input title='HP' id={id} />
+        <Input title='BP' id={id} />
+        <Input title='LP' id={id} />
       </div>
 
       {/* Frequency and Reso Knob */}
@@ -54,10 +61,10 @@ const Filter = () => {
         />
       </div>
 
-      {/* ouput and vlume */}
+      {/* output and volume */}
 
       <div className='filter__out'>
-        <Output title='out' />
+        <Output title='out' id={id} />
         <Knob
           onChange={checkDistance.bind(this, "vol", vol)}
           min={0}
