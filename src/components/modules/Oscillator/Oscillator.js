@@ -74,11 +74,11 @@ const Oscillator = () => {
         all outputs except the sub will be set to the current frequency 
       */}
         <button onClick={turnOn}></button>
-        <Output title='sin' onClick={turnOn} />
-        <Output title='saw' />
-        <Output title='sqr' />
+        <Output title='sin' id={id} />
+        <Output title='saw' id={id} />
+        <Output title='sqr' id={id} />
         {/* sub will be set to half the current freq */}
-        <Output title='sub' />
+        <Output title='sub' id={id} />
       </div>
 
       {/* frequency knob */}
@@ -94,7 +94,7 @@ const Oscillator = () => {
 
       {/* V/oct input */}
       <div className='osc__inputs'>
-        <Input title='V/oct' />
+        <Input title='V/oct' id={id} />
       </div>
     </div>
   );

@@ -34,6 +34,8 @@ const Rack = () => {
 
   const currentModules = context.loaded;
 
+  console.log(context);
+
   return (
     <div className='rack'>
       <div className='rack__controls'>

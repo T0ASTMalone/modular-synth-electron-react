@@ -4,6 +4,9 @@ const MsContext = React.createContext({
   error: null,
   ctx: null,
   nodes: {},
+  cables: {},
+  input: null,
+  output: null,
   sidebar: null,
   sbContent: "",
   loaded: [],
@@ -21,6 +24,9 @@ export class MsProvider extends Component {
     this.state = {
       ctx: null,
       nodes: {},
+      cables: {},
+      input: null,
+      output: null,
       error: null,
       sidebar: false,
       sbContent: "",
@@ -63,6 +69,33 @@ export class MsProvider extends Component {
     });
   };
 
+  _createConnection = (input, output) => {
+    const { cables } = this.state;
+    cables[input] = output;
+
+    this.setState({ cables, input: null, output: null });
+  };
+
+  createInput = input => {
+    console.log(input);
+    const { output } = this.state;
+    this.setState({ input });
+
+    if (output) {
+      this._createConnection(input, output);
+    }
+  };
+
+  createOutput = output => {
+    console.log(output);
+    const { input } = this.state;
+    this.setState({ output });
+
+    if (input) {
+      this._createConnection(input, output);
+    }
+  };
+
   clearContext = () => {
     console.log("cleared context");
   };
@@ -71,11 +104,14 @@ export class MsProvider extends Component {
     const value = {
       ctx: this.state.ctx,
       nodes: this.state.nodes,
+      cables: this.state.cables,
       error: this.state.error,
       sidebar: this.state.sidebar,
       sbContent: this.state.sbContent,
       loaded: this.state.loaded,
 
+      createInput: this.createInput,
+      createOutput: this.createOutput,
       createCtx: this.createCtx,
       addNode: this.addNode,
       load: this.load,
