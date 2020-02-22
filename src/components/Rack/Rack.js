@@ -27,6 +27,11 @@ const Rack = () => {
   // useState to hold current modules array
   // map over current modules in state instead of loaded modules
 
+  useEffect(() => {
+    const ctx = new AudioContext();
+    context.createCtx(ctx);
+  }, []);
+
   const currentModules = context.loaded;
 
   return (

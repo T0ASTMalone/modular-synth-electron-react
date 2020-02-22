@@ -2,12 +2,15 @@ import React, { Component } from "react";
 
 const MsContext = React.createContext({
   error: null,
+  ctx: null,
+  nodes: {},
   sidebar: null,
   sbContent: "",
   loaded: [],
   clearContext: () => {},
   setSbContent: () => {},
-  toggleSidebar: () => {}
+  toggleSidebar: () => {},
+  addNode: () => {}
 });
 
 export default MsContext;
@@ -16,12 +19,24 @@ export class MsProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      ctx: null,
+      nodes: {},
       error: null,
       sidebar: false,
       sbContent: "",
       loaded: []
     };
   }
+
+  addNode = (id, audioNode) => {
+    let nodes = this.state.nodes;
+    nodes[id] = audioNode;
+    this.setState({ nodes });
+  };
+
+  createCtx = ctx => {
+    this.setState({ ctx });
+  };
 
   load = name => {
     const { loaded } = this.state;
@@ -54,11 +69,15 @@ export class MsProvider extends Component {
 
   render() {
     const value = {
+      ctx: this.state.ctx,
+      nodes: this.state.nodes,
       error: this.state.error,
       sidebar: this.state.sidebar,
       sbContent: this.state.sbContent,
       loaded: this.state.loaded,
 
+      createCtx: this.createCtx,
+      addNode: this.addNode,
       load: this.load,
       setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,
