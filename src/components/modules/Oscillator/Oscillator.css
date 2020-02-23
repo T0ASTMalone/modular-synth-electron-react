@@ -1,6 +1,6 @@
 .osc {
   min-width: 100px;
-  height: 200px;
+  height: 250px;
   border: 1px solid black;
   padding: 5px;
   display: flex;
@@ -8,39 +8,53 @@
   justify-content: space-evenly;
 }
 
-.knob{
+.knob {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px;
 }
 
-.osc__text{
+.osc__text {
   margin: 0;
   font-size: 14px;
 }
 
-.osc__outputs, .osc__inputs {
+.osc__outputs,
+.osc__inputs,
+.osc__types {
   display: flex;
-  justify-content: space-between;
-
+  justify-content: space-around;
 }
 
-.osc__output, .osc__input{
+.osc__output,
+.osc__input {
   width: 20px;
   height: 20px;
   background-color: grey;
   border-radius: 10px;
 }
 
-.osc__inputs{
+.osc__inputs {
   justify-content: center;
 }
 
+.osc__button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  font-size: 14px;
+  align-items: center;
+  width: 30px;
+}
 
+.osc__wav {
+  width: 20px;
+  height: 20px;
+}
 
-
-#path-5, #path-2 {
+#path-5,
+#path-2 {
   color: white;
   fill: white;
 }

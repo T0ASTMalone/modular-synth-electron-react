@@ -57,6 +57,10 @@ const Oscillator = () => {
     nodes[id].frequency.value = freq;
   }
 
+  const updateWav = wav => {
+    nodes[id].type = wav;
+  };
+
   return (
     <div className='osc'>
       {/* 
@@ -74,11 +78,35 @@ const Oscillator = () => {
         all outputs except the sub will be set to the current frequency 
       */}
         <button onClick={turnOn}></button>
-        <Output title='sin' id={id} />
-        <Output title='saw' id={id} />
-        <Output title='sqr' id={id} />
         {/* sub will be set to half the current freq */}
-        <Output title='sub' id={id} />
+        <Output title='out' id={id} />
+      </div>
+      <div className='osc__types'>
+        <div className='osc__button-container'>
+          <label for='sine'>Sin</label>
+          <button
+            className='osc__wav'
+            onClick={() => updateWav("sine")}
+          ></button>
+        </div>
+        <div className='osc__button-container'>
+          <label for='saw-tooth'>Saw</label>
+          <button
+            className='osc__wav'
+            onClick={() => updateWav("sawtooth")}
+          ></button>
+        </div>
+        <div className='osc__button-container'>
+          <label for='square'>Sqr</label>
+          <button
+            className='osc__wav'
+            onClick={() => updateWav("square")}
+          ></button>
+        </div>
+        <div className='osc__button-container'>
+          <label for='sub'>Sub</label>
+          <button className='osc__wav'></button>
+        </div>
       </div>
 
       {/* frequency knob */}
