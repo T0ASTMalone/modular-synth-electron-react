@@ -1,13 +1,3 @@
-.osc {
-  min-width: 100px;
-  height: 250px;
-  border: 1px solid black;
-  padding: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-}
-
 .knob {
   display: flex;
   flex-direction: column;
@@ -37,15 +27,6 @@
 
 .osc__inputs {
   justify-content: center;
-}
-
-.button-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  font-size: 14px;
-  align-items: center;
-  width: 30px;
 }
 
 .osc__wav {

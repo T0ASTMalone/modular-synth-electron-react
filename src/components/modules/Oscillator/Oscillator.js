@@ -62,7 +62,7 @@ const Oscillator = () => {
   };
 
   return (
-    <div className='osc'>
+    <div className='module osc'>
       {/* 
       V/oct input,
 

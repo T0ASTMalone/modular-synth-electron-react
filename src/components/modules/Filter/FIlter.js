@@ -98,7 +98,7 @@ const Filter = () => {
   }, []);
 
   return (
-    <div className='filter'>
+    <div className='module filter'>
       {/* inputs for all filter types */}
       <div className='filter__ins'>
         <Input title='HP' id={id} />
