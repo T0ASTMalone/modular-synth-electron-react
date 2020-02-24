@@ -82,28 +82,28 @@ const Oscillator = () => {
         <Output title='out' id={id} />
       </div>
       <div className='osc__types'>
-        <div className='osc__button-container'>
+        <div className='button-container'>
           <label for='sine'>Sin</label>
           <button
             className='osc__wav'
             onClick={() => updateWav("sine")}
           ></button>
         </div>
-        <div className='osc__button-container'>
+        <div className='button-container'>
           <label for='saw-tooth'>Saw</label>
           <button
             className='osc__wav'
             onClick={() => updateWav("sawtooth")}
           ></button>
         </div>
-        <div className='osc__button-container'>
+        <div className='button-container'>
           <label for='square'>Sqr</label>
           <button
             className='osc__wav'
             onClick={() => updateWav("square")}
           ></button>
         </div>
-        <div className='osc__button-container'>
+        <div className='button-container'>
           <label for='sub'>Sub</label>
           <button className='osc__wav'></button>
         </div>

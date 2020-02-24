@@ -104,18 +104,16 @@ const Filter = () => {
         <Input title='HP' id={id} />
       </div>
 
+      <div className='button-container'>
+        <label htmlFor='type'>Type</label>
+        <button
+          id='type'
+          className='filter__type'
+          onClick={updateType}
+        ></button>
+      </div>
       {/* Frequency and Reso Knob */}
-
       <div className='filter__settings'>
-        <div className='button-container'>
-          <label htmlFor='type'>Filter Type</label>
-          <button
-            id='type'
-            className='filter__type'
-            onClick={updateType}
-          ></button>
-        </div>
-
         <Knob
           onChange={checkDistance.bind(this, "freq", freq)}
           min={0}

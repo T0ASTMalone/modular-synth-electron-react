@@ -39,7 +39,7 @@
   justify-content: center;
 }
 
-.osc__button-container {
+.button-container {
   display: flex;
   flex-direction: column;
   justify-content: space-around;

@@ -81,7 +81,7 @@ export class MsProvider extends Component {
     const { output } = this.state;
     this.setState({ input });
 
-    if (output) {
+    if (output && output !== input) {
       this._createConnection(input, output);
     }
   };
@@ -91,7 +91,7 @@ export class MsProvider extends Component {
     const { input } = this.state;
     this.setState({ output });
 
-    if (input) {
+    if (input && output !== input) {
       this._createConnection(input, output);
     }
   };
