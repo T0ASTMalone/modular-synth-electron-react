@@ -71,7 +71,7 @@ export class MsProvider extends Component {
 
   _createConnection = (input, output) => {
     const { cables } = this.state;
-    cables[input] = output;
+    cables[output] = input;
 
     this.setState({ cables, input: null, output: null });
   };

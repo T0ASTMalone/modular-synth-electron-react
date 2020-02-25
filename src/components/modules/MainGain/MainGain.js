@@ -52,7 +52,7 @@ const MainGain = () => {
         value={gainValue}
         onChange={checkDistance.bind(this)}
       />
-      {/* output */}
+      {/* input */}
       <Input title='in' />
     </div>
   );

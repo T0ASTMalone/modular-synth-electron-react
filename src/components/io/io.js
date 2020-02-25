@@ -6,13 +6,31 @@ const Input = props => {
   const { title, id } = props;
   const context = useContext(MsContext);
 
+  const connectionExists = () => {
+    let connections = context.cables;
+    console.log(connections);
+    for (let key in connections) {
+      if (connections[key] === id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const handleConnection = () => {
+    if (connectionExists()) {
+      // context.removeInput(id);
+      console.log("removing input");
+    } else {
+      console.log("creating input");
+      context.createInput(id);
+    }
+  };
+
   return (
     <div className='in'>
       <p className='in__text'>{title}</p>
-      <button
-        className='io in__button'
-        onClick={() => context.createInput(id)}
-      ></button>
+      <button className='io in__button' onClick={handleConnection}></button>
     </div>
   );
 };
@@ -21,13 +39,31 @@ const Output = props => {
   const { title, id } = props;
   const context = useContext(MsContext);
 
+  const connectionExists = () => {
+    let connections = context.cables;
+    console.log(connections);
+    for (let key in connections) {
+      if (key === id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const handleConnection = () => {
+    if (connectionExists()) {
+      // context.removeOutput(id);
+      console.log("removing output");
+    } else {
+      console.log("creating output");
+      context.createOutput(id);
+    }
+  };
+
   return (
     <div className='out'>
       <p className='out__text'>{title}</p>
-      <button
-        className='io out__button'
-        onClick={() => context.createOutput(id)}
-      ></button>
+      <button className='io out__button' onClick={handleConnection}></button>
     </div>
   );
 };
