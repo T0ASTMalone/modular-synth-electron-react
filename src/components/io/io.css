@@ -1,12 +1,19 @@
-.out, .in{
-    width: 20px;
-    height: 20px;
-    background-color: grey;
-    border-radius: 10px;
-  }
+.io {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  border: 5px solid cadetblue;
+}
 
-  .in__text, .out__text{
-    margin: 0;
-    font-size: 14px;
-  }
-  
+.out,
+.in {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+}
+
+.in__text,
+.out__text {
+  margin: 0;
+  font-size: 14px;
+}

@@ -1,3 +1,7 @@
+.rack {
+  width: 100%;
+}
+
 .rack__modules {
   max-width: 80vw;
   border: 1px solid black;
@@ -6,4 +10,12 @@
   margin-top: 50px;
   display: flex;
   flex-wrap: wrap;
+}
+
+.param-button {
+  border-radius: 50%;
+  border: none;
+  background-color: grey;
+  width: 15px;
+  height: 15px;
 }

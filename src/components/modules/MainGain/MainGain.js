@@ -44,7 +44,7 @@ const MainGain = () => {
 
   return (
     <div className='module gain'>
-      <h3>Main Out</h3>
+      <h3 className='module__text'>Amp</h3>
       {/* knob for controlling gain */}
       <Knob
         min={-3.4}
@@ -53,7 +53,7 @@ const MainGain = () => {
         onChange={checkDistance.bind(this)}
       />
       {/* output */}
-      <Input />
+      <Input title='in' />
     </div>
   );
 };

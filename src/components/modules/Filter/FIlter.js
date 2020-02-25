@@ -101,43 +101,55 @@ const Filter = () => {
     <div className='module filter'>
       {/* inputs for all filter types */}
       <div className='filter__ins'>
-        <Input title='HP' id={id} />
+        <Input title='in' id={id} />
       </div>
 
-      <div className='button-container'>
-        <label htmlFor='type'>Type</label>
-        <button
-          id='type'
-          className='filter__type'
-          onClick={updateType}
-        ></button>
-      </div>
       {/* Frequency and Reso Knob */}
       <div className='filter__settings'>
-        <Knob
-          onChange={checkDistance.bind(this, "freq", freq)}
-          min={0}
-          max={100}
-          value={freq}
-        />
-        <Knob
-          onChange={checkDistance.bind(this, "reso", reso)}
-          min={0}
-          max={100}
-          value={reso}
-        />
+        <div id='filter-type' className='button-container'>
+          <p className='module__text'>Type</p>
+          <button
+            id='type'
+            className='param-button'
+            onClick={updateType}
+          ></button>
+        </div>
+        <div className='filter__knobs'>
+          <div className='button-container'>
+            <p className='module__text'>Freq</p>
+            <Knob
+              onChange={checkDistance.bind(this, "freq", freq)}
+              min={0}
+              max={100}
+              value={freq}
+            />
+          </div>
+          <div className='button-container'>
+            <p className='module__text'>Q</p>
+            <Knob
+              id='reso'
+              onChange={checkDistance.bind(this, "reso", reso)}
+              min={0}
+              max={100}
+              value={reso}
+            />
+          </div>
+        </div>
       </div>
 
       {/* output and volume */}
 
       <div className='filter__out'>
         <Output title='out' id={id} />
-        <Knob
-          onChange={checkDistance.bind(this, "vol", vol)}
-          min={0}
-          max={100}
-          value={vol}
-        />
+        <div className='button-container'>
+          <p className='module__text'>Gain</p>
+          <Knob
+            onChange={checkDistance.bind(this, "vol", vol)}
+            min={0}
+            max={100}
+            value={vol}
+          />
+        </div>
       </div>
     </div>
   );

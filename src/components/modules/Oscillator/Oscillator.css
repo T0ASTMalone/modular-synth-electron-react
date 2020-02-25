@@ -2,12 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
-}
-
-.osc__text {
-  margin: 0;
-  font-size: 14px;
 }
 
 .osc__outputs,
@@ -17,21 +11,13 @@
   justify-content: space-around;
 }
 
-.osc__output,
-.osc__input {
-  width: 20px;
-  height: 20px;
-  background-color: grey;
-  border-radius: 10px;
+.osc__outputs,
+.osc__inputs {
+  height: 50px;
 }
 
 .osc__inputs {
   justify-content: center;
-}
-
-.osc__wav {
-  width: 20px;
-  height: 20px;
 }
 
 #path-5,

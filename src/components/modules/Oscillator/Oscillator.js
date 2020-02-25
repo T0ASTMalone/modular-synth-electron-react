@@ -77,47 +77,47 @@ const Oscillator = () => {
         {/* 
         all outputs except the sub will be set to the current frequency 
       */}
-        <button onClick={turnOn}></button>
+        {/* <button onClick={turnOn}></button> */}
         {/* sub will be set to half the current freq */}
         <Output title='out' id={id} />
       </div>
       <div className='osc__types'>
         <div className='button-container'>
-          <label for='sine'>Sin</label>
+          <p className='module__text'>Sin</p>
           <button
-            className='osc__wav'
+            className='param-button'
             onClick={() => updateWav("sine")}
           ></button>
         </div>
         <div className='button-container'>
-          <label for='saw-tooth'>Saw</label>
+          <p className='module__text'>Saw</p>
           <button
-            className='osc__wav'
+            className='param-button'
             onClick={() => updateWav("sawtooth")}
           ></button>
         </div>
         <div className='button-container'>
-          <label for='square'>Sqr</label>
+          <p className='module__text'>Sqr</p>
           <button
-            className='osc__wav'
+            className='param-button'
             onClick={() => updateWav("square")}
           ></button>
         </div>
         <div className='button-container'>
-          <label for='sub'>Sub</label>
-          <button className='osc__wav'></button>
+          <p className='module__text'>Sub</p>
+          <button className='param-button'></button>
         </div>
       </div>
 
       {/* frequency knob */}
       <div className='knob'>
+        <p className='module__text'>Freq</p>
         <Knob
           onChange={checkDistance.bind(this)}
           min={20}
           max={2000}
           value={freq}
         />
-        <p className='osc__text'>Freq</p>
       </div>
 
       {/* V/oct input */}

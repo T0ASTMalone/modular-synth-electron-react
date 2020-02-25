@@ -8,11 +8,11 @@ const Input = props => {
 
   return (
     <div className='in'>
+      <p className='in__text'>{title}</p>
       <button
-        className='in__button'
+        className='io in__button'
         onClick={() => context.createInput(id)}
       ></button>
-      <p className='in__text'>{title}</p>
     </div>
   );
 };
@@ -23,11 +23,11 @@ const Output = props => {
 
   return (
     <div className='out'>
+      <p className='out__text'>{title}</p>
       <button
-        className='out__button'
+        className='io out__button'
         onClick={() => context.createOutput(id)}
       ></button>
-      <p className='out__text'>{title}</p>
     </div>
   );
 };

@@ -3,6 +3,10 @@
   height: 100vh;
 }
 
+.app-main {
+  display: flex;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -39,11 +43,21 @@
 }
 
 .module {
-  min-width: 100px;
+  min-width: 120px;
   height: 250px;
   border: 1px solid black;
   padding: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+
+.module__text {
+  margin: 0;
+  font-size: 14px;
+}
+
+#path-2,
+#path-5 {
+  display: none;
 }

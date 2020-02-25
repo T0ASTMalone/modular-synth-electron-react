@@ -52,10 +52,10 @@ function App() {
   return (
     <div className='App'>
       <TitleBar icon={github} app='Electron' menu={defaultTemplate} />
-
-      {sidebar ? <Sidebar /> : <></>}
-
-      <Rack />
+      <main className='app-main'>
+        {sidebar ? <Sidebar /> : <></>}
+        <Rack />
+      </main>
     </div>
   );
 }
