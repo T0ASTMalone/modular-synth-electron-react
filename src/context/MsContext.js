@@ -77,7 +77,6 @@ export class MsProvider extends Component {
   };
 
   createInput = input => {
-    console.log(input);
     const { output } = this.state;
     this.setState({ input });
 
@@ -87,7 +86,6 @@ export class MsProvider extends Component {
   };
 
   createOutput = output => {
-    console.log(output);
     const { input } = this.state;
     this.setState({ output });
 
@@ -96,12 +94,27 @@ export class MsProvider extends Component {
     }
   };
 
+  removeInput = id => {
+    const { cables } = this.state;
+    const output = Object.keys(cables).find(key => cables[key] === id);
+    delete cables[output];
+    this.setState({ cables, input: null, output });
+  };
+
+  removeOutput = id => {
+    const { cables } = this.state;
+    const input = cables[id];
+    delete cables[id];
+    this.setState({ cables, input, output: null });
+  };
+
   clearContext = () => {
     console.log("cleared context");
   };
 
   render() {
     const value = {
+      // state
       ctx: this.state.ctx,
       nodes: this.state.nodes,
       cables: this.state.cables,
@@ -109,11 +122,17 @@ export class MsProvider extends Component {
       sidebar: this.state.sidebar,
       sbContent: this.state.sbContent,
       loaded: this.state.loaded,
+      //output only for testing
+      output: this.state.output,
+      input: this.state.input,
 
-      createInput: this.createInput,
-      createOutput: this.createOutput,
+      // methods
       createCtx: this.createCtx,
       addNode: this.addNode,
+      createInput: this.createInput,
+      createOutput: this.createOutput,
+      removeInput: this.removeInput,
+      removeOutput: this.removeOutput,
       load: this.load,
       setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,

@@ -19,8 +19,8 @@ const Input = props => {
 
   const handleConnection = () => {
     if (connectionExists()) {
-      // context.removeInput(id);
       console.log("removing input");
+      context.removeInput(id);
     } else {
       console.log("creating input");
       context.createInput(id);
@@ -52,8 +52,8 @@ const Output = props => {
 
   const handleConnection = () => {
     if (connectionExists()) {
-      // context.removeOutput(id);
       console.log("removing output");
+      context.removeOutput(id);
     } else {
       console.log("creating output");
       context.createOutput(id);
