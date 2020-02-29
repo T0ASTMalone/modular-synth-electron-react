@@ -41,9 +41,9 @@ const Rack = () => {
     <div className='rack'>
       <div className='rack__controls'>
         {/* rack controls */}
-        <button>Stop</button>
-        <button>Play</button>
-        <button>Rec</button>
+        <button className='button'>Stop</button>
+        <button className='button'>Play</button>
+        <button className='button'>Rec</button>
       </div>
 
       <div className='rack__modules'>

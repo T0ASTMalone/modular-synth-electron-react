@@ -19,3 +19,30 @@
   width: 15px;
   height: 15px;
 }
+
+.rack__controls {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  margin: 10px;
+  height: 40px;
+  width: 40px;
+  border-radius: 30%;
+  color: #75787c;
+  border: none;
+  background-color: #282c34;
+  box-shadow: #282c34 0px 0px 2px 2px, #041028 4px 4px 8px,
+    #75787c -4px -4px 8px;
+  transition: 0.5s ease-in-out;
+}
+
+.button:hover {
+  box-shadow: #282c34 0px 0px 2px 2px, #041028 -4px -4px 8px,
+    #75787c 4px 4px 8px;
+
+  color: #041028;
+}

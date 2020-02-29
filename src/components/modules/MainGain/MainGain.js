@@ -3,16 +3,17 @@ import "./MainGain.css";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
 import { Input } from "../../io/io";
-import uuid from "uuid";
+// import uuid from "uuid";
+import shortId from "shortid";
 
 const MainGain = () => {
   // gain value
   const [gainValue, setGain] = useState(0);
   const [id, setId] = useState(null);
+  const [inId, setInId] = useState(null);
 
   const context = useContext(MsContext);
-  const audioCtx = context.ctx;
-  const nodes = context.nodes;
+  const { ctx, nodes } = context;
 
   const checkDistance = val => {
     let maxDistance = 3.4;
@@ -29,17 +30,21 @@ const MainGain = () => {
   //set up main gain module
   useEffect(() => {
     // create unique id
-    const id = uuid();
+    const id = shortId.generate();
+    // create input ids
+    const inId = shortId.generate();
     // create main gain node
-    const gainNode = audioCtx.createGain();
+    const gainNode = ctx.createGain();
     // connect to ctx destination
-    gainNode.connect(audioCtx.destination);
+    gainNode.connect(ctx.destination);
     // set value
     gainNode.gain.value = gainValue;
     // add to context
     context.addNode(id, gainNode);
     // set to id
     setId(id);
+    //set input ids
+    setInId(inId);
   }, []);
 
   return (
@@ -53,7 +58,7 @@ const MainGain = () => {
         onChange={checkDistance.bind(this)}
       />
       {/* input */}
-      <Input title='in' />
+      <Input title='in' id={id} inputId={inId} />
     </div>
   );
 };

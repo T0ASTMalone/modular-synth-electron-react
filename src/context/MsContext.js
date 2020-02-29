@@ -76,8 +76,14 @@ export class MsProvider extends Component {
     this.setState({ cables, input: null, output: null });
   };
 
-  createInput = input => {
+  createInput = (mod, inputId) => {
     const { output } = this.state;
+
+    const input = {
+      mod,
+      input: inputId
+    };
+
     this.setState({ input });
 
     if (output && output !== input) {
@@ -94,9 +100,11 @@ export class MsProvider extends Component {
     }
   };
 
-  removeInput = id => {
+  removeInput = (mod, inputId) => {
     const { cables } = this.state;
-    const output = Object.keys(cables).find(key => cables[key] === id);
+    const output = Object.keys(cables).find(
+      key => cables[key].module === mod && cables[key].input === inputId
+    );
     delete cables[output];
     this.setState({ cables, input: null, output });
   };

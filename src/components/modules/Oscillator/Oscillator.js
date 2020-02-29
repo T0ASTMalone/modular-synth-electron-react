@@ -3,11 +3,13 @@ import "./Oscillator.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
-import uuid from "uuid";
+// import uuid from "uuid";
+import shortId from "shortid";
 
 const Oscillator = () => {
   const [freq, updateFreq] = useState(440);
   const [id, createId] = useState(null);
+  const [inputId, setInputId] = useState(null);
 
   const context = useContext(MsContext);
   const audioCtx = context.ctx;
@@ -29,7 +31,8 @@ const Oscillator = () => {
     // create oscillator
     const osc = audioCtx.createOscillator();
     // give osc unique name
-    const oscId = uuid();
+    const oscId = shortId.generate();
+    const inId = shortId.generate();
     // start osc
     osc.start();
     // add to nodes object in context
@@ -37,6 +40,7 @@ const Oscillator = () => {
     context.addNode(oscId, osc);
     // add uuid to state for use elsewhere
     createId(oscId);
+    setInputId(inId);
   }, []);
 
   // in production this will read the connections object in context
@@ -122,7 +126,7 @@ const Oscillator = () => {
 
       {/* V/oct input */}
       <div className='osc__inputs'>
-        <Input title='V/oct' id={id} />
+        <Input title='V/oct' id={id} inputId={inputId} />
       </div>
     </div>
   );

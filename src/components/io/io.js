@@ -3,14 +3,14 @@ import "./io.css";
 import MsContext from "../../context/MsContext";
 
 const Input = props => {
-  const { title, id } = props;
+  const { title, id, inputId } = props;
   const context = useContext(MsContext);
 
   const connectionExists = () => {
     let connections = context.cables;
     console.log(connections);
     for (let key in connections) {
-      if (connections[key] === id) {
+      if (connections[key].mod === id) {
         return true;
       }
     }
@@ -20,10 +20,10 @@ const Input = props => {
   const handleConnection = () => {
     if (connectionExists()) {
       console.log("removing input");
-      context.removeInput(id);
+      context.removeInput(id, inputId);
     } else {
       console.log("creating input");
-      context.createInput(id);
+      context.createInput(id, inputId);
     }
   };
 

@@ -2,7 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import "./Filter.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
-import uuid from "uuid";
+// import uuid from "uuid";
+import shortId from "shortid";
 import MsContext from "../../../context/MsContext";
 
 const Filter = () => {
@@ -11,11 +12,11 @@ const Filter = () => {
   const [reso, updateReso] = useState(0);
   const [vol, updateVol] = useState(0);
   const [id, setId] = useState(null);
+  const [inId, setInId] = useState(null);
   const [type, setType] = useState(0);
 
   const context = useContext(MsContext);
-  const audioCtx = context.ctx;
-  const nodes = context.nodes;
+  const { ctx, nodes } = context;
 
   const filterTypes = [
     "lowpass",
@@ -86,22 +87,23 @@ const Filter = () => {
   // set up filter
   useEffect(() => {
     // create filter
-    const filter = audioCtx.createBiquadFilter();
-    console.log(filter);
+    const filter = ctx.createBiquadFilter();
     // give filter unique name
-    const id = uuid();
+    const id = shortId.generate();
+    const inId = shortId.generate();
     // add to nodes object in context
     // uuid as key and filter as value
     context.addNode(id, filter);
     // set id in state
     setId(id);
+    setInId(inId);
   }, []);
 
   return (
     <div className='module filter'>
       {/* inputs for all filter types */}
       <div className='filter__ins'>
-        <Input title='in' id={id} />
+        <Input title='in' id={id} inputId={inId} />
       </div>
 
       {/* Frequency and Reso Knob */}
