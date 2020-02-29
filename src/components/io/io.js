@@ -3,7 +3,7 @@ import "./io.css";
 import MsContext from "../../context/MsContext";
 
 const Input = props => {
-  const { title, id, inputId } = props;
+  const { title, id, name } = props;
   const context = useContext(MsContext);
 
   const connectionExists = () => {
@@ -18,12 +18,13 @@ const Input = props => {
   };
 
   const handleConnection = () => {
+    console.log(context.cables);
     if (connectionExists()) {
       console.log("removing input");
-      context.removeInput(id, inputId);
+      context.removeInput(id, name);
     } else {
       console.log("creating input");
-      context.createInput(id, inputId);
+      context.createInput(id, name);
     }
   };
 

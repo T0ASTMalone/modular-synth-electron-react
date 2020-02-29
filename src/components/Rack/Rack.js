@@ -34,7 +34,6 @@ const Rack = () => {
   }, []);
 
   const currentModules = context.loaded;
-
   console.log(context);
 
   return (

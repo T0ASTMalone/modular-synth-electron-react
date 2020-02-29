@@ -58,7 +58,8 @@ const MainGain = () => {
         onChange={checkDistance.bind(this)}
       />
       {/* input */}
-      <Input title='in' id={id} inputId={inId} />
+      <Input title='in' id={id} name='main-in' />
+      <Input title='gain' id={id} name='gain' />
     </div>
   );
 };

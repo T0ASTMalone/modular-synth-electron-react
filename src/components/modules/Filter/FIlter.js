@@ -16,7 +16,7 @@ const Filter = () => {
   const [type, setType] = useState(0);
 
   const context = useContext(MsContext);
-  const { ctx, nodes } = context;
+  const { ctx, nodes, cables } = context;
 
   const filterTypes = [
     "lowpass",
@@ -30,7 +30,7 @@ const Filter = () => {
   ];
 
   const checkDistance = (name, currentVal, val) => {
-    let maxDistance = 20;
+    let maxDistance = 2000;
     let distance = Math.abs(val - currentVal);
     if (distance > maxDistance) {
       return;
@@ -38,12 +38,15 @@ const Filter = () => {
       switch (name) {
         case "freq":
           updateFreq(val);
+          nodes[id].frequency.value = freq;
           break;
         case "reso":
           updateReso(val);
+          nodes[id].Q.value = reso;
           break;
         default:
           updateVol(val);
+          nodes[id].gain.value = val;
           break;
       }
     }
@@ -99,11 +102,40 @@ const Filter = () => {
     setInId(inId);
   }, []);
 
+  // the following will be turned into a hook for all modules to re-use
+  // simply pass the output module id and it will create a connection if
+  // it sees one
+  useEffect(() => {
+    let input;
+    // if this module is an output in a current cable
+    const out = cables[id];
+
+    if (out) {
+      input = out.input;
+      if (input === "main-in") {
+        // if input is main in, connect to modules input
+        nodes[id].connect(nodes[out.mod]);
+      } else {
+        // if input is not main connect to corresponding audio parameter
+        nodes[id].connect(nodes[out.mod][out.input]);
+      }
+    } else {
+      // if no cable with this module as an output is found
+      // disconnect from any connections that the module may have
+      if (nodes[id]) {
+        console.log("disconnecting");
+        nodes[id].disconnect();
+      }
+    }
+  }, [Object.keys(cables).length]);
+
   return (
     <div className='module filter'>
+      <p className='module__text'>{filterTypes[type]}</p>
       {/* inputs for all filter types */}
       <div className='filter__ins'>
-        <Input title='in' id={id} inputId={inId} />
+        <Input title='in' id={id} name='main-in' />
+        <Input title='freq/in' id={id} name='frequency' />
       </div>
 
       {/* Frequency and Reso Knob */}
@@ -122,7 +154,7 @@ const Filter = () => {
             <Knob
               onChange={checkDistance.bind(this, "freq", freq)}
               min={0}
-              max={100}
+              max={24000}
               value={freq}
             />
           </div>

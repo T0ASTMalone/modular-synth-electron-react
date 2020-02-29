@@ -9,11 +9,9 @@ import shortId from "shortid";
 const Oscillator = () => {
   const [freq, updateFreq] = useState(440);
   const [id, createId] = useState(null);
-  const [inputId, setInputId] = useState(null);
 
   const context = useContext(MsContext);
-  const audioCtx = context.ctx;
-  const nodes = context.nodes;
+  const { ctx, cables, nodes } = context;
 
   // update frequency using knob
   const checkDistance = val => {
@@ -24,15 +22,15 @@ const Oscillator = () => {
       return;
     } else {
       updateFreq(val);
+      nodes[id].frequency.value = freq;
     }
   };
 
   useEffect(() => {
     // create oscillator
-    const osc = audioCtx.createOscillator();
+    const osc = ctx.createOscillator();
     // give osc unique name
     const oscId = shortId.generate();
-    const inId = shortId.generate();
     // start osc
     osc.start();
     // add to nodes object in context
@@ -40,7 +38,6 @@ const Oscillator = () => {
     context.addNode(oscId, osc);
     // add uuid to state for use elsewhere
     createId(oscId);
-    setInputId(inId);
   }, []);
 
   // in production this will read the connections object in context
@@ -48,22 +45,51 @@ const Oscillator = () => {
   // input
   const turnOn = () => {
     // testing audio by connecting to ctx destination
-    nodes[id].connect(audioCtx.destination);
+    nodes[id].connect(ctx.destination);
     // running for five seconds
     setTimeout(() => {
       // disconnecting from audio context
-      nodes[id].disconnect(audioCtx.destination);
+      nodes[id].disconnect(ctx.destination);
     }, 5000);
   };
 
   // if audio node exists set frequency to current knob value
-  if (id) {
-    nodes[id].frequency.value = freq;
-  }
+  // if (id) {
+  //   nodes[id].frequency.value = freq;
+  // }
 
   const updateWav = wav => {
     nodes[id].type = wav;
   };
+
+  // the following will be turned into a hook for all modules to re-use
+  // simply pass the output module id and it will create a connection if
+  // it sees one
+  useEffect(() => {
+    // if this module is an output in a current cable
+    const out = cables[id];
+
+    if (out) {
+      const { mod, input } = out;
+
+      if (input === "main-in") {
+        // if input is main in, connect to modules input'
+        console.log(nodes[mod]);
+        nodes[id].connect(nodes[mod]);
+      } else {
+        // if input i not main connect to corresponding audio parameter
+        console.log(nodes[mod][input]);
+        nodes[id].connect(nodes[mod][input]);
+      }
+    } else {
+      // if no cable with this module as an output is found
+      // disconnect from any connections that the module may have
+      if (nodes[id]) {
+        console.log("disconnecting");
+        nodes[id].disconnect();
+      }
+    }
+  }, [Object.keys(cables).length]);
 
   return (
     <div className='module osc'>
@@ -118,7 +144,7 @@ const Oscillator = () => {
         <p className='module__text'>Freq</p>
         <Knob
           onChange={checkDistance.bind(this)}
-          min={20}
+          min={0.01}
           max={2000}
           value={freq}
         />
@@ -126,7 +152,7 @@ const Oscillator = () => {
 
       {/* V/oct input */}
       <div className='osc__inputs'>
-        <Input title='V/oct' id={id} inputId={inputId} />
+        <Input title='V/oct' id={id} name='frequency' />
       </div>
     </div>
   );
