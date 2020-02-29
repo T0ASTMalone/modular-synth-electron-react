@@ -3,7 +3,6 @@ import "./Oscillator.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
-// import uuid from "uuid";
 import shortId from "shortid";
 
 const Oscillator = () => {
@@ -40,19 +39,6 @@ const Oscillator = () => {
     createId(oscId);
   }, []);
 
-  // in production this will read the connections object in context
-  // and if there is a connection, connect output to the appropriate
-  // input
-  const turnOn = () => {
-    // testing audio by connecting to ctx destination
-    nodes[id].connect(ctx.destination);
-    // running for five seconds
-    setTimeout(() => {
-      // disconnecting from audio context
-      nodes[id].disconnect(ctx.destination);
-    }, 5000);
-  };
-
   // if audio node exists set frequency to current knob value
   // if (id) {
   //   nodes[id].frequency.value = freq;
@@ -66,21 +52,31 @@ const Oscillator = () => {
   // simply pass the output module id and it will create a connection if
   // it sees one
   useEffect(() => {
-    // if this module is an output in a current cable
+    // when there is a change in the cables object, ask two questions
+
+    // am I an input?
+
+    // am I an output?
     const out = cables[id];
 
+    // if this module is an output in a current cable
     if (out) {
+      // get cables module and input on that module
       const { mod, input } = out;
 
       if (input === "main-in") {
-        // if input is main in, connect to modules input'
+        // if input is main in, connect to module
         console.log(nodes[mod]);
         nodes[id].connect(nodes[mod]);
       } else {
-        // if input i not main connect to corresponding audio parameter
+        // if input is not main connect to corresponding audio parameter
         console.log(nodes[mod][input]);
         nodes[id].connect(nodes[mod][input]);
       }
+
+      // return input and true
+      // set input modulation to on in state
+      // for styling purposes
     } else {
       // if no cable with this module as an output is found
       // disconnect from any connections that the module may have
@@ -88,27 +84,16 @@ const Oscillator = () => {
         console.log("disconnecting");
         nodes[id].disconnect();
       }
+      // return input and false
+      // set input modulation to off in state
+      // for styling purposes
     }
   }, [Object.keys(cables).length]);
 
   return (
     <div className='module osc'>
-      {/* 
-      V/oct input,
-
-      output that plays the selected wave shape 
-      or
-      outputs for each of the wave shapes and a sub.
-      where the sub might be half the core frequency
-    */}
-
       {/* outputs */}
       <div className='osc__outputs'>
-        {/* 
-        all outputs except the sub will be set to the current frequency 
-      */}
-        {/* <button onClick={turnOn}></button> */}
-        {/* sub will be set to half the current freq */}
         <Output title='out' id={id} />
       </div>
       <div className='osc__types'>
