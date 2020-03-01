@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import "./Rack.css";
 import MsContext from "../../context/MsContext";
 import MainGain from "../modules/MainGain/MainGain";
+import Lfo from "../modules/Lfo/Lfo";
 
 const Rack = () => {
   const [loadedModules, loadModules] = useState([]);
@@ -59,7 +60,14 @@ const Rack = () => {
         ) : (
           <></>
         )}
-        {context.ctx ? <MainGain /> : <></>}
+        {context.ctx ? (
+          <>
+            <MainGain />
+            <Lfo />
+          </>
+        ) : (
+          <></>
+        )}
       </div>
 
       <div className='rack__visualAudio'>

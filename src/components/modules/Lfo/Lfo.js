@@ -1,12 +1,29 @@
+// test low frequency oscillator
+// will be part of the normal oscillator module later
+
+/*
+  TODO
+  ----
+  * find out what why it pops when adjusting the frequency
+
+  * find out why it sounds distorted when connected to main gain module
+
+  * add to sidebar
+
+  * merge with regular oscillator by adding an lfo mode button that will change 
+    the regular oscillator's frequency range to that of an lfo (0 - 20 Hz)
+
+*/
+
 import React, { useState, useContext, useEffect } from "react";
-import "./Oscillator.css";
+import "./Lfo.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import shortId from "shortid";
 
-const Oscillator = () => {
-  const [freq, updateFreq] = useState(440);
+const Lfo = () => {
+  const [freq, updateFreq] = useState(1);
   const [id, createId] = useState(null);
 
   const context = useContext(MsContext);
@@ -21,7 +38,7 @@ const Oscillator = () => {
       return;
     } else {
       updateFreq(val);
-      nodes[id].frequency.value = freq;
+      nodes[id].frequency.value = freq / 100;
     }
   };
 
@@ -30,6 +47,8 @@ const Oscillator = () => {
     const osc = ctx.createOscillator();
     // give osc unique name
     const oscId = shortId.generate();
+
+    osc.frequency.value = 1;
     // start osc
     osc.start();
     // add to nodes object in context
@@ -40,9 +59,9 @@ const Oscillator = () => {
   }, []);
 
   // if audio node exists set frequency to current knob value
-  // if (id) {
-  //   nodes[id].frequency.value = freq;
-  // }
+  if (id) {
+    nodes[id].frequency.value = freq;
+  }
 
   const updateWav = wav => {
     nodes[id].type = wav;
@@ -129,7 +148,7 @@ const Oscillator = () => {
         <p className='module__text'>Freq</p>
         <Knob
           onChange={checkDistance.bind(this)}
-          min={0}
+          min={1}
           max={2000}
           value={freq}
         />
@@ -143,4 +162,4 @@ const Oscillator = () => {
   );
 };
 
-export default Oscillator;
+export default Lfo;
