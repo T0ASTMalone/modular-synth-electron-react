@@ -8,9 +8,8 @@ const Input = props => {
 
   const connectionExists = () => {
     let connections = context.cables;
-    console.log(connections);
     for (let key in connections) {
-      if (connections[key].mod === id) {
+      if (connections[key].mod === id && connections[key].input === name) {
         return true;
       }
     }
@@ -18,12 +17,9 @@ const Input = props => {
   };
 
   const handleConnection = () => {
-    console.log(context.cables);
     if (connectionExists()) {
-      console.log("removing input");
       context.removeInput(id, name);
     } else {
-      console.log("creating input");
       context.createInput(id, name);
     }
   };
@@ -53,10 +49,8 @@ const Output = props => {
 
   const handleConnection = () => {
     if (connectionExists()) {
-      console.log("removing output");
       context.removeOutput(id);
     } else {
-      console.log("creating output");
       context.createOutput(id);
     }
   };

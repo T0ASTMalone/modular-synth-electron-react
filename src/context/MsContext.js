@@ -103,7 +103,7 @@ export class MsProvider extends Component {
   removeInput = (mod, inputId) => {
     const { cables } = this.state;
     const output = Object.keys(cables).find(
-      key => cables[key].module === mod && cables[key].input === inputId
+      key => cables[key].mod === mod && cables[key].input === inputId
     );
     delete cables[output];
     this.setState({ cables, input: null, output });
