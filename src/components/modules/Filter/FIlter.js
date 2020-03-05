@@ -6,7 +6,7 @@ import { Input, Output } from "../../io/io";
 import shortId from "shortid";
 import MsContext from "../../../context/MsContext";
 
-const Filter = () => {
+const Filter = props => {
   // state
   const [freq, updateFreq] = useState(0);
   const [reso, updateReso] = useState(0);
@@ -14,6 +14,9 @@ const Filter = () => {
   const [id, setId] = useState(null);
   const [inId, setInId] = useState(null);
   const [type, setType] = useState(0);
+  const [selected, select] = useState(null);
+
+  const { removeModule } = props;
 
   const context = useContext(MsContext);
   const { ctx, nodes, cables } = context;
@@ -129,9 +132,30 @@ const Filter = () => {
     }
   }, [Object.keys(cables).length]);
 
+  const mouseIn = () => {
+    select(true);
+  };
+
+  const mouseOut = () => {
+    select(false);
+  };
+
   return (
-    <div className='module filter'>
-      <p className='module__text'>{filterTypes[type]}</p>
+    <div
+      className='module filter'
+      onMouseEnter={mouseIn}
+      onMouseLeave={mouseOut}
+    >
+      {/* remove module button*/}
+      <div className='close-button'>
+        {selected ? (
+          <button className='module__button' onClick={() => removeModule(id)}>
+            X
+          </button>
+        ) : (
+          <p className='module__text--bold'>{filterTypes[type]}</p>
+        )}
+      </div>
       {/* inputs for all filter types */}
       <div className='filter__ins'>
         <Input title='in' id={id} name='main-in' />

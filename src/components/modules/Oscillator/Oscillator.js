@@ -5,9 +5,12 @@ import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import shortId from "shortid";
 
-const Oscillator = () => {
+const Oscillator = props => {
   const [freq, updateFreq] = useState(440);
   const [id, createId] = useState(null);
+  const [selected, select] = useState(null);
+
+  const { removeModule, index } = props;
 
   const context = useContext(MsContext);
   const { ctx, cables, nodes } = context;
@@ -90,8 +93,32 @@ const Oscillator = () => {
     }
   }, [Object.keys(cables).length]);
 
+  const mouseIn = () => {
+    select(true);
+  };
+
+  const mouseOut = () => {
+    select(false);
+  };
+
+  console.log(id, index);
+
   return (
-    <div className='module osc'>
+    <div className='module osc' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+      {/* remove module button*/}
+      <div className='close-button'>
+        {selected ? (
+          <button
+            className='module__button'
+            onClick={() => removeModule(id, index)}
+          >
+            X
+          </button>
+        ) : (
+          <p className='module__text--bold'>Oscillator</p>
+        )}
+      </div>
+      {/* {selected ? <button className='module__button'>X</button> : <></>} */}
       {/* outputs */}
       <div className='osc__outputs'>
         <Output title='out' id={id} />

@@ -22,9 +22,12 @@ import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import shortId from "shortid";
 
-const Lfo = () => {
+const Lfo = props => {
   const [freq, updateFreq] = useState(1);
   const [id, createId] = useState(null);
+  const [selected, select] = useState(null);
+
+  const { removeModule } = props;
 
   const context = useContext(MsContext);
   const { ctx, cables, nodes } = context;
@@ -109,8 +112,26 @@ const Lfo = () => {
     }
   }, [Object.keys(cables).length]);
 
+  const mouseIn = () => {
+    select(true);
+  };
+
+  const mouseOut = () => {
+    select(false);
+  };
+
   return (
-    <div className='module osc'>
+    <div className='module osc' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+      {/* remove module button*/}
+      <div className='close-button'>
+        {selected ? (
+          <button className='module__button' onClick={() => removeModule(id)}>
+            X
+          </button>
+        ) : (
+          <p className='module__text--bold'>Lfo</p>
+        )}
+      </div>
       {/* outputs */}
       <div className='osc__outputs'>
         <Output title='out' id={id} />

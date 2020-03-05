@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import "./App.css";
-
 // components
 import Rack from "./components/Rack/Rack";
 import Sidebar from "./components/Sidebar/Sidebar";

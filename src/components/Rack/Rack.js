@@ -2,13 +2,14 @@ import React, { useEffect, useState, useContext } from "react";
 import "./Rack.css";
 import MsContext from "../../context/MsContext";
 import MainGain from "../modules/MainGain/MainGain";
-import Lfo from "../modules/Lfo/Lfo";
 
 const Rack = () => {
   const [loadedModules, loadModules] = useState([]);
   //const [currentModules, setCurrentModules] = useState([]);
 
   const context = useContext(MsContext);
+
+  const { nodes, update } = context;
 
   useEffect(() => {
     const currentModules = context.loaded;
@@ -19,12 +20,18 @@ const Rack = () => {
 
     const importModules = mods =>
       // map over reduced array instead, in order to import only one of each module
-      Promise.all(mods.map(mod => import(`../modules/${mod}/${mod}.js`)));
+      Promise.all(
+        mods.map(mod => {
+          if (mod) {
+            return import(`../modules/${mod}/${mod}.js`);
+          }
+        })
+      );
 
     importModules(imports).then(loadedModules => {
       loadModules(loadedModules);
     });
-  }, [context.loaded.length]);
+  }, [update]);
 
   // useState to hold current modules array
   // map over current modules in state instead of loaded modules
@@ -34,8 +41,13 @@ const Rack = () => {
     context.createCtx(ctx);
   }, []);
 
+  const removeModule = (id, index) => {
+    context.unload(index, id);
+  };
+
   const currentModules = context.loaded;
-  console.log(context);
+
+  console.log(nodes, currentModules);
 
   return (
     <div className='rack'>
@@ -50,24 +62,19 @@ const Rack = () => {
         {currentModules.length > 0 && loadedModules.length > 0 ? (
           currentModules.map((name, i) => {
             const loadedMod = loadedModules.find(mod => {
-              return mod.default.name === name;
+              if (mod) {
+                return mod.default.name === name;
+              }
             });
             if (loadedMod) {
               const Module = loadedMod.default;
-              return <Module key={i} />;
+              return <Module key={i} index={i} removeModule={removeModule} />;
             }
           })
         ) : (
           <></>
         )}
-        {context.ctx ? (
-          <>
-            <MainGain />
-            <Lfo />
-          </>
-        ) : (
-          <></>
-        )}
+        {context.ctx ? <MainGain /> : <></>}
       </div>
 
       <div className='rack__visualAudio'>

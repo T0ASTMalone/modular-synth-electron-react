@@ -1,8 +1,7 @@
-const { ipcRenderer, shell } = window.require("electron").remote;
-
+const { remote } = window.require("electron");
+const { ipcRenderer, shell } = remote;
 const { openExternal } = shell;
-
-const mainWindow = window.require("electron").remote.getCurrentWindow();
+const mainWindow = remote.getCurrentWindow();
 
 export const defaultTemplate = [
   {
@@ -547,6 +546,18 @@ export const slackTemplate = [
   {
     label: "Help",
     accelerator: "Ctrl+H"
+  }
+];
+
+export const popUp = [
+  {
+    label: "Pop up menu item"
+  },
+  {
+    label: "Pop up menu item 2"
+  },
+  {
+    label: "Pop up menu item 3s"
   }
 ];
 

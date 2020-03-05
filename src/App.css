@@ -57,6 +57,12 @@
   font-size: 14px;
 }
 
+.module__text--bold {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 #path-2,
 #path-5 {
   display: none;

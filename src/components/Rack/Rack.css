@@ -46,3 +46,15 @@
 
   color: #041028;
 }
+
+.module__button {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: none;
+  align-self: flex-end;
+}
+
+.close-button {
+  height: 30px;
+}

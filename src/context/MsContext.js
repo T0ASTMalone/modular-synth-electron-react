@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 const MsContext = React.createContext({
   error: null,
+  update: false,
   ctx: null,
   nodes: {},
   cables: {},
@@ -28,6 +29,7 @@ export class MsProvider extends Component {
       input: null,
       output: null,
       error: null,
+      update: false,
       sidebar: false,
       sbContent: "",
       loaded: []
@@ -45,17 +47,31 @@ export class MsProvider extends Component {
   };
 
   load = name => {
-    const { loaded } = this.state;
-    this.setState({ loaded: [...(loaded ? loaded : []), name] });
+    const { loaded, update } = this.state;
+    const openSlot = loaded.indexOf(undefined);
+    console.log(openSlot);
+    if (openSlot >= 0) {
+      loaded[openSlot] = name;
+      this.setState({ loaded, update: !update });
+    } else {
+      this.setState({
+        loaded: [...(loaded ? loaded : []), name],
+        update: !update
+      });
+    }
   };
 
-  unload = id => {
-    const { loaded } = this.state;
+  unload = (index, id) => {
+    const { loaded, nodes, update } = this.state;
     if (loaded.length < 1) {
       return;
+    } else if (loaded.length === 1) {
+      this.setState({ loaded: [], nodes: {}, update: !update });
+    } else {
+      delete nodes[id];
+      loaded[index] = undefined;
+      this.setState({ loaded, nodes, update: !update });
     }
-    const updatedModules = loaded.filter(mod => mod.id !== id);
-    this.setState({ loaded: [...updatedModules] });
   };
 
   setSbContent = sbContent => {
@@ -130,6 +146,7 @@ export class MsProvider extends Component {
       sidebar: this.state.sidebar,
       sbContent: this.state.sbContent,
       loaded: this.state.loaded,
+      update: this.state.update,
       //output only for testing
       output: this.state.output,
       input: this.state.input,
@@ -142,6 +159,7 @@ export class MsProvider extends Component {
       removeInput: this.removeInput,
       removeOutput: this.removeOutput,
       load: this.load,
+      unload: this.unload,
       setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,
       clearContext: this.clearContext
