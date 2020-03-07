@@ -11,12 +11,12 @@ const Filter = props => {
   const [freq, updateFreq] = useState(0);
   const [reso, updateReso] = useState(0);
   const [vol, updateVol] = useState(0);
-  const [id, setId] = useState(null);
+  //const [id, setId] = useState(null);
   const [inId, setInId] = useState(null);
   const [type, setType] = useState(0);
   const [selected, select] = useState(null);
 
-  const { removeModule } = props;
+  const { removeModule, id } = props;
 
   const context = useContext(MsContext);
   const { ctx, nodes, cables } = context;
@@ -41,15 +41,15 @@ const Filter = props => {
       switch (name) {
         case "freq":
           updateFreq(val);
-          nodes[id].frequency.value = freq;
+          nodes[id].node.frequency.value = freq;
           break;
         case "reso":
           updateReso(val);
-          nodes[id].Q.value = reso;
+          nodes[id].node.Q.value = reso;
           break;
         default:
           updateVol(val);
-          nodes[id].gain.value = val;
+          nodes[id].node.gain.value = val;
           break;
       }
     }
@@ -70,7 +70,7 @@ const Filter = props => {
       newType = 0;
     }
     // set new type of filter
-    nodes[id].type = filterTypes[newType];
+    nodes[id].node.type = filterTypes[newType];
     // set type value in state
     setType(newType);
   };
@@ -95,13 +95,13 @@ const Filter = props => {
     // create filter
     const filter = ctx.createBiquadFilter();
     // give filter unique name
-    const id = shortId.generate();
+
     const inId = shortId.generate();
     // add to nodes object in context
     // uuid as key and filter as value
     context.addNode(id, filter);
     // set id in state
-    setId(id);
+
     setInId(inId);
   }, []);
 
@@ -109,26 +109,42 @@ const Filter = props => {
   // simply pass the output module id and it will create a connection if
   // it sees one
   useEffect(() => {
-    let input;
-    // if this module is an output in a current cable
+    const { node } = nodes[id];
+    // when there is a change in the cables object, ask two questions
+
+    // am I an input?
+
+    // am I an output?
     const out = cables[id];
 
+    // if this module is an output in a current cable
     if (out) {
-      input = out.input;
+      // get cables module and input on that module
+      const { mod, input } = out;
+
       if (input === "main-in") {
-        // if input is main in, connect to modules input
-        nodes[id].connect(nodes[out.mod]);
+        // if input is main in, connect to module
+
+        node.connect(nodes[mod].node);
       } else {
         // if input is not main connect to corresponding audio parameter
-        nodes[id].connect(nodes[out.mod][out.input]);
+
+        node.connect(nodes[mod].node[input]);
       }
+
+      // return input and true
+      // set input modulation to on in state
+      // for styling purposes
     } else {
       // if no cable with this module as an output is found
       // disconnect from any connections that the module may have
-      if (nodes[id]) {
+      if (node) {
         console.log("disconnecting");
-        nodes[id].disconnect();
+        node.disconnect();
       }
+      // return input and false
+      // set input modulation to off in state
+      // for styling purposes
     }
   }, [Object.keys(cables).length]);
 

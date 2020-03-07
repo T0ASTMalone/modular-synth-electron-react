@@ -5,14 +5,30 @@ import MainGain from "../modules/MainGain/MainGain";
 
 const Rack = () => {
   const [loadedModules, loadModules] = useState([]);
-  //const [currentModules, setCurrentModules] = useState([]);
 
   const context = useContext(MsContext);
 
   const { nodes, update } = context;
 
+  // create array of current modules from nodes object
+  let currentModules = Object.keys(nodes).map((key, i) => {
+    if (i > 0) {
+      return nodes[key].type;
+    }
+  });
+  // remove main out module (module 0)
+  currentModules.shift();
+
   useEffect(() => {
-    const currentModules = context.loaded;
+    // create array of current modules from nodes array
+    let currentModules = Object.keys(nodes).map((key, i) => {
+      if (i > 0) {
+        return nodes[key].type;
+      }
+    });
+
+    currentModules.shift();
+
     // reduce array to only contain one of each of the current modules
     const imports = currentModules.filter(
       (item, i) => currentModules.indexOf(item) === i
@@ -28,26 +44,37 @@ const Rack = () => {
         })
       );
 
+    // add imports to state as loaded modules for rendering
     importModules(imports).then(loadedModules => {
       loadModules(loadedModules);
     });
   }, [update]);
 
-  // useState to hold current modules array
-  // map over current modules in state instead of loaded modules
+  const renderModule = (name, i, id) => {
+    // get imported module by searching loadedModules for file with the same name
+    const loadedMod = loadedModules.find(mod => {
+      if (mod) {
+        return mod.default.name === name;
+      }
+    });
+    // if module was found return component
+    if (loadedMod) {
+      const Module = loadedMod.default;
+      return <Module key={i} index={i} id={id} removeModule={removeModule} />;
+    }
+  };
 
   useEffect(() => {
     const ctx = new AudioContext();
     context.createCtx(ctx);
   }, []);
 
-  const removeModule = (id, index) => {
-    context.unload(index, id);
+  const removeModule = id => {
+    console.log("ran remove module");
+    context.unload(id);
   };
 
-  const currentModules = context.loaded;
-
-  console.log(nodes, currentModules);
+  console.log(currentModules);
 
   return (
     <div className='rack'>
@@ -59,21 +86,21 @@ const Rack = () => {
       </div>
 
       <div className='rack__modules'>
-        {currentModules.length > 0 && loadedModules.length > 0 ? (
-          currentModules.map((name, i) => {
-            const loadedMod = loadedModules.find(mod => {
-              if (mod) {
-                return mod.default.name === name;
-              }
-            });
-            if (loadedMod) {
-              const Module = loadedMod.default;
-              return <Module key={i} index={i} removeModule={removeModule} />;
-            }
+        {/* 
+          check if there are any current audio modules and 
+          if those modules have been imported
+        */}
+        {currentModules && loadedModules.length > 0 ? (
+          // map over current modules and render each one
+
+          Object.keys(nodes).map((key, i) => {
+            const { type } = nodes[key];
+            return renderModule(type, i, key);
           })
         ) : (
           <></>
         )}
+        {/* main output for the rack will always be loaded */}
         {context.ctx ? <MainGain /> : <></>}
       </div>
 

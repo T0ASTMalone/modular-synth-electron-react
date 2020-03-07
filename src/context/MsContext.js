@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import shortid from "shortid";
 
 const MsContext = React.createContext({
   error: null,
@@ -37,8 +38,9 @@ export class MsProvider extends Component {
   }
 
   addNode = (id, audioNode) => {
-    let nodes = this.state.nodes;
-    nodes[id] = audioNode;
+    console.log(id, audioNode);
+    const { nodes } = this.state;
+    nodes[id].node = audioNode;
     this.setState({ nodes });
   };
 
@@ -46,32 +48,44 @@ export class MsProvider extends Component {
     this.setState({ ctx });
   };
 
-  load = name => {
-    const { loaded, update } = this.state;
-    const openSlot = loaded.indexOf(undefined);
-    console.log(openSlot);
-    if (openSlot >= 0) {
-      loaded[openSlot] = name;
-      this.setState({ loaded, update: !update });
-    } else {
-      this.setState({
-        loaded: [...(loaded ? loaded : []), name],
-        update: !update
-      });
-    }
+  // load = name => {
+  //   const { loaded, update } = this.state;
+  //   const openSlot = loaded.indexOf(undefined);
+  //   console.log(openSlot);
+  //   if (openSlot >= 0) {
+  //     loaded[openSlot] = name;
+  //     this.setState({ loaded, update: !update });
+  //   } else {
+  //     this.setState({
+  //       loaded: [...(loaded ? loaded : []), name],
+  //       update: !update
+  //     });
+  //   }
+  // };
+
+  // f load
+  load = type => {
+    // get nodes object and update from state
+    const { nodes, update } = this.state;
+    // create id
+    const id = shortid.generate();
+    // create property in nodes module with the id as the key and properties of type and node
+    // type being the type passed in and node being the audio node
+    // the audio node will be null until the module is loaded and the node is created by
+    // the module
+    nodes[id] = {
+      type,
+      node: null
+    };
+    // update state
+    this.setState({ nodes, update: !update });
+    return id;
   };
 
-  unload = (index, id) => {
-    const { loaded, nodes, update } = this.state;
-    if (loaded.length < 1) {
-      return;
-    } else if (loaded.length === 1) {
-      this.setState({ loaded: [], nodes: {}, update: !update });
-    } else {
-      delete nodes[id];
-      loaded[index] = undefined;
-      this.setState({ loaded, nodes, update: !update });
-    }
+  unload = id => {
+    const { nodes, update } = this.state;
+    delete nodes[id];
+    this.setState({ nodes, update: !update });
   };
 
   setSbContent = sbContent => {

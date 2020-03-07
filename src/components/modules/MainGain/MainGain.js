@@ -24,15 +24,11 @@ const MainGain = () => {
     } else {
       setGain(val);
     }
-    nodes[id].gain.value = val;
+    nodes[id].node.gain.value = val;
   };
 
   //set up main gain module
   useEffect(() => {
-    // create unique id
-    const id = shortId.generate();
-    // create input ids
-    const inId = shortId.generate();
     // create main gain node
     const gainNode = ctx.createGain();
     // connect to ctx destination
@@ -40,6 +36,8 @@ const MainGain = () => {
     // set value
     gainNode.gain.value = gainValue;
     // add to context
+    const id = context.load("main-gain");
+    // use id created by context to add node
     context.addNode(id, gainNode);
     // set to id
     setId(id);

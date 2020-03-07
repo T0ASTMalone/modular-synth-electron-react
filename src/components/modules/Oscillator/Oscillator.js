@@ -7,13 +7,15 @@ import shortId from "shortid";
 
 const Oscillator = props => {
   const [freq, updateFreq] = useState(440);
-  const [id, createId] = useState(null);
+  // const [id, createId] = useState(null);
   const [selected, select] = useState(null);
 
-  const { removeModule, index } = props;
+  const { removeModule, index, id } = props;
 
   const context = useContext(MsContext);
   const { ctx, cables, nodes } = context;
+
+  const { node } = nodes[id];
 
   // update frequency using knob
   const checkDistance = val => {
@@ -24,22 +26,18 @@ const Oscillator = props => {
       return;
     } else {
       updateFreq(val);
-      nodes[id].frequency.value = freq;
+      node.frequency.value = freq;
     }
   };
 
   useEffect(() => {
     // create oscillator
     const osc = ctx.createOscillator();
-    // give osc unique name
-    const oscId = shortId.generate();
     // start osc
     osc.start();
     // add to nodes object in context
     // uuid as key and osc as value
-    context.addNode(oscId, osc);
-    // add uuid to state for use elsewhere
-    createId(oscId);
+    context.addNode(id, osc);
   }, []);
 
   // if audio node exists set frequency to current knob value
@@ -48,13 +46,14 @@ const Oscillator = props => {
   // }
 
   const updateWav = wav => {
-    nodes[id].type = wav;
+    node.type = wav;
   };
 
   // the following will be turned into a hook for all modules to re-use
   // simply pass the output module id and it will create a connection if
   // it sees one
   useEffect(() => {
+    const { node } = nodes[id];
     // when there is a change in the cables object, ask two questions
 
     // am I an input?
@@ -69,12 +68,12 @@ const Oscillator = props => {
 
       if (input === "main-in") {
         // if input is main in, connect to module
-        console.log(nodes[mod]);
-        nodes[id].connect(nodes[mod]);
+
+        node.connect(nodes[mod].node);
       } else {
         // if input is not main connect to corresponding audio parameter
-        console.log(nodes[mod][input]);
-        nodes[id].connect(nodes[mod][input]);
+
+        node.connect(nodes[mod].node[input]);
       }
 
       // return input and true
@@ -83,9 +82,9 @@ const Oscillator = props => {
     } else {
       // if no cable with this module as an output is found
       // disconnect from any connections that the module may have
-      if (nodes[id]) {
+      if (node) {
         console.log("disconnecting");
-        nodes[id].disconnect();
+        node.disconnect();
       }
       // return input and false
       // set input modulation to off in state
@@ -101,17 +100,12 @@ const Oscillator = props => {
     select(false);
   };
 
-  console.log(id, index);
-
   return (
     <div className='module osc' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
       {/* remove module button*/}
       <div className='close-button'>
         {selected ? (
-          <button
-            className='module__button'
-            onClick={() => removeModule(id, index)}
-          >
+          <button className='module__button' onClick={() => removeModule(id)}>
             X
           </button>
         ) : (

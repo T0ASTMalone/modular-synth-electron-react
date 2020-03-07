@@ -5,12 +5,12 @@ import MsContext from "../../context/MsContext";
 import Explorer from "../Explorer/Explorer";
 
 const Sidebar = () => {
-  const context = useContext(MsContext);
+  //const context = useContext(MsContext);
 
-  const content = context.sbContent;
+  //const content = context.sbContent;
 
   return (
-    <div className="sidebar">
+    <div className='sidebar'>
       {/* <p className="test-content">{content}</p> */}
       <Explorer />
     </div>
