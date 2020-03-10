@@ -14,7 +14,7 @@ const Filter = props => {
   const [type, setType] = useState(0);
   const [selected, select] = useState(null);
 
-  const { removeModule, id } = props;
+  const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
   const { ctx, nodes, cables, updateCables } = context;
@@ -92,6 +92,25 @@ const Filter = props => {
   useEffect(() => {
     // create filter
     const filter = ctx.createBiquadFilter();
+
+    if (values) {
+      // using values passed in as props
+      // set module values
+      for (let k in values) {
+        filter[k].value = values[k];
+        switch (k) {
+          case "frequency":
+            checkDistance.bind(this, "freq", freq);
+            break;
+          case "Q":
+            checkDistance.bind(this, "reso", freq);
+            break;
+          default:
+            checkDistance.bind(this, "vol", freq);
+            break;
+        }
+      }
+    }
     // give filter unique name
     const inId = shortId.generate();
     // add to nodes object in context
@@ -113,12 +132,13 @@ const Filter = props => {
 
     // am I an output?
     const out = cables[id];
+    console.log(out);
 
     // if this module is an output in a current cable
     if (out) {
       // get cables module and input on that module
       const { mod, input } = out;
-      console.log("input node ", nodes[mod].node);
+      console.log(nodes[mod]);
       if (nodes[mod].node) {
         if (input === "main-in") {
           // if input is main in, connect to module

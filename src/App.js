@@ -16,7 +16,7 @@ function App() {
   const context = useContext(MsContext);
   const [modSettings, setModSettings] = useState(null);
 
-  const { sidebar, sbContent, nodes, cables } = context;
+  const { sidebar, sbContent, nodes, cables, update } = context;
 
   const toggleSidebar = (e, data) => {
     console.log("ran");
@@ -51,7 +51,11 @@ function App() {
   }, [sidebar, sbContent]);
 
   useEffect(() => {
+    ipcRenderer.removeAllListeners("save-file");
     ipcRenderer.on("save-file", () => saveFile(nodes, cables));
+  }, [update]);
+
+  useEffect(() => {
     ipcRenderer.on("open-file", async () => {
       // open file explorer to have user select a file
       const file = await openFile();
@@ -59,8 +63,7 @@ function App() {
       const { loadedModules, moduleSettings, cables } = file;
       await context.loadPatchCables(cables);
       setModSettings(moduleSettings);
-
-      context.loadPatch(loadedModules);
+      await context.loadPatch(loadedModules, cables);
     });
   }, []);
 
@@ -69,7 +72,7 @@ function App() {
       <TitleBar icon={github} app="Electron" menu={defaultTemplate} />
       <main className="app-main">
         {sidebar ? <Sidebar /> : <></>}
-        <Rack modSettings={modSettings} />
+        <Rack modSettings={modSettings ? modSettings : null} />
       </main>
     </div>
   );

@@ -23,17 +23,18 @@ const Rack = props => {
   useEffect(() => {
     // create array of current modules from nodes array
     let currentModules = Object.keys(nodes).map((key, i) => {
-      if (i > 0) {
-        return nodes[key].type;
-      }
+      return nodes[key].type;
     });
 
-    currentModules.shift();
+    const filteredMods = currentModules.filter(
+      item => item !== "main-gain" && item !== undefined
+    );
 
     // reduce array to only contain one of each of the current modules
-    const imports = currentModules.filter(
-      (item, i) => currentModules.indexOf(item) === i
+    const imports = filteredMods.filter(
+      (item, i) => filteredMods.indexOf(item) === i
     );
+    console.log(imports);
 
     const importModules = mods =>
       // map over reduced array instead, in order to import only one of each module
@@ -60,8 +61,11 @@ const Rack = props => {
     });
     // if module was found return component
     if (loadedMod) {
+      const values = modSettings ? modSettings[id] : null;
       const Module = loadedMod.default;
-      return <Module key={i} index={i} id={id} removeModule={removeModule} />;
+      return (
+        <Module key={i} id={id} values={values} removeModule={removeModule} />
+      );
     }
   };
 
@@ -75,6 +79,8 @@ const Rack = props => {
     console.log("ran remove module");
     context.unload(id);
   };
+
+  console.log(context.nodes);
 
   return (
     <div className="rack">

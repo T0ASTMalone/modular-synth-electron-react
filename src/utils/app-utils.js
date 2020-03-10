@@ -51,6 +51,7 @@ export const saveFile = (nodes, cables) => {
 
   // stringify to write to file
   const saveFile = JSON.stringify({ settings, connections });
+  console.log(saveFile);
   // create test file
   fs.writeFileSync("test-patch.json", saveFile);
 };

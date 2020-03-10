@@ -75,12 +75,15 @@ export class MsProvider extends Component {
   };
 
   unload = id => {
-    const { nodes, update } = this.state;
+    const { nodes, update, cables } = this.state;
+    // remove any connections that have
+    // the module being deleted as an input
+    console.log(nodes);
     delete nodes[id];
-    this.setState({ nodes, update: !update });
+    this.setState({ update: !update, nodes });
   };
 
-  loadPatch = mods => {
+  loadPatch = (mods, connections) => {
     let { nodes, update } = this.state;
     let mainOut;
     let mainOutId;
@@ -88,13 +91,13 @@ export class MsProvider extends Component {
     for (let k in nodes) {
       if (nodes[k].type === "main-gain") {
         mainOut = nodes[k];
-        mainOutId = k;
+        // mainOutId = k;
       }
     }
+
     // delete any loaded modules
     nodes = {};
-    // add main out to nodes obj
-    nodes[mainOutId] = mainOut;
+
     // set saved modules to nodes obj
     for (let k in mods) {
       const { id, type } = mods[k];
@@ -103,8 +106,13 @@ export class MsProvider extends Component {
           type,
           node: null
         };
+      } else {
+        mainOutId = id;
       }
     }
+
+    // add main out to nodes obj
+    nodes[mainOutId] = mainOut;
     // load modules
     this.setState({ nodes, update: !update });
   };

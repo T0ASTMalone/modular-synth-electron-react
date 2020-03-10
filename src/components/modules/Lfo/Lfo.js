@@ -24,7 +24,7 @@ const Lfo = props => {
 
   const [selected, select] = useState(null);
 
-  const { removeModule, id } = props;
+  const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
   const { ctx, cables, nodes, updateCables } = context;
@@ -44,7 +44,16 @@ const Lfo = props => {
 
   useEffect(() => {
     const osc = ctx.createOscillator();
-    osc.frequency.value = 1;
+    if (values) {
+      // using values passed in as props
+      // set osc values
+      for (let k in values) {
+        osc[k].value = values[k];
+        updateFreq(values[k]);
+      }
+    } else {
+      osc.frequency.value = 1;
+    }
     // start osc
     osc.start();
     // add to nodes object in context
@@ -72,12 +81,12 @@ const Lfo = props => {
 
     // am I an output?
     const out = cables[id];
-
+    console.log(out);
     // if this module is an output in a current cable
     if (out) {
       // get cables module and input on that module
       const { mod, input } = out;
-      console.log("input node ", nodes[mod].node);
+      console.log(nodes[mod]);
       if (nodes[mod].node) {
         if (input === "main-in") {
           // if input is main in, connect to module
