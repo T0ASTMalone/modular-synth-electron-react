@@ -3,8 +3,6 @@ import "./MainGain.css";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
 import { Input } from "../../io/io";
-// import uuid from "uuid";
-import shortId from "shortid";
 
 const MainGain = () => {
   // gain value

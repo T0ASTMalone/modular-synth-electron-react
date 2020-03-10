@@ -48,22 +48,6 @@ export class MsProvider extends Component {
     this.setState({ ctx });
   };
 
-  // load = name => {
-  //   const { loaded, update } = this.state;
-  //   const openSlot = loaded.indexOf(undefined);
-  //   console.log(openSlot);
-  //   if (openSlot >= 0) {
-  //     loaded[openSlot] = name;
-  //     this.setState({ loaded, update: !update });
-  //   } else {
-  //     this.setState({
-  //       loaded: [...(loaded ? loaded : []), name],
-  //       update: !update
-  //     });
-  //   }
-  // };
-
-  // f load
   load = type => {
     // get nodes object and update from state
     const { nodes, update } = this.state;

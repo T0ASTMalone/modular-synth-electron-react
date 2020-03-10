@@ -8,8 +8,6 @@
 
   * find out why it sounds distorted when connected to main gain module
 
-  * add to sidebar
-
   * merge with regular oscillator by adding an lfo mode button that will change 
     the regular oscillator's frequency range to that of an lfo (0 - 20 Hz)
 
@@ -20,7 +18,6 @@ import "./Lfo.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
-import shortId from "shortid";
 
 const Lfo = props => {
   const [freq, updateFreq] = useState(1);
@@ -157,7 +154,6 @@ const Lfo = props => {
           <button className='param-button'></button>
         </div>
       </div>
-
       {/* frequency knob */}
       <div className='knob'>
         <p className='module__text'>Freq</p>

@@ -1,3 +1,5 @@
+import { useSavePatch } from "./utils/app-utils";
+
 const { remote } = window.require("electron");
 const { ipcRenderer, shell } = remote;
 const { openExternal } = shell;
@@ -6,6 +8,26 @@ const mainWindow = remote.getCurrentWindow();
 export const defaultTemplate = [
   {
     id: "0",
+    label: "File",
+    submenu: [
+      {
+        id: "0001",
+        label: "Open Patch",
+        click: () => {
+          console.log("Opened patch");
+        }
+      },
+      {
+        id: "0002",
+        label: "Save Patch",
+        click: data => {
+          return mainWindow.webContents.send("save-file", data);
+        }
+      }
+    ]
+  },
+  {
+    id: "1",
     label: "View",
     modules: false,
     submenu: [
@@ -34,7 +56,7 @@ export const defaultTemplate = [
     ]
   },
   {
-    id: "1",
+    id: "2",
     label: "App",
     submenu: [
       {
@@ -174,7 +196,7 @@ export const defaultTemplate = [
     ]
   },
   {
-    id: "2",
+    id: "3",
     label: "Color",
     before: "1",
     submenu: [
@@ -546,18 +568,6 @@ export const slackTemplate = [
   {
     label: "Help",
     accelerator: "Ctrl+H"
-  }
-];
-
-export const popUp = [
-  {
-    label: "Pop up menu item"
-  },
-  {
-    label: "Pop up menu item 2"
-  },
-  {
-    label: "Pop up menu item 3s"
   }
 ];
 

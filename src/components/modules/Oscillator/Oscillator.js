@@ -3,14 +3,12 @@ import "./Oscillator.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
-import shortId from "shortid";
 
 const Oscillator = props => {
   const [freq, updateFreq] = useState(440);
-  // const [id, createId] = useState(null);
   const [selected, select] = useState(null);
 
-  const { removeModule, index, id } = props;
+  const { removeModule, id } = props;
 
   const context = useContext(MsContext);
   const { ctx, cables, nodes } = context;
@@ -144,7 +142,6 @@ const Oscillator = props => {
           <button className='param-button'></button>
         </div>
       </div>
-
       {/* frequency knob */}
       <div className='knob'>
         <p className='module__text'>Freq</p>

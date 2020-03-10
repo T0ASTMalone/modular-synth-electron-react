@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import "./Filter.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
-// import uuid from "uuid";
 import shortId from "shortid";
 import MsContext from "../../../context/MsContext";
 
@@ -11,7 +10,6 @@ const Filter = props => {
   const [freq, updateFreq] = useState(0);
   const [reso, updateReso] = useState(0);
   const [vol, updateVol] = useState(0);
-  //const [id, setId] = useState(null);
   const [inId, setInId] = useState(null);
   const [type, setType] = useState(0);
   const [selected, select] = useState(null);
@@ -95,7 +93,6 @@ const Filter = props => {
     // create filter
     const filter = ctx.createBiquadFilter();
     // give filter unique name
-
     const inId = shortId.generate();
     // add to nodes object in context
     // uuid as key and filter as value

@@ -11,10 +11,12 @@ import { defaultTemplate } from "./app-menu";
 const TitleBar = window.require("frameless-titlebar");
 const { ipcRenderer } = window.require("electron");
 
+const fs = window.require("fs");
+
 function App() {
   const context = useContext(MsContext);
 
-  const { sidebar, sbContent } = context;
+  const { sidebar, sbContent, nodes, cables } = context;
 
   const toggleSidebar = (e, data) => {
     console.log("ran");
@@ -41,12 +43,36 @@ function App() {
     }
   };
 
+  const saveFile = e => {
+    const settings = Object.keys(nodes).map(node => {
+      const x = nodes[node];
+      const audioNode = x.node;
+      const audioValues = {};
+
+      const nodeSettings = {
+        type: x.type
+      };
+      return nodeSettings;
+    });
+
+    console.log(settings);
+    const saveFile = JSON.stringify({ settings });
+
+    console.log(saveFile);
+
+    fs.writeFileSync("test-file.txt", saveFile);
+  };
+
   useEffect(() => {
     // remove all listeners for toggle sidebar
     ipcRenderer.removeAllListeners("toggle-sidebar");
     // create new listener for toggle sidebar
     ipcRenderer.on("toggle-sidebar", (e, data) => toggleSidebar(e, data));
   }, [sidebar, sbContent]);
+
+  useEffect(() => {
+    ipcRenderer.on("save-file", e => saveFile(e));
+  }, []);
 
   return (
     <div className='App'>
