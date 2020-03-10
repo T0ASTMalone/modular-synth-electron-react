@@ -16,7 +16,14 @@ function App() {
   const context = useContext(MsContext);
   const [modSettings, setModSettings] = useState(null);
 
-  const { sidebar, sbContent, nodes, cables, modUpdate, update } = context;
+  const {
+    sidebar,
+    sbContent,
+    modUpdate,
+    update,
+    updateCables,
+    getCurrentState
+  } = context;
 
   const toggleSidebar = (e, data) => {
     console.log("ran");
@@ -51,16 +58,14 @@ function App() {
   }, [sidebar, sbContent]);
 
   useEffect(() => {
-    console.log("ran update event emitters");
-    ipcRenderer.removeAllListeners("save-file");
-    ipcRenderer.on("save-file", () => saveFile(nodes, cables));
-  }, [modUpdate, update]);
-
-  useEffect(() => {
+    // event emitter for saving file
+    ipcRenderer.on("save-file", () => {
+      const { nodes, cables } = getCurrentState();
+      saveFile(nodes, cables);
+    });
     ipcRenderer.on("open-file", async () => {
       // open file explorer to have user select a file
       const file = await openFile();
-      console.log(file);
       const { loadedModules, moduleSettings, cables } = file;
       await context.loadPatchCables(cables);
       setModSettings(moduleSettings);

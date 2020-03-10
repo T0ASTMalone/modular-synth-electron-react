@@ -11,7 +11,7 @@ const Oscillator = props => {
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, cables, nodes, updateCables, updateMod } = context;
+  const { ctx, cables, nodes, updateCables } = context;
 
   const { node } = nodes[id];
 
@@ -25,7 +25,6 @@ const Oscillator = props => {
     } else {
       updateFreq(val);
       node.frequency.value = freq;
-      updateMod();
     }
   };
 
@@ -63,7 +62,7 @@ const Oscillator = props => {
   useEffect(() => {
     const { node } = nodes[id];
     // when there is a change in the cables object, ask two questions
-    console.log(node);
+
     // am I an input?
 
     // am I an output?
@@ -73,7 +72,7 @@ const Oscillator = props => {
     if (out) {
       // get cables module and input on that module
       const { mod, input } = out;
-      console.log(nodes[mod]);
+
       if (nodes[mod].node) {
         if (input === "main-in") {
           // if input is main in, connect to module

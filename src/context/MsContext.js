@@ -5,7 +5,6 @@ const MsContext = React.createContext({
   error: null,
   update: false,
   updateCables: false,
-  modUpdate: false,
   ctx: null,
   nodes: {},
   cables: {},
@@ -19,7 +18,8 @@ const MsContext = React.createContext({
   toggleSidebar: () => {},
   addNode: () => {},
   loadPatch: () => {},
-  loadPatchCables: () => {}
+  loadPatchCables: () => {},
+  getCurrentState: () => {}
 });
 
 export default MsContext;
@@ -36,7 +36,6 @@ export class MsProvider extends Component {
       error: null,
       update: false,
       updateCables: false,
-      modUpdate: false,
       sidebar: false,
       sbContent: "",
       loaded: []
@@ -44,7 +43,6 @@ export class MsProvider extends Component {
   }
 
   addNode = (id, audioNode) => {
-    console.log(id, audioNode);
     const { nodes, updateCables } = this.state;
     nodes[id].node = audioNode;
     this.setState({ nodes, updateCables: !updateCables });
@@ -80,7 +78,7 @@ export class MsProvider extends Component {
     const { nodes, update, cables } = this.state;
     // remove any connections that have
     // the module being deleted as an input
-    console.log(nodes);
+
     delete nodes[id];
     this.setState({ update: !update, nodes });
   };
@@ -181,14 +179,11 @@ export class MsProvider extends Component {
     this.setState({ cables, input, output: null });
   };
 
-  updateMod = () => {
-    console.log("ran update mod");
-    const { modUpdate } = this.state;
-    this.setState({ modUpdate: !modUpdate });
-  };
+  clearContext = () => {};
 
-  clearContext = () => {
-    console.log("cleared context");
+  getCurrentState = () => {
+    const { nodes, cables } = this.state;
+    return { nodes, cables };
   };
 
   render() {
@@ -203,7 +198,7 @@ export class MsProvider extends Component {
       loaded: this.state.loaded,
       update: this.state.update,
       updateCables: this.state.updateCables,
-      modUpdate: this.state.modUpdate,
+
       //output only for testing
       output: this.state.output,
       input: this.state.input,
@@ -218,10 +213,11 @@ export class MsProvider extends Component {
       load: this.load,
       loadPatch: this.loadPatch,
       loadPatchCables: this.loadPatchCables,
-      updateMod: this.updateMod,
+
       unload: this.unload,
       setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,
+      getCurrentState: this.getCurrentState,
       clearContext: this.clearContext
     };
 

@@ -17,7 +17,7 @@ const Filter = props => {
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, nodes, cables, updateCables, updateMod } = context;
+  const { ctx, nodes, cables, updateCables } = context;
 
   const filterTypes = [
     "lowpass",
@@ -31,9 +31,9 @@ const Filter = props => {
   ];
 
   const checkDistance = (name, currentVal, val) => {
-    console.log(name, currentVal, val);
     let maxDistance = 2000;
     let distance = Math.abs(val - currentVal);
+
     if (distance > maxDistance) {
       return;
     } else {
@@ -54,7 +54,6 @@ const Filter = props => {
 
           break;
       }
-      updateMod();
     }
   };
 
@@ -109,7 +108,6 @@ const Filter = props => {
       // set module values
       for (let k in values) {
         filter[k].value = values[k];
-        console.log(k);
         switch (k) {
           case "frequency":
             updateFreq(values[k]);
@@ -138,21 +136,17 @@ const Filter = props => {
 
     // am I an output?
     const out = cables[id];
-    console.log(out);
 
     // if this module is an output in a current cable
     if (out) {
       // get cables module and input on that module
       const { mod, input } = out;
-      console.log(nodes[mod]);
       if (nodes[mod].node) {
         if (input === "main-in") {
           // if input is main in, connect to module
-          console.log("connected to module main input");
           node.connect(nodes[mod].node);
         } else {
           // if input is not main connect to corresponding audio parameter
-          console.log("connected to module audio param");
           node.connect(nodes[mod].node[input]);
         }
 
@@ -163,7 +157,6 @@ const Filter = props => {
         // if no cable with this module as an output is found
         // disconnect from any connections that the module may have
         if (node) {
-          console.log("disconnecting");
           node.disconnect();
         }
         // return input and false

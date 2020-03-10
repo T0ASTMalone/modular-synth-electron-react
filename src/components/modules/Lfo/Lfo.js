@@ -27,7 +27,7 @@ const Lfo = props => {
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, cables, nodes, updateCables, updateMod } = context;
+  const { ctx, cables, nodes, updateCables } = context;
 
   // update frequency using knob
   const checkDistance = val => {
@@ -39,7 +39,6 @@ const Lfo = props => {
     } else {
       updateFreq(val);
       nodes[id].node.frequency.value = freq / 100;
-      updateMod();
     }
   };
 
@@ -82,12 +81,10 @@ const Lfo = props => {
 
     // am I an output?
     const out = cables[id];
-    console.log(out);
     // if this module is an output in a current cable
     if (out) {
       // get cables module and input on that module
       const { mod, input } = out;
-      console.log(nodes[mod]);
       if (nodes[mod].node) {
         if (input === "main-in") {
           // if input is main in, connect to module

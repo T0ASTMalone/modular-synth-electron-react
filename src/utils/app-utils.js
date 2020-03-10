@@ -51,7 +51,6 @@ export const saveFile = (nodes, cables) => {
 
   // stringify to write to file
   const saveFile = JSON.stringify({ settings, connections });
-  console.log(saveFile);
   // create test file
   fs.writeFileSync("test-patch.json", saveFile);
 };
@@ -63,7 +62,6 @@ export const openFile = async () => {
   const newFile = JSON.parse(file);
   // get settings and connections object
   const { settings, connections } = newFile;
-  console.log(settings);
   // format values for modules
   const moduleSettings = {};
   const loadedModules = {};
