@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./App.css";
-import { saveFile } from "./utils/app-utils";
+import { saveFile, openFile } from "./utils/app-utils";
 // components
 import Rack from "./components/Rack/Rack";
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -12,10 +12,9 @@ import { defaultTemplate } from "./app-menu";
 const TitleBar = window.require("frameless-titlebar");
 const { ipcRenderer } = window.require("electron");
 
-const fs = window.require("fs");
-
 function App() {
   const context = useContext(MsContext);
+  const [modSettings, setModSettings] = useState(null);
 
   const { sidebar, sbContent, nodes, cables } = context;
 
@@ -44,55 +43,6 @@ function App() {
     }
   };
 
-  // const saveFile = (e) => {
-  //   // get settings for each node
-  //   const settings = Object.keys(nodes).map(node => {
-  //     // get audio module
-  //     const mod = nodes[node];
-  //     // get audio node from module
-  //     const audioNode = mod.node;
-  //     // create object that will contain the values of any
-  //     // audioParams in the audio node
-  //     const audioValues = {};
-  //     // if there is a frequency audioParam add to audioValues
-  //     if (audioNode.frequency) {
-  //       audioValues.frequency = audioNode.frequency.value;
-  //     }
-  //     // if there is a gain audioParam add to audioValues
-  //     if (audioNode.gain) {
-  //       audioValues.gain = audioNode.gain.value;
-  //     }
-  //     // create settings object for each module
-  //     const nodeSettings = {
-  //       // id
-  //       id: node,
-  //       // type
-  //       type: mod.type,
-  //       // audioValues
-  //       ...audioValues
-  //     };
-  //     return nodeSettings;
-  //   });
-
-  //   // create connections array to write to file
-  //   const connections = Object.keys(cables).map(key => {
-  //     //create connection object
-  //     const connection = {
-  //       out: key,
-  //       input: {
-  //         mod: cables[key].mod,
-  //         input: cables[key].input
-  //       }
-  //     };
-  //     return connection;
-  //   });
-
-  //   // stringify to write to file
-  //   const saveFile = JSON.stringify({ settings, connections });
-  //   // create test file
-  //   fs.writeFileSync("test-file.json", saveFile);
-  // };
-
   useEffect(() => {
     // remove all listeners for toggle sidebar
     ipcRenderer.removeAllListeners("toggle-sidebar");
@@ -102,6 +52,13 @@ function App() {
 
   useEffect(() => {
     ipcRenderer.on("save-file", () => saveFile(nodes, cables));
+    ipcRenderer.on("open-file", async () => {
+      // open file explorer to have user select a file
+      const file = await openFile();
+      console.log(file);
+      // load file contents to context
+      setModSettings(file.moduleSettings);
+    });
   }, []);
 
   return (
@@ -109,7 +66,7 @@ function App() {
       <TitleBar icon={github} app="Electron" menu={defaultTemplate} />
       <main className="app-main">
         {sidebar ? <Sidebar /> : <></>}
-        <Rack />
+        <Rack modSettings={modSettings} />
       </main>
     </div>
   );

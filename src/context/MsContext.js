@@ -48,11 +48,15 @@ export class MsProvider extends Component {
     this.setState({ ctx });
   };
 
-  load = type => {
+  // pass in type and id (id is optional)
+  load = (type, id) => {
     // get nodes object and update from state
     const { nodes, update } = this.state;
-    // create id
-    const id = shortid.generate();
+    // if id  is not passed in
+    if (!id) {
+      // create id
+      id = shortid.generate();
+    }
     // create property in nodes module with the id as the key and properties of type and node
     // type being the type passed in and node being the audio node
     // the audio node will be null until the module is loaded and the node is created by
@@ -70,6 +74,12 @@ export class MsProvider extends Component {
     const { nodes, update } = this.state;
     delete nodes[id];
     this.setState({ nodes, update: !update });
+  };
+
+  loadPatch = mods => {
+    for (let k in mods) {
+      console.log(k);
+    }
   };
 
   setSbContent = sbContent => {

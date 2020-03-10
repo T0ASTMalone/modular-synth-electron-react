@@ -3,12 +3,13 @@ import "./Rack.css";
 import MsContext from "../../context/MsContext";
 import MainGain from "../modules/MainGain/MainGain";
 
-const Rack = () => {
+const Rack = props => {
   const [loadedModules, loadModules] = useState([]);
 
   const context = useContext(MsContext);
 
   const { nodes, update } = context;
+  const { modSettings } = props;
 
   // create array of current modules from nodes object
   let currentModules = Object.keys(nodes).map((key, i) => {
@@ -74,18 +75,18 @@ const Rack = () => {
     context.unload(id);
   };
 
-  console.log(currentModules);
+  console.log(currentModules, modSettings);
 
   return (
-    <div className='rack'>
-      <div className='rack__controls'>
+    <div className="rack">
+      <div className="rack__controls">
         {/* rack controls */}
-        <button className='button'>Stop</button>
-        <button className='button'>Play</button>
-        <button className='button'>Rec</button>
+        <button className="button">Stop</button>
+        <button className="button">Play</button>
+        <button className="button">Rec</button>
       </div>
 
-      <div className='rack__modules'>
+      <div className="rack__modules">
         {/* 
           check if there are any current audio modules and 
           if those modules have been imported
@@ -104,7 +105,7 @@ const Rack = () => {
         {context.ctx ? <MainGain /> : <></>}
       </div>
 
-      <div className='rack__visualAudio'>
+      <div className="rack__visualAudio">
         {/* 
           General information about the output 
           i.e. visualization of the output, spectrum analyzer, (kind of like op-1 stuff)

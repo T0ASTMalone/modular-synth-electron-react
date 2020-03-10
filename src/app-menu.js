@@ -12,7 +12,7 @@ export const defaultTemplate = [
         id: "0001",
         label: "Open Patch",
         click: () => {
-          console.log("Opened patch");
+          return mainWindow.webContents.send("open-file");
         }
       },
       {
