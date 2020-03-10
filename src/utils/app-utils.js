@@ -22,6 +22,8 @@ export const saveFile = (nodes, cables) => {
     if (audioNode.Q) {
       audioValues.Q = audioNode.Q.value;
     }
+    // add if statement for filter type
+
     // create settings object for each module
     const nodeSettings = {
       // id

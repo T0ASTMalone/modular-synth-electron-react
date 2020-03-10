@@ -4,6 +4,7 @@ import shortid from "shortid";
 const MsContext = React.createContext({
   error: null,
   update: false,
+  updateCables: false,
   ctx: null,
   nodes: {},
   cables: {},
@@ -15,7 +16,9 @@ const MsContext = React.createContext({
   clearContext: () => {},
   setSbContent: () => {},
   toggleSidebar: () => {},
-  addNode: () => {}
+  addNode: () => {},
+  loadPatch: () => {},
+  loadPatchCables: () => {}
 });
 
 export default MsContext;
@@ -31,6 +34,7 @@ export class MsProvider extends Component {
       output: null,
       error: null,
       update: false,
+      updateCables: false,
       sidebar: false,
       sbContent: "",
       loaded: []
@@ -39,9 +43,9 @@ export class MsProvider extends Component {
 
   addNode = (id, audioNode) => {
     console.log(id, audioNode);
-    const { nodes } = this.state;
+    const { nodes, updateCables } = this.state;
     nodes[id].node = audioNode;
-    this.setState({ nodes });
+    this.setState({ nodes, updateCables: !updateCables });
   };
 
   createCtx = ctx => {
@@ -77,9 +81,36 @@ export class MsProvider extends Component {
   };
 
   loadPatch = mods => {
-    for (let k in mods) {
-      console.log(k);
+    let { nodes, update } = this.state;
+    let mainOut;
+    let mainOutId;
+    // find main out
+    for (let k in nodes) {
+      if (nodes[k].type === "main-gain") {
+        mainOut = nodes[k];
+        mainOutId = k;
+      }
     }
+    // delete any loaded modules
+    nodes = {};
+    // add main out to nodes obj
+    nodes[mainOutId] = mainOut;
+    // set saved modules to nodes obj
+    for (let k in mods) {
+      const { id, type } = mods[k];
+      if (type !== "main-gain") {
+        nodes[id] = {
+          type,
+          node: null
+        };
+      }
+    }
+    // load modules
+    this.setState({ nodes, update: !update });
+  };
+
+  loadPatchCables = savedCables => {
+    this.setState({ cables: savedCables });
   };
 
   setSbContent = sbContent => {
@@ -155,6 +186,7 @@ export class MsProvider extends Component {
       sbContent: this.state.sbContent,
       loaded: this.state.loaded,
       update: this.state.update,
+      updateCables: this.state.updateCables,
       //output only for testing
       output: this.state.output,
       input: this.state.input,
@@ -167,6 +199,8 @@ export class MsProvider extends Component {
       removeInput: this.removeInput,
       removeOutput: this.removeOutput,
       load: this.load,
+      loadPatch: this.loadPatch,
+      loadPatchCables: this.loadPatchCables,
       unload: this.unload,
       setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,

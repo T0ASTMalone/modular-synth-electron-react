@@ -11,7 +11,7 @@ const Oscillator = props => {
   const { removeModule, id } = props;
 
   const context = useContext(MsContext);
-  const { ctx, cables, nodes } = context;
+  const { ctx, cables, nodes, updateCables } = context;
 
   const { node } = nodes[id];
 
@@ -33,6 +33,10 @@ const Oscillator = props => {
     const osc = ctx.createOscillator();
     // start osc
     osc.start();
+
+    // using values passed in as props
+    // set osc values
+
     // add to nodes object in context
     // uuid as key and osc as value
     context.addNode(id, osc);
@@ -53,7 +57,7 @@ const Oscillator = props => {
   useEffect(() => {
     const { node } = nodes[id];
     // when there is a change in the cables object, ask two questions
-
+    console.log(node);
     // am I an input?
 
     // am I an output?
@@ -63,32 +67,34 @@ const Oscillator = props => {
     if (out) {
       // get cables module and input on that module
       const { mod, input } = out;
+      console.log("input node ", nodes[mod].node);
+      if (nodes[mod].node) {
+        if (input === "main-in") {
+          // if input is main in, connect to module
+          console.log("connected to module main input");
+          node.connect(nodes[mod].node);
+        } else {
+          // if input is not main connect to corresponding audio parameter
+          console.log("connected to module audio param");
+          node.connect(nodes[mod].node[input]);
+        }
 
-      if (input === "main-in") {
-        // if input is main in, connect to module
-
-        node.connect(nodes[mod].node);
+        // return input and true
+        // set input modulation to on in state
+        // for styling purposes
       } else {
-        // if input is not main connect to corresponding audio parameter
-
-        node.connect(nodes[mod].node[input]);
+        // if no cable with this module as an output is found
+        // disconnect from any connections that the module may have
+        if (node) {
+          console.log("disconnecting");
+          node.disconnect();
+        }
+        // return input and false
+        // set input modulation to off in state
+        // for styling purposes
       }
-
-      // return input and true
-      // set input modulation to on in state
-      // for styling purposes
-    } else {
-      // if no cable with this module as an output is found
-      // disconnect from any connections that the module may have
-      if (node) {
-        console.log("disconnecting");
-        node.disconnect();
-      }
-      // return input and false
-      // set input modulation to off in state
-      // for styling purposes
     }
-  }, [Object.keys(cables).length]);
+  }, [updateCables]);
 
   const mouseIn = () => {
     select(true);
@@ -99,52 +105,52 @@ const Oscillator = props => {
   };
 
   return (
-    <div className='module osc' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+    <div className="module osc" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
       {/* remove module button*/}
-      <div className='close-button'>
+      <div className="close-button">
         {selected ? (
-          <button className='module__button' onClick={() => removeModule(id)}>
+          <button className="module__button" onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className='module__text--bold'>Oscillator</p>
+          <p className="module__text--bold">Oscillator</p>
         )}
       </div>
       {/* {selected ? <button className='module__button'>X</button> : <></>} */}
       {/* outputs */}
-      <div className='osc__outputs'>
-        <Output title='out' id={id} />
+      <div className="osc__outputs">
+        <Output title="out" id={id} />
       </div>
-      <div className='osc__types'>
-        <div className='button-container'>
-          <p className='module__text'>Sin</p>
+      <div className="osc__types">
+        <div className="button-container">
+          <p className="module__text">Sin</p>
           <button
-            className='param-button'
+            className="param-button"
             onClick={() => updateWav("sine")}
           ></button>
         </div>
-        <div className='button-container'>
-          <p className='module__text'>Saw</p>
+        <div className="button-container">
+          <p className="module__text">Saw</p>
           <button
-            className='param-button'
+            className="param-button"
             onClick={() => updateWav("sawtooth")}
           ></button>
         </div>
-        <div className='button-container'>
-          <p className='module__text'>Sqr</p>
+        <div className="button-container">
+          <p className="module__text">Sqr</p>
           <button
-            className='param-button'
+            className="param-button"
             onClick={() => updateWav("square")}
           ></button>
         </div>
-        <div className='button-container'>
-          <p className='module__text'>Sub</p>
-          <button className='param-button'></button>
+        <div className="button-container">
+          <p className="module__text">Sub</p>
+          <button className="param-button"></button>
         </div>
       </div>
       {/* frequency knob */}
-      <div className='knob'>
-        <p className='module__text'>Freq</p>
+      <div className="knob">
+        <p className="module__text">Freq</p>
         <Knob
           onChange={checkDistance.bind(this)}
           min={0}
@@ -154,8 +160,8 @@ const Oscillator = props => {
       </div>
 
       {/* V/oct input */}
-      <div className='osc__inputs'>
-        <Input title='V/oct' id={id} name='frequency' />
+      <div className="osc__inputs">
+        <Input title="V/oct" id={id} name="frequency" />
       </div>
     </div>
   );

@@ -67,6 +67,7 @@ const Rack = props => {
 
   useEffect(() => {
     const ctx = new AudioContext();
+
     context.createCtx(ctx);
   }, []);
 
@@ -74,8 +75,6 @@ const Rack = props => {
     console.log("ran remove module");
     context.unload(id);
   };
-
-  console.log(currentModules, modSettings);
 
   return (
     <div className="rack">
@@ -93,7 +92,6 @@ const Rack = props => {
         */}
         {currentModules && loadedModules.length > 0 ? (
           // map over current modules and render each one
-
           Object.keys(nodes).map((key, i) => {
             const { type } = nodes[key];
             return renderModule(type, i, key);
@@ -101,6 +99,7 @@ const Rack = props => {
         ) : (
           <></>
         )}
+
         {/* main output for the rack will always be loaded */}
         {context.ctx ? <MainGain /> : <></>}
       </div>

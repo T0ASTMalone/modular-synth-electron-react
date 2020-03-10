@@ -17,7 +17,7 @@ const Filter = props => {
   const { removeModule, id } = props;
 
   const context = useContext(MsContext);
-  const { ctx, nodes, cables } = context;
+  const { ctx, nodes, cables, updateCables } = context;
 
   const filterTypes = [
     "lowpass",
@@ -118,32 +118,34 @@ const Filter = props => {
     if (out) {
       // get cables module and input on that module
       const { mod, input } = out;
+      console.log("input node ", nodes[mod].node);
+      if (nodes[mod].node) {
+        if (input === "main-in") {
+          // if input is main in, connect to module
+          console.log("connected to module main input");
+          node.connect(nodes[mod].node);
+        } else {
+          // if input is not main connect to corresponding audio parameter
+          console.log("connected to module audio param");
+          node.connect(nodes[mod].node[input]);
+        }
 
-      if (input === "main-in") {
-        // if input is main in, connect to module
-
-        node.connect(nodes[mod].node);
+        // return input and true
+        // set input modulation to on in state
+        // for styling purposes
       } else {
-        // if input is not main connect to corresponding audio parameter
-
-        node.connect(nodes[mod].node[input]);
+        // if no cable with this module as an output is found
+        // disconnect from any connections that the module may have
+        if (node) {
+          console.log("disconnecting");
+          node.disconnect();
+        }
+        // return input and false
+        // set input modulation to off in state
+        // for styling purposes
       }
-
-      // return input and true
-      // set input modulation to on in state
-      // for styling purposes
-    } else {
-      // if no cable with this module as an output is found
-      // disconnect from any connections that the module may have
-      if (node) {
-        console.log("disconnecting");
-        node.disconnect();
-      }
-      // return input and false
-      // set input modulation to off in state
-      // for styling purposes
     }
-  }, [Object.keys(cables).length]);
+  }, [updateCables]);
 
   const mouseIn = () => {
     select(true);

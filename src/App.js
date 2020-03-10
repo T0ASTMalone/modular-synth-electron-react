@@ -56,8 +56,11 @@ function App() {
       // open file explorer to have user select a file
       const file = await openFile();
       console.log(file);
-      // load file contents to context
-      setModSettings(file.moduleSettings);
+      const { loadedModules, moduleSettings, cables } = file;
+      await context.loadPatchCables(cables);
+      setModSettings(moduleSettings);
+
+      context.loadPatch(loadedModules);
     });
   }, []);
 
