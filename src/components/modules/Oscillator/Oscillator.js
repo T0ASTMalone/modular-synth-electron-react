@@ -11,7 +11,7 @@ const Oscillator = props => {
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, cables, nodes, updateCables } = context;
+  const { ctx, cables, nodes, updateCables, updateMod } = context;
 
   const { node } = nodes[id];
 
@@ -25,6 +25,7 @@ const Oscillator = props => {
     } else {
       updateFreq(val);
       node.frequency.value = freq;
+      updateMod();
     }
   };
 

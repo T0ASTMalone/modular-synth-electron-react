@@ -16,7 +16,7 @@ function App() {
   const context = useContext(MsContext);
   const [modSettings, setModSettings] = useState(null);
 
-  const { sidebar, sbContent, nodes, cables, update } = context;
+  const { sidebar, sbContent, nodes, cables, modUpdate, update } = context;
 
   const toggleSidebar = (e, data) => {
     console.log("ran");
@@ -51,9 +51,10 @@ function App() {
   }, [sidebar, sbContent]);
 
   useEffect(() => {
+    console.log("ran update event emitters");
     ipcRenderer.removeAllListeners("save-file");
     ipcRenderer.on("save-file", () => saveFile(nodes, cables));
-  }, [update]);
+  }, [modUpdate, update]);
 
   useEffect(() => {
     ipcRenderer.on("open-file", async () => {

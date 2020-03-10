@@ -5,6 +5,7 @@ const MsContext = React.createContext({
   error: null,
   update: false,
   updateCables: false,
+  modUpdate: false,
   ctx: null,
   nodes: {},
   cables: {},
@@ -35,6 +36,7 @@ export class MsProvider extends Component {
       error: null,
       update: false,
       updateCables: false,
+      modUpdate: false,
       sidebar: false,
       sbContent: "",
       loaded: []
@@ -179,6 +181,12 @@ export class MsProvider extends Component {
     this.setState({ cables, input, output: null });
   };
 
+  updateMod = () => {
+    console.log("ran update mod");
+    const { modUpdate } = this.state;
+    this.setState({ modUpdate: !modUpdate });
+  };
+
   clearContext = () => {
     console.log("cleared context");
   };
@@ -195,6 +203,7 @@ export class MsProvider extends Component {
       loaded: this.state.loaded,
       update: this.state.update,
       updateCables: this.state.updateCables,
+      modUpdate: this.state.modUpdate,
       //output only for testing
       output: this.state.output,
       input: this.state.input,
@@ -209,6 +218,7 @@ export class MsProvider extends Component {
       load: this.load,
       loadPatch: this.loadPatch,
       loadPatchCables: this.loadPatchCables,
+      updateMod: this.updateMod,
       unload: this.unload,
       setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,

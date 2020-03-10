@@ -17,7 +17,7 @@ const Filter = props => {
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, nodes, cables, updateCables } = context;
+  const { ctx, nodes, cables, updateCables, updateMod } = context;
 
   const filterTypes = [
     "lowpass",
@@ -31,6 +31,7 @@ const Filter = props => {
   ];
 
   const checkDistance = (name, currentVal, val) => {
+    console.log(name, currentVal, val);
     let maxDistance = 2000;
     let distance = Math.abs(val - currentVal);
     if (distance > maxDistance) {
@@ -40,16 +41,20 @@ const Filter = props => {
         case "freq":
           updateFreq(val);
           nodes[id].node.frequency.value = freq;
+
           break;
         case "reso":
           updateReso(val);
           nodes[id].node.Q.value = reso;
+
           break;
         default:
           updateVol(val);
           nodes[id].node.gain.value = val;
+
           break;
       }
+      updateMod();
     }
   };
 
@@ -92,31 +97,32 @@ const Filter = props => {
   useEffect(() => {
     // create filter
     const filter = ctx.createBiquadFilter();
-
-    if (values) {
-      // using values passed in as props
-      // set module values
-      for (let k in values) {
-        filter[k].value = values[k];
-        switch (k) {
-          case "frequency":
-            checkDistance.bind(this, "freq", freq);
-            break;
-          case "Q":
-            checkDistance.bind(this, "reso", freq);
-            break;
-          default:
-            checkDistance.bind(this, "vol", freq);
-            break;
-        }
-      }
-    }
     // give filter unique name
     const inId = shortId.generate();
     // add to nodes object in context
     // uuid as key and filter as value
     context.addNode(id, filter);
     // set id in state
+
+    if (values) {
+      // using values passed in as props
+      // set module values
+      for (let k in values) {
+        filter[k].value = values[k];
+        console.log(k);
+        switch (k) {
+          case "frequency":
+            updateFreq(values[k]);
+            break;
+          case "Q":
+            updateReso(values[k]);
+            break;
+          default:
+            updateVol(values[k]);
+            break;
+        }
+      }
+    }
 
     setInId(inId);
   }, []);

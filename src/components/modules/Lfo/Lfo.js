@@ -27,7 +27,7 @@ const Lfo = props => {
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, cables, nodes, updateCables } = context;
+  const { ctx, cables, nodes, updateCables, updateMod } = context;
 
   // update frequency using knob
   const checkDistance = val => {
@@ -39,6 +39,7 @@ const Lfo = props => {
     } else {
       updateFreq(val);
       nodes[id].node.frequency.value = freq / 100;
+      updateMod();
     }
   };
 
