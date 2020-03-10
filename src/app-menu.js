@@ -1,5 +1,3 @@
-import { useSavePatch } from "./utils/app-utils";
-
 const { remote } = window.require("electron");
 const { ipcRenderer, shell } = remote;
 const { openExternal } = shell;
