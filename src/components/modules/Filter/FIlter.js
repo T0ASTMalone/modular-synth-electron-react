@@ -107,17 +107,22 @@ const Filter = props => {
       // using values passed in as props
       // set module values
       for (let k in values) {
-        filter[k].value = values[k];
-        switch (k) {
-          case "frequency":
-            updateFreq(values[k]);
-            break;
-          case "Q":
-            updateReso(values[k]);
-            break;
-          default:
-            updateVol(values[k]);
-            break;
+        if (typeof filter[k] === "object" && "value" in filter[k]) {
+          filter[k].value = values[k];
+          switch (k) {
+            case "frequency":
+              updateFreq(values[k]);
+              break;
+            case "Q":
+              updateReso(values[k]);
+              break;
+            default:
+              updateVol(values[k]);
+              break;
+          }
+        } else {
+          filter[k] = values[k];
+          updateType(values[k]);
         }
       }
     }

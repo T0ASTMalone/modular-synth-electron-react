@@ -44,12 +44,17 @@ const Lfo = props => {
 
   useEffect(() => {
     const osc = ctx.createOscillator();
+
+    // using values passed in as props
+    // set osc values
     if (values) {
-      // using values passed in as props
-      // set osc values
       for (let k in values) {
-        osc[k].value = values[k];
-        updateFreq(values[k]);
+        if (typeof osc[k] === "object" && "value" in osc[k]) {
+          osc[k].value = values[k];
+          updateFreq(values[k]);
+        } else {
+          osc[k] = values[k];
+        }
       }
     } else {
       osc.frequency.value = 1;

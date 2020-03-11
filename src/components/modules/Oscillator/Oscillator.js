@@ -35,12 +35,18 @@ const Oscillator = props => {
     // set osc values
     if (values) {
       for (let k in values) {
-        osc[k].value = values[k];
-        updateFreq(values[k]);
+        if (typeof osc[k] === "object" && "value" in osc[k]) {
+          osc[k].value = values[k];
+          updateFreq(values[k]);
+        } else {
+          osc[k] = values[k];
+        }
       }
     }
     // start osc
     osc.start();
+
+    console.log(osc);
 
     // add to nodes object in context
     // uuid as key and osc as value

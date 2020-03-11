@@ -7,7 +7,7 @@ const { dialog } = window.require("electron").remote;
 // other files such as in context when opening a saved file
 // by double clicking it
 
-export const saveFile = (nodes, cables) => {
+const createSettings = nodes => {
   // get settings for each node
   const settings = Object.keys(nodes).map(node => {
     // get audio module
@@ -17,7 +17,6 @@ export const saveFile = (nodes, cables) => {
     // create object that will contain the values of any
     // audioParams in the audio node
     const audioValues = {};
-    // if there is a frequency audioParam add to audioValues
     if (audioNode.frequency) {
       audioValues.frequency = audioNode.frequency.value;
     }
@@ -28,6 +27,10 @@ export const saveFile = (nodes, cables) => {
     // if audioNode has Q audioParam add to audioValues
     if (audioNode.Q) {
       audioValues.Q = audioNode.Q.value;
+    }
+
+    if (audioNode.type) {
+      audioValues.type = audioNode.type;
     }
     // add if statement for filter type
 
@@ -42,6 +45,12 @@ export const saveFile = (nodes, cables) => {
     };
     return nodeSettings;
   });
+
+  return settings;
+};
+
+export const saveFile = (nodes, cables) => {
+  const settings = createSettings(nodes);
 
   // create connections array to write to file
   const connections = Object.keys(cables).map(key => {
