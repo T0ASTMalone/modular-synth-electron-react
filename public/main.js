@@ -6,7 +6,7 @@ const path = require("path");
 const url = require("url");
 const isDev = require("electron-is-dev");
 
-const { ipcMain, Menu } = electron;
+const { ipcMain, Menu, globalShortcut } = electron;
 
 const template = require("./app-menu");
 
@@ -30,7 +30,17 @@ function createWindow() {
   mainWindow.on("closed", () => (mainWindow = null));
 }
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+  // globalShortcut.register("CmdOrCtrl+s", () => {
+  //   // Do stuff when Y and either Command/Control is pressed.
+  //   mainWindow.webContents.send("save-file");
+  // });
+  globalShortcut.register("Alt+s", () => {
+    // Do stuff when Y and either Command/Control is pressed.
+    mainWindow.webContents.send("toggle-sidebar");
+  });
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

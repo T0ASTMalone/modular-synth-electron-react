@@ -24,7 +24,10 @@ function App() {
     // those for this function as follows, to remove the need to update the event
     // emitter everytime the sidebar gets updated
     // const {sidebar, sbContent} = context.getSbState();
-
+    if (!data) {
+      context.toggleSidebar();
+      return;
+    }
     // get label of clicked menu item
     const label = data.label;
     // if sidebar is open and it's content is the
@@ -91,7 +94,11 @@ function App() {
     <div className="App">
       <TitleBar icon={github} app="Electron" menu={defaultTemplate} />
       <main className="app-main">
-        {sidebar ? <Sidebar /> : <></>}
+        {/* 
+          update so that depending on sidebar variable the sidebar component's class is changed
+          rather than just hiding the whole component
+        */}
+        <Sidebar size={sidebar} />
         <Rack modSettings={modSettings ? modSettings : null} />
       </main>
     </div>

@@ -18,8 +18,9 @@ export const defaultTemplate = [
       {
         id: "0002",
         label: "Save Patch",
-        click: data => {
-          return mainWindow.webContents.send("save-file", data);
+        accelerator: "CommandOrControl + S",
+        click: () => {
+          return mainWindow.webContents.send("save-file");
         }
       }
     ]
@@ -29,6 +30,14 @@ export const defaultTemplate = [
     label: "View",
     modules: false,
     submenu: [
+      {
+        id: "00",
+        label: "toggle sidebar",
+        accelerator: "Alt+s",
+        click: () => {
+          return mainWindow.webContents.send("toggle-sidebar");
+        }
+      },
       {
         id: "01",
         label: "current",

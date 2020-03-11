@@ -5,3 +5,36 @@
   width: 200px;
   z-index: 1;
 }
+
+.sidebar--small {
+  width: 50px;
+}
+
+.sidebar-content--small {
+  display: none;
+}
+
+.sidebar-button {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: none;
+  transition: 0.5s ease-in-out;
+}
+
+.button--closed {
+  transform: rotate(180deg);
+}
+
+.sidebar-toggle {
+  display: flex;
+  padding: 12.5px;
+}
+
+.sidebar-toggle--open {
+  justify-content: flex-start;
+}
+
+.sidebar-toggle--closed {
+  justify-content: center;
+}

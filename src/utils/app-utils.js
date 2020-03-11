@@ -1,6 +1,12 @@
 const fs = window.require("fs");
 const { dialog } = window.require("electron").remote;
 
+// add format file for reading
+// add format file for writing functions
+// to make saveFile and openFile more readable and to use in
+// other files such as in context when opening a saved file
+// by double clicking it
+
 export const saveFile = (nodes, cables) => {
   // get settings for each node
   const settings = Object.keys(nodes).map(node => {

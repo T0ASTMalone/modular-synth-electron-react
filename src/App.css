@@ -46,6 +46,7 @@
   min-width: 120px;
   height: 250px;
   border: 1px solid black;
+  background-color: azure;
   padding: 5px;
   display: flex;
   flex-direction: column;
