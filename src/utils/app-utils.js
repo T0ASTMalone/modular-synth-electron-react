@@ -9,43 +9,28 @@ const { dialog } = window.require("electron").remote;
 
 const createSettings = nodes => {
   // get settings for each node
-  const settings = Object.keys(nodes).map(node => {
-    // get audio module
-    const mod = nodes[node];
-    // get audio node from module
-    const audioNode = mod.node;
-    // create object that will contain the values of any
-    // audioParams in the audio node
+  const settings = Object.keys(nodes).map(mod => {
+    const { node, type } = nodes[mod];
+    // array of possible audioParams
+    const saveValues = ["frequency", "gain", "Q", "type"];
+    // create object that will contain the values of any audioParams in the audio node
     const audioValues = {};
-    if (audioNode.frequency) {
-      audioValues.frequency = audioNode.frequency.value;
-    }
-    // if there is a gain audioParam add to audioValues
-    if (audioNode.gain) {
-      audioValues.gain = audioNode.gain.value;
-    }
-    // if audioNode has Q audioParam add to audioValues
-    if (audioNode.Q) {
-      audioValues.Q = audioNode.Q.value;
-    }
 
-    if (audioNode.type) {
-      audioValues.type = audioNode.type;
-    }
-    // add if statement for filter type
-
+    saveValues.forEach(value => {
+      if (value !== "type" && value in node) {
+        audioValues[value] = node[value].value;
+      } else {
+        audioValues[value] = node[value];
+      }
+    });
     // create settings object for each module
     const nodeSettings = {
-      // id
-      id: node,
-      // type
-      type: mod.type,
-      // audioValues
+      id: mod,
+      type,
       values: audioValues
     };
     return nodeSettings;
   });
-
   return settings;
 };
 
