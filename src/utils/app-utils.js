@@ -60,10 +60,14 @@ export const saveFile = (nodes, cables) => {
   // get path to save to
   const path = dialog.showSaveDialogSync(options);
   // create test file
+  if (!path) {
+    return;
+  }
+
   try {
     fs.writeFileSync(path, saveFile);
   } catch (err) {
-    console.error(err);
+    dialog.showErrorBox("Failed to Save", err);
   }
 };
 
@@ -74,14 +78,20 @@ export const openFile = async () => {
   };
   // choose file
   const path = dialog.showOpenDialogSync(options);
-  // read file selected
+  // if no path was provided i.e. open dialog was canceled
+  // return
+  if (!path) {
+    return;
+  }
 
+  // read file selected
   try {
     const file = fs.readFileSync(path[0], "utf8");
     // format to json
     const newFile = JSON.parse(file);
     // get settings and connections object
     const { settings, connections } = newFile;
+
     if (!settings || !connections) {
       throw "sorry something went wrong";
     }

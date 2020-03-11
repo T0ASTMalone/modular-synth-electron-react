@@ -69,6 +69,9 @@ function App() {
       // open file explorer to have user select a file
       try {
         const file = await openFile();
+        if (!file) {
+          return;
+        }
         const { loadedModules, moduleSettings, cables } = file;
 
         if (!loadedModules || !moduleSettings || !cables) {
