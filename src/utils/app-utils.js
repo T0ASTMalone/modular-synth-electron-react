@@ -1,4 +1,5 @@
 const fs = window.require("fs");
+const { dialog } = window.require("electron").remote;
 
 export const saveFile = (nodes, cables) => {
   // get settings for each node
@@ -51,8 +52,19 @@ export const saveFile = (nodes, cables) => {
 
   // stringify to write to file
   const saveFile = JSON.stringify({ settings, connections });
+
+  const options = {
+    filters: [{ name: "patch", extensions: ["json"] }],
+    title: "Save Patch"
+  };
+  // get path to save to
+  const path = dialog.showSaveDialogSync(options);
   // create test file
-  fs.writeFileSync("test-patch.json", saveFile);
+  try {
+    fs.writeFileSync(path, saveFile);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 export const openFile = async () => {

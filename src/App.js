@@ -16,20 +16,16 @@ function App() {
   const context = useContext(MsContext);
   const [modSettings, setModSettings] = useState(null);
 
-  const {
-    sidebar,
-    sbContent,
-    modUpdate,
-    update,
-    updateCables,
-    getCurrentState
-  } = context;
+  const { sidebar, sbContent, getCurrentState } = context;
 
   const toggleSidebar = (e, data) => {
-    console.log("ran");
+    // add function that grabs sidebar and sbContent from context and use
+    // those for this function as follows, to remove the need to update the event
+    // emitter everytime the sidebar gets updated
+    // const {sidebar, sbContent} = context.getSbState();
+
     // get label of clicked menu item
     const label = data.label;
-    console.log(label);
     // if sidebar is open and it's content is the
     // same as the selected menu item
     if (sidebar && sbContent === label) {
@@ -42,7 +38,6 @@ function App() {
       // update the sidebar content
       context.setSbContent(label);
     } else if (sidebar === false) {
-      console.log("ran opening sidebar");
       // set sidebar content
       context.setSbContent(label);
       // render sidebar
@@ -50,6 +45,12 @@ function App() {
     }
   };
 
+  /* 
+
+  update this event emitter like the save file event emitter 
+  and move to that useEffect
+  
+  */
   useEffect(() => {
     // remove all listeners for toggle sidebar
     ipcRenderer.removeAllListeners("toggle-sidebar");

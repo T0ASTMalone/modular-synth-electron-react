@@ -213,7 +213,6 @@ export class MsProvider extends Component {
       load: this.load,
       loadPatch: this.loadPatch,
       loadPatchCables: this.loadPatchCables,
-
       unload: this.unload,
       setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,
