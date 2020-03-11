@@ -68,30 +68,44 @@ export const saveFile = (nodes, cables) => {
 };
 
 export const openFile = async () => {
+  const options = {
+    title: "Open Patch",
+    filters: [{ name: "patch", extensions: ["json"] }]
+  };
+  // choose file
+  const path = dialog.showOpenDialogSync(options);
   // read file selected
-  const file = fs.readFileSync("test-patch.json", "utf8");
-  // format to json
-  const newFile = JSON.parse(file);
-  // get settings and connections object
-  const { settings, connections } = newFile;
-  // format values for modules
-  const moduleSettings = {};
-  const loadedModules = {};
-  Object.keys(settings).map(key => {
-    const { id, values, type } = settings[key];
-    // create settings obj for each module
-    moduleSettings[id] = { ...values };
-    // create object of all loaded modules
-    loadedModules[key] = { id, type };
-  });
 
-  const cables = {};
-  // format cables obj to load into context
-  Object.keys(connections).map(key => {
-    const { out, input } = connections[key];
-    cables[out] = input;
-  });
+  try {
+    const file = fs.readFileSync(path[0], "utf8");
+    // format to json
+    const newFile = JSON.parse(file);
+    // get settings and connections object
+    const { settings, connections } = newFile;
+    if (!settings || !connections) {
+      throw "sorry something went wrong";
+    }
+    // format values for modules
+    const moduleSettings = {};
+    const loadedModules = {};
+    Object.keys(settings).map(key => {
+      const { id, values, type } = settings[key];
+      // create settings obj for each module
+      moduleSettings[id] = { ...values };
+      // create object of all loaded modules
+      loadedModules[key] = { id, type };
+    });
 
-  return { loadedModules, moduleSettings, cables };
-  // return the file information and values object to app
+    const cables = {};
+    // format cables obj to load into context
+    Object.keys(connections).map(key => {
+      const { out, input } = connections[key];
+      cables[out] = input;
+    });
+
+    return { loadedModules, moduleSettings, cables };
+    // return the file information and values object to app
+  } catch (err) {
+    return err;
+  }
 };

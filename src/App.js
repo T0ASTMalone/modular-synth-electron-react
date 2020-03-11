@@ -10,7 +10,8 @@ import MsContext from "./context/MsContext";
 import github from "./assets/images/github.png";
 import { defaultTemplate } from "./app-menu";
 const TitleBar = window.require("frameless-titlebar");
-const { ipcRenderer } = window.require("electron");
+const { ipcRenderer, remote } = window.require("electron");
+const { dialog } = remote;
 
 function App() {
   const context = useContext(MsContext);
@@ -66,11 +67,20 @@ function App() {
     });
     ipcRenderer.on("open-file", async () => {
       // open file explorer to have user select a file
-      const file = await openFile();
-      const { loadedModules, moduleSettings, cables } = file;
-      await context.loadPatchCables(cables);
-      setModSettings(moduleSettings);
-      await context.loadPatch(loadedModules, cables);
+      try {
+        const file = await openFile();
+        const { loadedModules, moduleSettings, cables } = file;
+
+        if (!loadedModules || !moduleSettings || !cables) {
+          throw "sorry something went wrong while reading file content";
+        }
+        await context.loadPatchCables(cables);
+        setModSettings(moduleSettings);
+        await context.loadPatch(loadedModules, cables);
+      } catch (err) {
+        dialog.showErrorBox("Error loading patch", err);
+        return;
+      }
     });
   }, []);
 
