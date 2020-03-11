@@ -78,6 +78,8 @@ const Rack = props => {
     context.unload(id);
   };
 
+  let mainOutId;
+
   return (
     <div className="rack">
       <div className="rack__controls">
@@ -96,6 +98,9 @@ const Rack = props => {
           // map over current modules and render each one
           Object.keys(nodes).map((key, i) => {
             const { type } = nodes[key];
+            if (type === "main-gain") {
+              mainOutId = key;
+            }
             return renderModule(type, i, key);
           })
         ) : (
@@ -103,7 +108,7 @@ const Rack = props => {
         )}
 
         {/* main output for the rack will always be loaded */}
-        {context.ctx ? <MainGain /> : <></>}
+        {context.ctx ? <MainGain newId={mainOutId} /> : <></>}
       </div>
 
       <div className="rack__visualAudio">

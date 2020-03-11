@@ -4,7 +4,7 @@ import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
 import { Input } from "../../io/io";
 
-const MainGain = () => {
+const MainGain = props => {
   // gain value
   const [gainValue, setGain] = useState(0);
   const [id, setId] = useState(null);
@@ -12,6 +12,7 @@ const MainGain = () => {
 
   const context = useContext(MsContext);
   const { ctx, nodes } = context;
+  const { newId } = props;
 
   const checkDistance = val => {
     let maxDistance = 3.4;
@@ -22,7 +23,10 @@ const MainGain = () => {
     } else {
       setGain(val);
     }
-    nodes[id].node.gain.value = val;
+    newId
+      ? (nodes[newId].node.gain.value = val)
+      : (nodes[id].node.gain.value = val);
+    //nodes[id].node.gain.value = val;
   };
 
   //set up main gain module
@@ -44,8 +48,8 @@ const MainGain = () => {
   }, []);
 
   return (
-    <div className='module gain'>
-      <h3 className='module__text'>Amp</h3>
+    <div className="module gain">
+      <h3 className="module__text">Amp</h3>
       {/* knob for controlling gain */}
       <Knob
         min={-3.4}
@@ -54,8 +58,8 @@ const MainGain = () => {
         onChange={checkDistance.bind(this)}
       />
       {/* input */}
-      <Input title='in' id={id} name='main-in' />
-      <Input title='gain' id={id} name='gain' />
+      <Input title="in" id={newId ? newId : id} name="main-in" />
+      <Input title="gain" id={newId ? newId : id} name="gain" />
     </div>
   );
 };
