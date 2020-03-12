@@ -8,7 +8,6 @@ export const useCreateConnection = id => {
   useEffect(() => {
     const { node } = nodes[id];
 
-    console.log(node);
     const out = cables[id];
     // if this module is an output in a current cable
     if (out && node) {
@@ -36,4 +35,57 @@ export const useCreateConnection = id => {
       }
     }
   }, [updateCables]);
+};
+
+const getMaxDis = audioParam => {
+  let { minValue, maxValue } = audioParam;
+  const min = minValue.toFixed(3).split("");
+  const max = maxValue.toFixed(3).split("");
+
+  let miniVal;
+  min.forEach((char, i) => {
+    if (!miniVal) {
+      miniVal = char;
+    } else if (i < 5) miniVal += char;
+  });
+
+  let maxVal;
+  max.forEach((char, i) => {
+    if (!maxVal) {
+      maxVal = char;
+    } else if (i < 5) maxVal += char;
+  });
+
+  const mDis =
+    Math.abs(parseFloat(miniVal).toFixed(2) - parseFloat(maxVal).toFixed(2)) *
+    0.1;
+  return mDis;
+};
+
+export const useCheckDistance = () => {
+  const context = useContext(MsContext);
+  const { nodes } = context;
+
+  const setAudioParam = (val, input, id, func, oldVal) => {
+    const { node } = nodes[id];
+
+    console.log(oldVal, val);
+
+    let maxDistance = getMaxDis(node[input]);
+
+    let distance = Math.abs(val - oldVal);
+    // prevent knob from going past max value
+
+    if (distance > maxDistance) {
+      return;
+    } else {
+      console.log(val);
+      // update function
+      const gainNodeVal = val - 3.4;
+      nodes[id].node[input].value = gainNodeVal;
+      func(val);
+    }
+  };
+
+  return setAudioParam;
 };

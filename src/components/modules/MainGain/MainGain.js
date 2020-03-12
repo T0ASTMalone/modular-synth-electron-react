@@ -3,29 +3,23 @@ import "./MainGain.css";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
 import { Input } from "../../io/io";
+import { useCheckDistance } from "../../../utils/module-utils";
 
 const MainGain = props => {
   // gain value
-  const [gainValue, setGain] = useState(0);
+  const [gainValue, setGain] = useState(3.4);
   const [id, setId] = useState(null);
   const [inId, setInId] = useState(null);
 
   const context = useContext(MsContext);
-  const { ctx, nodes } = context;
+  const setAudioParam = useCheckDistance();
+  const { ctx } = context;
   const { newId } = props;
 
-  const checkDistance = val => {
-    let maxDistance = 3.4;
-    let distance = Math.abs(val - gainValue);
-    // prevent knob from going past max value
-    if (distance > maxDistance) {
-      return;
-    } else {
-      setGain(val);
-    }
-    newId
-      ? (nodes[newId].node.gain.value = val)
-      : (nodes[id].node.gain.value = val);
+  const nodeId = newId ? newId : id;
+
+  const updateGain = val => {
+    setGain(val);
   };
 
   //set up main gain module
@@ -46,19 +40,22 @@ const MainGain = props => {
     setInId(inId);
   }, []);
 
+  // if an id was not passed in as props use the
+  // generated id
+
   return (
-    <div className="module gain">
-      <h3 className="module__text">Amp</h3>
+    <div className='module gain'>
+      <h3 className='module__text'>Amp</h3>
       {/* knob for controlling gain */}
       <Knob
-        min={-3.4}
-        max={3.4}
+        min={0}
+        max={6.8}
         value={gainValue}
-        onChange={checkDistance.bind(this)}
+        onChange={e => setAudioParam(e, "gain", nodeId, updateGain, gainValue)}
       />
       {/* input */}
-      <Input title="in" id={newId ? newId : id} name="main-in" />
-      <Input title="gain" id={newId ? newId : id} name="gain" />
+      <Input title='in' id={nodeId} name='main-in' />
+      <Input title='gain' id={nodeId} name='gain' />
     </div>
   );
 };
