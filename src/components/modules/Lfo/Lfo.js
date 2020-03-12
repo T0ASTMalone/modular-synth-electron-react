@@ -30,6 +30,7 @@ const Lfo = props => {
   const context = useContext(MsContext);
   const { ctx, cables, nodes, updateCables } = context;
   const modulation = useCreateConnection(id);
+  console.log("lfo ", modulation);
 
   // update frequency using knob
   const checkDistance = val => {

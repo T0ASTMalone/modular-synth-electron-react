@@ -16,6 +16,7 @@ const Oscillator = props => {
 
   const { node } = nodes[id];
   const modulation = useCreateConnection(id);
+  console.log("osc ", modulation);
 
   // update frequency using knob
   const checkDistance = val => {

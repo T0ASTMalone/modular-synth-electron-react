@@ -20,6 +20,7 @@ const Filter = props => {
   const context = useContext(MsContext);
   const { ctx, nodes, cables, updateCables } = context;
   const modulation = useCreateConnection(id);
+  console.log("filter ", modulation);
 
   const filterTypes = [
     "lowpass",
@@ -158,8 +159,18 @@ const Filter = props => {
       </div>
       {/* inputs for all filter types */}
       <div className="filter__ins">
-        <Input title="in" id={id} name="main-in" />
-        <Input title="freq/in" id={id} name="frequency" />
+        <Input
+          title="in"
+          id={id}
+          connected={modulation["main-in"] ? true : false}
+          name="main-in"
+        />
+        <Input
+          title="freq/in"
+          id={id}
+          connected={modulation.frequency ? true : false}
+          name="frequency"
+        />
       </div>
 
       {/* Frequency and Reso Knob */}

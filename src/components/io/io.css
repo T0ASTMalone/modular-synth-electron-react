@@ -17,3 +17,7 @@
   margin: 0;
   font-size: 14px;
 }
+
+.connected {
+  background-color: blue;
+}
