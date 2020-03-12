@@ -4,7 +4,7 @@ import "./Explorer.css";
 import MsContext from "../../context/MsContext";
 
 const Explorer = () => {
-  const installed = ["Oscillator", "Filter", "Lfo"];
+  const installed = ["Oscillator", "Filter", "Lfo", "Gain"];
   const context = useContext(MsContext);
 
   const addModule = mod => {

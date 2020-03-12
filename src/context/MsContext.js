@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import shortid from "shortid";
+import randomColor from "randomcolor";
 
 const MsContext = React.createContext({
   error: null,
@@ -89,6 +90,7 @@ export class MsProvider extends Component {
 
   unload = id => {
     const { nodes, update, cables, updateCables } = this.state;
+
     // remove any connections that have
     // the module being deleted as an input or output
     const inputs = this._findInputs(id);
@@ -100,6 +102,8 @@ export class MsProvider extends Component {
 
     // remove connections with this mod as an output
     delete cables[id];
+
+    nodes[id].node.disconnect();
 
     // delete node
     delete nodes[id];
@@ -170,8 +174,10 @@ export class MsProvider extends Component {
 
   createInput = (mod, inputId) => {
     const { output } = this.state;
+    const color = randomColor();
 
     const input = {
+      color,
       mod,
       input: inputId
     };

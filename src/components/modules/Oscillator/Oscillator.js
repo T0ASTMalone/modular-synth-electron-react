@@ -3,33 +3,22 @@ import "./Oscillator.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
-import { useCreateConnection } from "../../../utils/module-utils";
+import {
+  useCreateConnection,
+  useCheckDistance
+} from "../../../utils/module-utils";
 
 const Oscillator = props => {
-  const [freq, updateFreq] = useState(440);
+  const [freq, setFreq] = useState(440);
   const [selected, select] = useState(null);
-
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, cables, nodes, updateCables } = context;
+  const setAudioParam = useCheckDistance();
+  const outputting = useCreateConnection(id);
 
+  const { ctx, nodes } = context;
   const { node } = nodes[id];
-  const modulation = useCreateConnection(id);
-  console.log("osc ", modulation);
-
-  // update frequency using knob
-  const checkDistance = val => {
-    let maxDistance = 200;
-    let distance = Math.abs(val - freq);
-    // prevent knob from going past max value
-    if (distance > maxDistance) {
-      return;
-    } else {
-      updateFreq(val);
-      node.frequency.value = freq;
-    }
-  };
 
   useEffect(() => {
     // create oscillator
@@ -40,7 +29,7 @@ const Oscillator = props => {
       for (let k in values) {
         if (typeof osc[k] === "object" && "value" in osc[k]) {
           osc[k].value = values[k];
-          updateFreq(values[k]);
+          setFreq(values[k]);
         } else {
           osc[k] = values[k];
         }
@@ -48,8 +37,7 @@ const Oscillator = props => {
     }
     // start osc
     osc.start();
-    // add to nodes object in context
-    // uuid as key and osc as value
+    // add to context
     context.addNode(id, osc);
   }, []);
 
@@ -80,7 +68,7 @@ const Oscillator = props => {
       {/* {selected ? <button className='module__button'>X</button> : <></>} */}
       {/* outputs */}
       <div className="osc__outputs">
-        <Output title="out" id={id} />
+        <Output title="out" output={outputting} id={id} />
       </div>
       <div className="osc__types">
         <div className="button-container">
@@ -113,9 +101,9 @@ const Oscillator = props => {
       <div className="knob">
         <p className="module__text">Freq</p>
         <Knob
-          onChange={checkDistance.bind(this)}
+          onChange={e => setAudioParam(e, freq, "frequency", id, setFreq)}
           min={0}
-          max={2000}
+          max={24000}
           value={freq}
         />
       </div>

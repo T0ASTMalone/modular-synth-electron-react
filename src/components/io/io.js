@@ -1,11 +1,13 @@
 import React, { useContext } from "react";
 import "./io.css";
 import MsContext from "../../context/MsContext";
+import { useIsModulated } from "../../utils/module-utils";
 
 const Input = props => {
   const { title, id, name, connected } = props;
   const context = useContext(MsContext);
-
+  const ins = useIsModulated(id);
+  const color = ins[name];
   const connectionExists = () => {
     let connections = context.cables;
     for (let key in connections) {
@@ -24,11 +26,19 @@ const Input = props => {
     }
   };
 
+  let buttonStyle = {
+    borderRadius: "50%",
+    width: " 20px",
+    height: "20px",
+    border: color ? `5px solid ${color}` : "5px solid cadetblue"
+  };
+
   return (
     <div className="in">
       <p className="in__text">{title}</p>
       <button
-        className={connected ? "io in__button connected" : "io in__button"}
+        className={ins[name] ? "in__button connected" : "in__button"}
+        style={buttonStyle}
         onClick={handleConnection}
       ></button>
     </div>
@@ -36,22 +46,12 @@ const Input = props => {
 };
 
 const Output = props => {
-  const { title, id } = props;
+  const { title, id, output } = props;
   const context = useContext(MsContext);
-  // console.log(
-  //   "cables: ",
-  //   context.cables,
-  //   "nodes: ",
-  //   context.nodes,
-  //   "input: ",
-  //   context.input,
-  //   "output: ",
-  //   context.output
-  // );
 
   const connectionExists = () => {
     let connections = context.cables;
-    console.log(connections);
+
     for (let key in connections) {
       if (key === id) {
         return true;
@@ -68,10 +68,21 @@ const Output = props => {
     }
   };
 
+  let buttonStyle = {
+    borderRadius: "50%",
+    width: " 20px",
+    height: "20px",
+    border: output ? `5px solid ${output}` : "5px solid cadetblue"
+  };
+
   return (
     <div className="out">
       <p className="out__text">{title}</p>
-      <button className="io out__button" onClick={handleConnection}></button>
+      <button
+        className={output ? "out__button connected" : "out__button"}
+        style={buttonStyle}
+        onClick={handleConnection}
+      ></button>
     </div>
   );
 };

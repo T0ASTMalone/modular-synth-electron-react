@@ -43,6 +43,7 @@ export const saveFile = (nodes, cables) => {
     const connection = {
       out: key,
       input: {
+        color: cables[key].color,
         mod: cables[key].mod,
         input: cables[key].input
       }

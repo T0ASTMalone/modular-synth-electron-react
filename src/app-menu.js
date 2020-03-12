@@ -156,9 +156,7 @@ export const defaultTemplate = [
         id: "3",
         icon: require("./assets/images/icon.png"),
         label: "Arguments",
-        click: (item, win, e) => {
-          console.log(item, win, e);
-        }
+        click: (item, win, e) => {}
       },
       {
         id: "5",
