@@ -7,7 +7,7 @@ const Input = props => {
   const { title, id, name } = props;
   const context = useContext(MsContext);
   const ins = useIsModulated(id);
-
+  const color = ins[name];
   const connectionExists = () => {
     let connections = context.cables;
     for (let key in connections) {
@@ -26,11 +26,19 @@ const Input = props => {
     }
   };
 
+  let buttonStyle = {
+    borderRadius: "50%",
+    width: " 20px",
+    height: "20px",
+    border: color ? `5px solid ${color}` : "5px solid cadetblue"
+  };
+
   return (
     <div className='in'>
       <p className='in__text'>{title}</p>
       <button
-        className={ins[name] ? "io in__button connected" : "io in__button"}
+        className={ins[name] ? "in__button connected" : "in__button"}
+        style={buttonStyle}
         onClick={handleConnection}
       ></button>
     </div>
@@ -70,11 +78,20 @@ const Output = props => {
     }
   };
 
+  let buttonStyle = {
+    borderRadius: "50%",
+    width: " 20px",
+    height: "20px",
+    border: output ? `5px solid ${output}` : "5px solid cadetblue"
+  };
+
+  console.log(output);
   return (
     <div className='out'>
       <p className='out__text'>{title}</p>
       <button
-        className={output ? "io out__button connected" : "io out__button"}
+        className={output ? "out__button connected" : "out__button"}
+        style={buttonStyle}
         onClick={handleConnection}
       ></button>
     </div>

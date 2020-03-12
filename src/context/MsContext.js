@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import shortid from "shortid";
+import randomColor from "randomcolor";
 
 const MsContext = React.createContext({
   error: null,
@@ -163,6 +164,7 @@ export class MsProvider extends Component {
   _createConnection = (input, output) => {
     const { cables, updateCables } = this.state;
     cables[output] = input;
+    console.log(cables[output]);
 
     this.setState({
       cables,
@@ -174,8 +176,10 @@ export class MsProvider extends Component {
 
   createInput = (mod, inputId) => {
     const { output } = this.state;
+    const color = randomColor();
 
     const input = {
+      color,
       mod,
       input: inputId
     };

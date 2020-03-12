@@ -26,7 +26,7 @@ export const useCreateConnection = id => {
           console.log("connected to module audio param");
           node.connect(nodes[mod].node[input]);
         }
-        setIsConnected(true);
+        setIsConnected(out.color);
       }
     } else {
       // if no cable with this module as an output is found
@@ -34,8 +34,8 @@ export const useCreateConnection = id => {
       if (node) {
         console.log("disconnecting");
         node.disconnect();
-        setIsConnected(false);
       }
+      setIsConnected(false);
     }
   }, [updateCables]);
 
@@ -54,7 +54,7 @@ export const useIsModulated = id => {
     for (let k in cables) {
       const cable = cables[k];
       if (cable.mod === id) {
-        inputs[cable.input] = true;
+        inputs[cable.input] = cable.color;
       }
     }
 
