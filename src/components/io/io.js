@@ -48,20 +48,10 @@ const Input = props => {
 const Output = props => {
   const { title, id, output } = props;
   const context = useContext(MsContext);
-  console.log(
-    "cables: ",
-    context.cables,
-    "nodes: ",
-    context.nodes,
-    "input: ",
-    context.input,
-    "output: ",
-    context.output
-  );
 
   const connectionExists = () => {
     let connections = context.cables;
-    console.log(connections);
+
     for (let key in connections) {
       if (key === id) {
         return true;
@@ -85,7 +75,6 @@ const Output = props => {
     border: output ? `5px solid ${output}` : "5px solid cadetblue"
   };
 
-  console.log(output);
   return (
     <div className='out'>
       <p className='out__text'>{title}</p>

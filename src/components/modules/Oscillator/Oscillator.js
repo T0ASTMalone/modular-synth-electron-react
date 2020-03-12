@@ -5,22 +5,20 @@ import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import {
   useCreateConnection,
-  useCheckDistance,
-  useIsModulated
+  useCheckDistance
 } from "../../../utils/module-utils";
 
 const Oscillator = props => {
   const [freq, setFreq] = useState(440);
   const [selected, select] = useState(null);
-
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
   const setAudioParam = useCheckDistance();
-  const { ctx, nodes } = context;
-
-  const { node } = nodes[id];
   const outputting = useCreateConnection(id);
+
+  const { ctx, nodes } = context;
+  const { node } = nodes[id];
 
   useEffect(() => {
     // create oscillator
@@ -39,8 +37,7 @@ const Oscillator = props => {
     }
     // start osc
     osc.start();
-    // add to nodes object in context
-    // uuid as key and osc as value
+    // add to context
     context.addNode(id, osc);
   }, []);
 

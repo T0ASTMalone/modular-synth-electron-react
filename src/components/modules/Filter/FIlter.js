@@ -75,7 +75,6 @@ const Filter = props => {
   useEffect(() => {
     // create filter
     const filter = ctx.createBiquadFilter();
-    console.log(filter);
     // give filter unique name
     const inId = shortId.generate();
     // add to nodes object in context

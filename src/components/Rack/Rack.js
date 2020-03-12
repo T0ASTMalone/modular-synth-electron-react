@@ -74,22 +74,21 @@ const Rack = props => {
   }, []);
 
   const removeModule = id => {
-    console.log("ran remove module");
     context.unload(id);
   };
 
   let mainOutId;
 
   return (
-    <div className="rack">
-      <div className="rack__controls">
+    <div className='rack'>
+      <div className='rack__controls'>
         {/* rack controls */}
-        <button className="button">Stop</button>
-        <button className="button">Play</button>
-        <button className="button">Rec</button>
+        <button className='button'>Stop</button>
+        <button className='button'>Play</button>
+        <button className='button'>Rec</button>
       </div>
 
-      <div className="rack__modules">
+      <div className='rack__modules'>
         {/* 
           check if there are any current audio modules and 
           if those modules have been imported
@@ -111,7 +110,7 @@ const Rack = props => {
         {context.ctx ? <MainGain newId={mainOutId} /> : <></>}
       </div>
 
-      <div className="rack__visualAudio">
+      <div className='rack__visualAudio'>
         {/* 
           General information about the output 
           i.e. visualization of the output, spectrum analyzer, (kind of like op-1 stuff)

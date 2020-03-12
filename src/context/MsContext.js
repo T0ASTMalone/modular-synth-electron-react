@@ -90,7 +90,7 @@ export class MsProvider extends Component {
 
   unload = id => {
     const { nodes, update, cables, updateCables } = this.state;
-    console.log(nodes[id].node);
+
     // remove any connections that have
     // the module being deleted as an input or output
     const inputs = this._findInputs(id);
@@ -102,7 +102,6 @@ export class MsProvider extends Component {
 
     // remove connections with this mod as an output
     delete cables[id];
-    console.log("node disconnecting");
 
     nodes[id].node.disconnect();
 
@@ -164,7 +163,6 @@ export class MsProvider extends Component {
   _createConnection = (input, output) => {
     const { cables, updateCables } = this.state;
     cables[output] = input;
-    console.log(cables[output]);
 
     this.setState({
       cables,

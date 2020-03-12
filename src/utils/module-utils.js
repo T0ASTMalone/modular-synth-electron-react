@@ -12,18 +12,15 @@ export const useCreateConnection = id => {
     const out = cables[id];
     // if this module is an output in a current cable
     if (out && node) {
-      console.log("ran update connections");
       const { mod, input } = out;
       // get cables module and input on that module
 
       if (nodes[mod].node) {
         if (input === "main-in") {
           // if input is main in, connect to module
-          console.log("connected to module main input");
           node.connect(nodes[mod].node);
         } else {
           // if input is not main connect to corresponding audio parameter
-          console.log("connected to module audio param");
           node.connect(nodes[mod].node[input]);
         }
         setIsConnected(out.color);
@@ -32,7 +29,6 @@ export const useCreateConnection = id => {
       // if no cable with this module as an output is found
       // disconnect from any connections that the module may have
       if (node) {
-        console.log("disconnecting");
         node.disconnect();
       }
       setIsConnected(false);
@@ -60,8 +56,6 @@ export const useIsModulated = id => {
 
     setIsConnected(inputs);
   }, [updateCables]);
-
-  console.log(isConnected);
 
   return isConnected;
 };
@@ -93,9 +87,7 @@ const getMaxDis = audioParam => {
 
 const getMaxDisInt = audioParam => {
   let { minValue, maxValue } = audioParam;
-  console.log(maxValue);
   const mDis = Math.abs(minValue - maxValue) * 0.1;
-  console.log(mDis);
   return mDis;
 };
 
@@ -123,7 +115,6 @@ export const useCheckDistance = () => {
     } else {
       // update function and audioNode value
       const realVal = val - modifier;
-      console.log("real value: ", realVal, "knob value: ", val);
       nodes[id].node[input].value = realVal;
       func(val);
     }
