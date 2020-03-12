@@ -4,13 +4,16 @@ import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import shortId from "shortid";
 import MsContext from "../../../context/MsContext";
-import { useCreateConnection } from "../../../utils/module-utils";
+import {
+  useCreateConnection,
+  useCheckDistance
+} from "../../../utils/module-utils";
 
 const Filter = props => {
   // state
-  const [freq, updateFreq] = useState(0);
-  const [reso, updateReso] = useState(0);
-  const [vol, updateVol] = useState(0);
+  const [freq, setFreq] = useState(0);
+  const [reso, setReso] = useState(3.4);
+  const [gain, setGain] = useState(3.4);
   const [inId, setInId] = useState(null);
   const [type, setType] = useState(0);
   const [selected, select] = useState(null);
@@ -18,8 +21,9 @@ const Filter = props => {
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, nodes, cables, updateCables } = context;
-  const modulation = useCreateConnection(id);
+  const output = useCreateConnection(id);
+  const setAudioParam = useCheckDistance();
+  const { ctx, nodes } = context;
 
   const filterTypes = [
     "lowpass",
@@ -31,33 +35,6 @@ const Filter = props => {
     "notch",
     "allpass"
   ];
-
-  const checkDistance = (name, currentVal, val) => {
-    let maxDistance = 2000;
-    let distance = Math.abs(val - currentVal);
-
-    if (distance > maxDistance) {
-      return;
-    } else {
-      switch (name) {
-        case "freq":
-          updateFreq(val);
-          nodes[id].node.frequency.value = freq;
-
-          break;
-        case "reso":
-          updateReso(val);
-          nodes[id].node.Q.value = reso;
-
-          break;
-        default:
-          updateVol(val);
-          nodes[id].node.gain.value = val;
-
-          break;
-      }
-    }
-  };
 
   // filter types
   // lowpass, highpass, bandpass, lowshelf, highshelf, peaking, notch, allpass
@@ -98,6 +75,7 @@ const Filter = props => {
   useEffect(() => {
     // create filter
     const filter = ctx.createBiquadFilter();
+    console.log(filter);
     // give filter unique name
     const inId = shortId.generate();
     // add to nodes object in context
@@ -113,13 +91,13 @@ const Filter = props => {
           filter[k].value = values[k];
           switch (k) {
             case "frequency":
-              updateFreq(values[k]);
+              setFreq(values[k]);
               break;
             case "Q":
-              updateReso(values[k]);
+              setReso(values[k]);
               break;
             default:
-              updateVol(values[k]);
+              setGain(values[k]);
               break;
           }
         } else {
@@ -142,53 +120,55 @@ const Filter = props => {
 
   return (
     <div
-      className="module filter"
+      className='module filter'
       onMouseEnter={mouseIn}
       onMouseLeave={mouseOut}
     >
       {/* remove module button*/}
-      <div className="close-button">
+      <div className='close-button'>
         {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
+          <button className='module__button' onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className="module__text--bold">{filterTypes[type]}</p>
+          <p className='module__text--bold'>{filterTypes[type]}</p>
         )}
       </div>
       {/* inputs for all filter types */}
-      <div className="filter__ins">
-        <Input title="in" id={id} name="main-in" />
-        <Input title="freq/in" id={id} name="frequency" />
+      <div className='filter__ins'>
+        <Input title='in' id={id} name='main-in' />
+        <Input title='freq/in' id={id} name='frequency' />
       </div>
 
       {/* Frequency and Reso Knob */}
-      <div className="filter__settings">
-        <div id="filter-type" className="button-container">
-          <p className="module__text">Type</p>
+      <div className='filter__settings'>
+        <div id='filter-type' className='button-container'>
+          <p className='module__text'>Type</p>
           <button
-            id="type"
-            className="param-button"
+            id='type'
+            className='param-button'
             onClick={updateType}
           ></button>
         </div>
-        <div className="filter__knobs">
-          <div className="button-container">
-            <p className="module__text">Freq</p>
+        <div className='filter__knobs'>
+          <div className='button-container'>
+            <p className='module__text'>Freq</p>
             <Knob
-              onChange={checkDistance.bind(this, "freq", freq)}
+              // onChange={checkDistance.bind(this, "freq", freq)}
+              onChange={e => setAudioParam(e, freq, "frequency", id, setFreq)}
               min={0}
               max={24000}
               value={freq}
             />
           </div>
-          <div className="button-container">
-            <p className="module__text">Q</p>
+          <div className='button-container'>
+            <p className='module__text'>Q</p>
             <Knob
-              id="reso"
-              onChange={checkDistance.bind(this, "reso", reso)}
+              id='reso'
+              onChange={e => setAudioParam(e, reso, "Q", id, setReso)}
+              // onChange={checkDistance.bind(this, "reso", reso)}
               min={0}
-              max={100}
+              max={6.8}
               value={reso}
             />
           </div>
@@ -197,15 +177,15 @@ const Filter = props => {
 
       {/* output and volume */}
 
-      <div className="filter__out">
-        <Output title="out" id={id} />
-        <div className="button-container">
-          <p className="module__text">Gain</p>
+      <div className='filter__out'>
+        <Output title='out' output={output} id={id} />
+        <div className='button-container'>
+          <p className='module__text'>Gain</p>
           <Knob
-            onChange={checkDistance.bind(this, "vol", vol)}
+            onChange={e => setAudioParam(e, gain, "gain", id, setGain)}
             min={0}
-            max={100}
-            value={vol}
+            max={6.8}
+            value={gain}
           />
         </div>
       </div>

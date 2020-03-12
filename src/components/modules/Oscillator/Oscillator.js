@@ -3,32 +3,24 @@ import "./Oscillator.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
-import { useCreateConnection } from "../../../utils/module-utils";
+import {
+  useCreateConnection,
+  useCheckDistance,
+  useIsModulated
+} from "../../../utils/module-utils";
 
 const Oscillator = props => {
-  const [freq, updateFreq] = useState(440);
+  const [freq, setFreq] = useState(440);
   const [selected, select] = useState(null);
 
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, cables, nodes, updateCables } = context;
+  const setAudioParam = useCheckDistance();
+  const { ctx, nodes } = context;
 
   const { node } = nodes[id];
-  const modulation = useCreateConnection(id);
-
-  // update frequency using knob
-  const checkDistance = val => {
-    let maxDistance = 200;
-    let distance = Math.abs(val - freq);
-    // prevent knob from going past max value
-    if (distance > maxDistance) {
-      return;
-    } else {
-      updateFreq(val);
-      node.frequency.value = freq;
-    }
-  };
+  const outputting = useCreateConnection(id);
 
   useEffect(() => {
     // create oscillator
@@ -39,7 +31,7 @@ const Oscillator = props => {
       for (let k in values) {
         if (typeof osc[k] === "object" && "value" in osc[k]) {
           osc[k].value = values[k];
-          updateFreq(values[k]);
+          setFreq(values[k]);
         } else {
           osc[k] = values[k];
         }
@@ -65,63 +57,63 @@ const Oscillator = props => {
   };
 
   return (
-    <div className="module osc" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+    <div className='module osc' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
       {/* remove module button*/}
-      <div className="close-button">
+      <div className='close-button'>
         {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
+          <button className='module__button' onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className="module__text--bold">Oscillator</p>
+          <p className='module__text--bold'>Oscillator</p>
         )}
       </div>
       {/* {selected ? <button className='module__button'>X</button> : <></>} */}
       {/* outputs */}
-      <div className="osc__outputs">
-        <Output title="out" id={id} />
+      <div className='osc__outputs'>
+        <Output title='out' output={outputting} id={id} />
       </div>
-      <div className="osc__types">
-        <div className="button-container">
-          <p className="module__text">Sin</p>
+      <div className='osc__types'>
+        <div className='button-container'>
+          <p className='module__text'>Sin</p>
           <button
-            className="param-button"
+            className='param-button'
             onClick={() => updateWav("sine")}
           ></button>
         </div>
-        <div className="button-container">
-          <p className="module__text">Saw</p>
+        <div className='button-container'>
+          <p className='module__text'>Saw</p>
           <button
-            className="param-button"
+            className='param-button'
             onClick={() => updateWav("sawtooth")}
           ></button>
         </div>
-        <div className="button-container">
-          <p className="module__text">Sqr</p>
+        <div className='button-container'>
+          <p className='module__text'>Sqr</p>
           <button
-            className="param-button"
+            className='param-button'
             onClick={() => updateWav("square")}
           ></button>
         </div>
-        <div className="button-container">
-          <p className="module__text">Sub</p>
-          <button className="param-button"></button>
+        <div className='button-container'>
+          <p className='module__text'>Sub</p>
+          <button className='param-button'></button>
         </div>
       </div>
       {/* frequency knob */}
-      <div className="knob">
-        <p className="module__text">Freq</p>
+      <div className='knob'>
+        <p className='module__text'>Freq</p>
         <Knob
-          onChange={checkDistance.bind(this)}
+          onChange={e => setAudioParam(e, freq, "frequency", id, setFreq)}
           min={0}
-          max={2000}
+          max={24000}
           value={freq}
         />
       </div>
 
       {/* V/oct input */}
-      <div className="osc__inputs">
-        <Input title="V/oct" id={id} name="frequency" />
+      <div className='osc__inputs'>
+        <Input title='V/oct' id={id} name='frequency' />
       </div>
     </div>
   );

@@ -13,14 +13,11 @@ const MainGain = props => {
 
   const context = useContext(MsContext);
   const setAudioParam = useCheckDistance();
+
   const { ctx } = context;
   const { newId } = props;
 
   const nodeId = newId ? newId : id;
-
-  const updateGain = val => {
-    setGain(val);
-  };
 
   //set up main gain module
   useEffect(() => {
@@ -51,7 +48,7 @@ const MainGain = props => {
         min={0}
         max={6.8}
         value={gainValue}
-        onChange={e => setAudioParam(e, "gain", nodeId, updateGain, gainValue)}
+        onChange={e => setAudioParam(e, gainValue, "gain", nodeId, setGain)}
       />
       {/* input */}
       <Input title='in' id={nodeId} name='main-in' />

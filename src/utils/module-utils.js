@@ -1,9 +1,10 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import MsContext from "../context/MsContext";
 
 export const useCreateConnection = id => {
   const context = useContext(MsContext);
   const { cables, nodes, updateCables } = context;
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const { node } = nodes[id];
@@ -25,6 +26,7 @@ export const useCreateConnection = id => {
           console.log("connected to module audio param");
           node.connect(nodes[mod].node[input]);
         }
+        setIsConnected(true);
       }
     } else {
       // if no cable with this module as an output is found
@@ -32,9 +34,36 @@ export const useCreateConnection = id => {
       if (node) {
         console.log("disconnecting");
         node.disconnect();
+        setIsConnected(false);
       }
     }
   }, [updateCables]);
+
+  return isConnected;
+};
+
+export const useIsModulated = id => {
+  const context = useContext(MsContext);
+  const { cables, updateCables } = context;
+  const [isConnected, setIsConnected] = useState({});
+
+  useEffect(() => {
+    // input is found
+    // add input name to is connected
+    const inputs = {};
+    for (let k in cables) {
+      const cable = cables[k];
+      if (cable.mod === id) {
+        inputs[cable.input] = true;
+      }
+    }
+
+    setIsConnected(inputs);
+  }, [updateCables]);
+
+  console.log(isConnected);
+
+  return isConnected;
 };
 
 const getMaxDis = audioParam => {
@@ -62,16 +91,29 @@ const getMaxDis = audioParam => {
   return mDis;
 };
 
+const getMaxDisInt = audioParam => {
+  let { minValue, maxValue } = audioParam;
+  console.log(maxValue);
+  const mDis = Math.abs(minValue - maxValue) * 0.1;
+  console.log(mDis);
+  return mDis;
+};
+
 export const useCheckDistance = () => {
   const context = useContext(MsContext);
   const { nodes } = context;
 
-  const setAudioParam = (val, input, id, func, oldVal) => {
+  const setAudioParam = (val, oldVal, input, id, func) => {
     const { node } = nodes[id];
 
-    console.log(oldVal, val);
-
-    let maxDistance = getMaxDis(node[input]);
+    let maxDistance;
+    let modifier = 3.4;
+    if (input === "frequency") {
+      modifier = 0;
+      maxDistance = getMaxDisInt(node[input]);
+    } else {
+      maxDistance = getMaxDis(node[input]);
+    }
 
     let distance = Math.abs(val - oldVal);
     // prevent knob from going past max value
@@ -79,10 +121,10 @@ export const useCheckDistance = () => {
     if (distance > maxDistance) {
       return;
     } else {
-      console.log(val);
-      // update function
-      const gainNodeVal = val - 3.4;
-      nodes[id].node[input].value = gainNodeVal;
+      // update function and audioNode value
+      const realVal = val - modifier;
+      console.log("real value: ", realVal, "knob value: ", val);
+      nodes[id].node[input].value = realVal;
       func(val);
     }
   };

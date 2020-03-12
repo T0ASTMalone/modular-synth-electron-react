@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
 import "./io.css";
 import MsContext from "../../context/MsContext";
+import { useIsModulated } from "../../utils/module-utils";
 
 const Input = props => {
   const { title, id, name } = props;
   const context = useContext(MsContext);
+  const ins = useIsModulated(id);
 
   const connectionExists = () => {
     let connections = context.cables;
@@ -25,15 +27,18 @@ const Input = props => {
   };
 
   return (
-    <div className="in">
-      <p className="in__text">{title}</p>
-      <button className="io in__button" onClick={handleConnection}></button>
+    <div className='in'>
+      <p className='in__text'>{title}</p>
+      <button
+        className={ins[name] ? "io in__button connected" : "io in__button"}
+        onClick={handleConnection}
+      ></button>
     </div>
   );
 };
 
 const Output = props => {
-  const { title, id } = props;
+  const { title, id, output } = props;
   const context = useContext(MsContext);
   console.log(
     "cables: ",
@@ -66,9 +71,12 @@ const Output = props => {
   };
 
   return (
-    <div className="out">
-      <p className="out__text">{title}</p>
-      <button className="io out__button" onClick={handleConnection}></button>
+    <div className='out'>
+      <p className='out__text'>{title}</p>
+      <button
+        className={output ? "io out__button connected" : "io out__button"}
+        onClick={handleConnection}
+      ></button>
     </div>
   );
 };
