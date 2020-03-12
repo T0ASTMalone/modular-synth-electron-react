@@ -4,6 +4,7 @@ import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import shortId from "shortid";
 import MsContext from "../../../context/MsContext";
+import { useCreateConnection } from "../../../utils/module-utils";
 
 const Filter = props => {
   // state
@@ -18,6 +19,7 @@ const Filter = props => {
 
   const context = useContext(MsContext);
   const { ctx, nodes, cables, updateCables } = context;
+  const modulation = useCreateConnection(id);
 
   const filterTypes = [
     "lowpass",
@@ -129,47 +131,6 @@ const Filter = props => {
 
     setInId(inId);
   }, []);
-
-  // the following will be turned into a hook for all modules to re-use
-  // simply pass the output module id and it will create a connection if
-  // it sees one
-  useEffect(() => {
-    const { node } = nodes[id];
-    // when there is a change in the cables object, ask two questions
-
-    // am I an input?
-
-    // am I an output?
-    const out = cables[id];
-
-    // if this module is an output in a current cable
-    if (out) {
-      // get cables module and input on that module
-      const { mod, input } = out;
-      if (nodes[mod].node) {
-        if (input === "main-in") {
-          // if input is main in, connect to module
-          node.connect(nodes[mod].node);
-        } else {
-          // if input is not main connect to corresponding audio parameter
-          node.connect(nodes[mod].node[input]);
-        }
-
-        // return input and true
-        // set input modulation to on in state
-        // for styling purposes
-      } else {
-        // if no cable with this module as an output is found
-        // disconnect from any connections that the module may have
-        if (node) {
-          node.disconnect();
-        }
-        // return input and false
-        // set input modulation to off in state
-        // for styling purposes
-      }
-    }
-  }, [updateCables]);
 
   const mouseIn = () => {
     select(true);

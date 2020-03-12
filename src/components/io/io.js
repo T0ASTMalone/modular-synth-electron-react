@@ -25,9 +25,9 @@ const Input = props => {
   };
 
   return (
-    <div className='in'>
-      <p className='in__text'>{title}</p>
-      <button className='io in__button' onClick={handleConnection}></button>
+    <div className="in">
+      <p className="in__text">{title}</p>
+      <button className="io in__button" onClick={handleConnection}></button>
     </div>
   );
 };
@@ -35,6 +35,16 @@ const Input = props => {
 const Output = props => {
   const { title, id } = props;
   const context = useContext(MsContext);
+  console.log(
+    "cables: ",
+    context.cables,
+    "nodes: ",
+    context.nodes,
+    "input: ",
+    context.input,
+    "output: ",
+    context.output
+  );
 
   const connectionExists = () => {
     let connections = context.cables;
@@ -56,9 +66,9 @@ const Output = props => {
   };
 
   return (
-    <div className='out'>
-      <p className='out__text'>{title}</p>
-      <button className='io out__button' onClick={handleConnection}></button>
+    <div className="out">
+      <p className="out__text">{title}</p>
+      <button className="io out__button" onClick={handleConnection}></button>
     </div>
   );
 };

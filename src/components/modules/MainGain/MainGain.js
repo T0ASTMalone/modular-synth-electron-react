@@ -26,7 +26,6 @@ const MainGain = props => {
     newId
       ? (nodes[newId].node.gain.value = val)
       : (nodes[id].node.gain.value = val);
-    //nodes[id].node.gain.value = val;
   };
 
   //set up main gain module

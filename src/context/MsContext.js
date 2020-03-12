@@ -74,13 +74,37 @@ export class MsProvider extends Component {
     return id;
   };
 
-  unload = id => {
-    const { nodes, update, cables } = this.state;
-    // remove any connections that have
-    // the module being deleted as an input
+  _findInputs = id => {
+    const { cables } = this.state;
 
+    const inputs = [];
+
+    for (let key in cables) {
+      if (cables[key].mod === id) {
+        inputs.push(key);
+      }
+    }
+    return inputs;
+  };
+
+  unload = id => {
+    const { nodes, update, cables, updateCables } = this.state;
+    // remove any connections that have
+    // the module being deleted as an input or output
+    const inputs = this._findInputs(id);
+
+    // remove connections with this mod as an input
+    inputs.forEach(input => {
+      delete cables[input];
+    });
+
+    // remove connections with this mod as an output
+    delete cables[id];
+
+    // delete node
     delete nodes[id];
-    this.setState({ update: !update, nodes });
+    // update
+    this.setState({ nodes, update: !update, updateCables: !updateCables });
   };
 
   loadPatch = (mods, connections) => {
@@ -133,10 +157,15 @@ export class MsProvider extends Component {
   };
 
   _createConnection = (input, output) => {
-    const { cables } = this.state;
+    const { cables, updateCables } = this.state;
     cables[output] = input;
 
-    this.setState({ cables, input: null, output: null });
+    this.setState({
+      cables,
+      input: null,
+      output: null,
+      updateCables: !updateCables
+    });
   };
 
   createInput = (mod, inputId) => {
@@ -164,19 +193,19 @@ export class MsProvider extends Component {
   };
 
   removeInput = (mod, inputId) => {
-    const { cables } = this.state;
+    const { cables, updateCables } = this.state;
     const output = Object.keys(cables).find(
       key => cables[key].mod === mod && cables[key].input === inputId
     );
     delete cables[output];
-    this.setState({ cables, input: null, output });
+    this.setState({ cables, input: null, output, updateCables: !updateCables });
   };
 
   removeOutput = id => {
-    const { cables } = this.state;
+    const { cables, updateCables } = this.state;
     const input = cables[id];
     delete cables[id];
-    this.setState({ cables, input, output: null });
+    this.setState({ cables, input, output: null, updateCables: !updateCables });
   };
 
   clearContext = () => {};
