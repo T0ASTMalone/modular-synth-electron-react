@@ -7,9 +7,11 @@ export const useCreateConnection = id => {
 
   useEffect(() => {
     const { node } = nodes[id];
+
+    console.log(node);
     const out = cables[id];
     // if this module is an output in a current cable
-    if (out) {
+    if (out && node) {
       console.log("ran update connections");
       const { mod, input } = out;
       // get cables module and input on that module
