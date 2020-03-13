@@ -19,16 +19,11 @@ const Gain = props => {
   const outputting = useCreateConnection(id);
 
   const { ctx, nodes } = context;
-  const { newId } = props;
-
-  const nodeId = newId ? newId : id;
 
   //set up main gain module
   useEffect(() => {
     // create main gain node
     const gainNode = ctx.createGain();
-    // connect to ctx destination
-    gainNode.connect(ctx.destination);
     // set value
     gainNode.gain.value = gainValue;
     // set gainNode values
@@ -57,14 +52,14 @@ const Gain = props => {
   };
 
   return (
-    <div className='module gain' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
-      <div className='close-button'>
+    <div className="module gain" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+      <div className="close-button">
         {selected ? (
-          <button className='module__button' onClick={() => removeModule(id)}>
+          <button className="module__button" onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className='module__text--bold'>Gain</p>
+          <p className="module__text--bold">Gain</p>
         )}
       </div>
       {/* knob for controlling gain */}
@@ -72,13 +67,13 @@ const Gain = props => {
         min={0}
         max={6.8}
         value={gainValue}
-        onChange={e => setAudioParam(e, gainValue, "gain", nodeId, setGain)}
+        onChange={e => setAudioParam(e, gainValue, "gain", id, setGain)}
       />
       {/* input */}
-      <div className='gain__outputs'>
-        <Input title='in' id={nodeId} name='main-in' />
-        <Input title='gain' id={nodeId} name='gain' />
-        <Output title='out' output={outputting} id={id} />
+      <div className="gain__outputs">
+        <Input title="in" id={id} name="main-in" />
+        <Input title="gain" id={id} name="gain" />
+        <Output title="out" output={outputting} id={id} />
       </div>
     </div>
   );

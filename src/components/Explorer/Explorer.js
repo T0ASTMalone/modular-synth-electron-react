@@ -4,7 +4,7 @@ import "./Explorer.css";
 import MsContext from "../../context/MsContext";
 
 const Explorer = () => {
-  const installed = ["Oscillator", "Filter", "Lfo", "Gain"];
+  const installed = ["Oscillator", "Filter", "Lfo", "Gain", "Reverb"];
   const context = useContext(MsContext);
 
   const addModule = mod => {
@@ -12,8 +12,8 @@ const Explorer = () => {
   };
 
   return (
-    <div className='explorer'>
-      <section className='explorer__installed'>
+    <div className="explorer">
+      <section className="explorer__installed">
         {/* list installed modules */}
         <h3>Installed</h3>
         {installed.map((mod, i) => {
@@ -21,7 +21,7 @@ const Explorer = () => {
             <div
               key={i}
               onDoubleClick={() => addModule(mod)}
-              className='explorer__module'
+              className="explorer__module"
             >
               {mod}
             </div>
@@ -29,7 +29,7 @@ const Explorer = () => {
         })}
       </section>
 
-      <section className='explorer__uninstalled'>
+      <section className="explorer__uninstalled">
         {/* list uninstalled modules */}
         <h3>Explore</h3>
       </section>
