@@ -122,5 +122,3 @@ export const useCheckDistance = () => {
 
   return setAudioParam;
 };
-
-export const useCheckDistance = () => {};

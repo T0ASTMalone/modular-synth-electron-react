@@ -43,5 +43,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "build": {
+    "appId": "com.electron.map",
+    "mac": {
+      "category": "Music"
+    }
   }
 }
