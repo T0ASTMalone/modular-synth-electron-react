@@ -1,14 +1,14 @@
 {
   "name": "im-an-electron",
   "version": "0.1.0",
+  "author": "map",
+  "description": "modular synth made using react",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
     "concurrently": "^5.0.2",
-    "electron": "^7.1.8",
-    "electron-builder": "^21.2.0",
     "electron-is-dev": "^1.1.0",
     "electron-util": "^0.14.0",
     "frameless-titlebar": "^1.0.8",
@@ -26,7 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "concurrently \"set BROWSER=none && npm run start\" \"wait-on http://localhost:3000 && electron .\""
+    "electron": "concurrently \"set BROWSER=none && npm run start\" \"wait-on http://localhost:3000 && electron .\"",
+    "dist": "electron-builder build"
   },
   "main": "public/main.js",
   "eslintConfig": {
@@ -45,9 +46,16 @@
     ]
   },
   "build": {
+    "extends": null,
     "appId": "com.electron.map",
-    "mac": {
-      "category": "Music"
+    "productName": "mapSynth",
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
     }
+  },
+  "devDependencies": {
+    "electron": "^7.1.14",
+    "electron-builder": "^21.2.0"
   }
 }

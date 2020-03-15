@@ -115,7 +115,10 @@ export const useCheckDistance = () => {
     } else {
       // update function and audioNode value
       const realVal = val - modifier;
-      nodes[id].node[input].value = realVal;
+      if (nodes[id].node[input]) {
+        nodes[id].node[input].value = realVal;
+      }
+
       func(val);
     }
   };

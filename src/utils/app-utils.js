@@ -12,7 +12,7 @@ const createSettings = nodes => {
   const settings = Object.keys(nodes).map(mod => {
     const { node, type } = nodes[mod];
     // array of possible audioParams
-    const saveValues = ["frequency", "gain", "Q", "type"];
+    const saveValues = ["frequency", "gain", "Q", "type", "buffer"];
     // create object that will contain the values of any audioParams in the audio node
     const audioValues = {};
 
