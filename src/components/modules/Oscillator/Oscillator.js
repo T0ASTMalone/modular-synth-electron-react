@@ -17,7 +17,7 @@ const Oscillator = props => {
   const setAudioParam = useCheckDistance();
   const outputting = useCreateConnection(id);
 
-  const { ctx, nodes } = context;
+  const { nodes } = context;
   const { node } = nodes[id];
 
   const refCtx = useRef(context);
