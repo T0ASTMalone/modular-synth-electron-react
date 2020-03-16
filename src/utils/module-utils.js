@@ -38,6 +38,25 @@ export const useCreateConnection = id => {
   return isConnected;
 };
 
+export const useIsOutput = id => {
+  const context = useContext(MsContext);
+  const { cables, updateCables } = context;
+  const [isConnected, setIsConnected] = useState({});
+
+  useEffect(() => {
+    // input is found
+    // add input name to is connected
+    for (let k in cables) {
+      const color = cables[k];
+      if (k === id) {
+        setIsConnected(color);
+      }
+    }
+  }, [updateCables]);
+
+  return isConnected;
+};
+
 export const useIsModulated = id => {
   const context = useContext(MsContext);
   const { cables, updateCables } = context;

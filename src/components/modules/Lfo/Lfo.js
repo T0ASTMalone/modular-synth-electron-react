@@ -18,7 +18,7 @@ import "./Lfo.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
-import { useCreateConnection } from "../../../utils/module-utils";
+import { useCreateConnection, useIsOutput } from "../../../utils/module-utils";
 
 const Lfo = props => {
   const [freq, updateFreq] = useState(1);
@@ -28,9 +28,8 @@ const Lfo = props => {
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, cables, nodes, updateCables } = context;
-  const modulation = useCreateConnection(id);
-  console.log("lfo ", modulation);
+  const { ctx, nodes } = context;
+  const isOutput = useCreateConnection(id);
 
   // update frequency using knob
   const checkDistance = val => {
@@ -100,7 +99,7 @@ const Lfo = props => {
       </div>
       {/* outputs */}
       <div className='osc__outputs'>
-        <Output title='out' id={id} />
+        <Output title='out' output={isOutput} id={id} />
       </div>
       <div className='osc__types'>
         <div className='button-container'>
