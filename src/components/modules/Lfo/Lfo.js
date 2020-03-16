@@ -11,7 +11,7 @@
 
 */
 
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./Lfo.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
@@ -26,8 +26,11 @@ const Lfo = props => {
   const { removeModule, id, values } = props;
 
   const context = useContext(MsContext);
-  const { ctx, nodes } = context;
+  const { nodes } = context;
   const isOutput = useCreateConnection(id);
+  const refCtx = useRef(context);
+  const refValues = useRef(values);
+  const refId = useRef(id);
 
   // update frequency using knob
   const checkDistance = val => {
@@ -43,6 +46,10 @@ const Lfo = props => {
   };
 
   useEffect(() => {
+    const context = refCtx.current;
+    const { ctx } = context;
+    const values = refValues.current;
+    const id = refId.current;
     const osc = ctx.createOscillator();
 
     // using values passed in as props
@@ -64,7 +71,7 @@ const Lfo = props => {
     // add to nodes object in context
     // uuid as key and osc as value
     context.addNode(id, osc);
-  }, []);
+  }, [refCtx, refValues, refId]);
 
   // if audio node exists set frequency to current knob value
   if (nodes[id].node) {
