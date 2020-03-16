@@ -6,8 +6,6 @@
   ----
   * find out what why it pops when adjusting the frequency
 
-  * find out why it sounds distorted when connected to main gain module
-
   * merge with regular oscillator by adding an lfo mode button that will change 
     the regular oscillator's frequency range to that of an lfo (0 - 20 Hz)
 
@@ -18,7 +16,7 @@ import "./Lfo.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
-import { useCreateConnection, useIsOutput } from "../../../utils/module-utils";
+import { useCreateConnection } from "../../../utils/module-utils";
 
 const Lfo = props => {
   const [freq, updateFreq] = useState(1);

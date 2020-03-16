@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./Oscillator.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
@@ -20,7 +20,15 @@ const Oscillator = props => {
   const { ctx, nodes } = context;
   const { node } = nodes[id];
 
+  const refCtx = useRef(context);
+  const refValues = useRef(values);
+  const refId = useRef(id);
+
   useEffect(() => {
+    const context = refCtx.current;
+    const values = refValues.current;
+    const id = refId.current;
+    const { ctx } = context;
     // create oscillator
     const osc = ctx.createOscillator();
     // using values passed in as props
@@ -39,7 +47,7 @@ const Oscillator = props => {
     osc.start();
     // add to context
     context.addNode(id, osc);
-  }, []);
+  }, [refCtx, refValues, refId]);
 
   const updateWav = wav => {
     node.type = wav;
@@ -54,52 +62,52 @@ const Oscillator = props => {
   };
 
   return (
-    <div className="module osc" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+    <div className='module osc' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
       {/* remove module button*/}
-      <div className="close-button">
+      <div className='close-button'>
         {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
+          <button className='module__button' onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className="module__text--bold">Oscillator</p>
+          <p className='module__text--bold'>Oscillator</p>
         )}
       </div>
       {/* {selected ? <button className='module__button'>X</button> : <></>} */}
       {/* outputs */}
-      <div className="osc__outputs">
-        <Output title="out" output={outputting} id={id} />
+      <div className='osc__outputs'>
+        <Output title='out' output={outputting} id={id} />
       </div>
-      <div className="osc__types">
-        <div className="button-container">
-          <p className="module__text">Sin</p>
+      <div className='osc__types'>
+        <div className='button-container'>
+          <p className='module__text'>Sin</p>
           <button
-            className="param-button"
+            className='param-button'
             onClick={() => updateWav("sine")}
           ></button>
         </div>
-        <div className="button-container">
-          <p className="module__text">Saw</p>
+        <div className='button-container'>
+          <p className='module__text'>Saw</p>
           <button
-            className="param-button"
+            className='param-button'
             onClick={() => updateWav("sawtooth")}
           ></button>
         </div>
-        <div className="button-container">
-          <p className="module__text">Sqr</p>
+        <div className='button-container'>
+          <p className='module__text'>Sqr</p>
           <button
-            className="param-button"
+            className='param-button'
             onClick={() => updateWav("square")}
           ></button>
         </div>
-        <div className="button-container">
-          <p className="module__text">Sub</p>
-          <button className="param-button"></button>
+        <div className='button-container'>
+          <p className='module__text'>Sub</p>
+          <button className='param-button'></button>
         </div>
       </div>
       {/* frequency knob */}
-      <div className="knob">
-        <p className="module__text">Freq</p>
+      <div className='knob'>
+        <p className='module__text'>Freq</p>
         <Knob
           onChange={e => setAudioParam(e, freq, "frequency", id, setFreq)}
           min={0}
@@ -109,8 +117,8 @@ const Oscillator = props => {
       </div>
 
       {/* V/oct input */}
-      <div className="osc__inputs">
-        <Input title="V/oct" id={id} name="frequency" />
+      <div className='osc__inputs'>
+        <Input title='V/oct' id={id} name='frequency' />
       </div>
     </div>
   );

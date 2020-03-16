@@ -14,7 +14,7 @@ const Filter = props => {
   const [freq, setFreq] = useState(0);
   const [reso, setReso] = useState(3.4);
   const [gain, setGain] = useState(3.4);
-  const [inId, setInId] = useState(null);
+  // const [inId, setInId] = useState(null);
   const [type, setType] = useState(0);
   const [selected, select] = useState(null);
 
@@ -106,7 +106,7 @@ const Filter = props => {
       }
     }
 
-    setInId(inId);
+    // setInId(inId);
   }, []);
 
   const mouseIn = () => {
@@ -119,39 +119,39 @@ const Filter = props => {
 
   return (
     <div
-      className="module filter"
+      className='module filter'
       onMouseEnter={mouseIn}
       onMouseLeave={mouseOut}
     >
       {/* remove module button*/}
-      <div className="close-button">
+      <div className='close-button'>
         {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
+          <button className='module__button' onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className="module__text--bold">{filterTypes[type]}</p>
+          <p className='module__text--bold'>{filterTypes[type]}</p>
         )}
       </div>
       {/* inputs for all filter types */}
-      <div className="filter__ins">
-        <Input title="in" id={id} name="main-in" />
-        <Input title="freq/in" id={id} name="frequency" />
+      <div className='filter__ins'>
+        <Input title='in' id={id} name='main-in' />
+        <Input title='freq/in' id={id} name='frequency' />
       </div>
 
       {/* Frequency and Reso Knob */}
-      <div className="filter__settings">
-        <div id="filter-type" className="button-container">
-          <p className="module__text">Type</p>
+      <div className='filter__settings'>
+        <div id='filter-type' className='button-container'>
+          <p className='module__text'>Type</p>
           <button
-            id="type"
-            className="param-button"
+            id='type'
+            className='param-button'
             onClick={updateType}
           ></button>
         </div>
-        <div className="filter__knobs">
-          <div className="button-container">
-            <p className="module__text">Freq</p>
+        <div className='filter__knobs'>
+          <div className='button-container'>
+            <p className='module__text'>Freq</p>
             <Knob
               // onChange={checkDistance.bind(this, "freq", freq)}
               onChange={e => setAudioParam(e, freq, "frequency", id, setFreq)}
@@ -160,10 +160,10 @@ const Filter = props => {
               value={freq}
             />
           </div>
-          <div className="button-container">
-            <p className="module__text">Q</p>
+          <div className='button-container'>
+            <p className='module__text'>Q</p>
             <Knob
-              id="reso"
+              id='reso'
               onChange={e => setAudioParam(e, reso, "Q", id, setReso)}
               // onChange={checkDistance.bind(this, "reso", reso)}
               min={0}
@@ -176,10 +176,10 @@ const Filter = props => {
 
       {/* output and volume */}
 
-      <div className="filter__out">
-        <Output title="out" output={output} id={id} />
-        <div className="button-container">
-          <p className="module__text">Gain</p>
+      <div className='filter__out'>
+        <Output title='out' output={output} id={id} />
+        <div className='button-container'>
+          <p className='module__text'>Gain</p>
           <Knob
             onChange={e => setAudioParam(e, gain, "gain", id, setGain)}
             min={0}

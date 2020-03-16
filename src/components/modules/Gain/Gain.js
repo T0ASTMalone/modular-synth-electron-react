@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import "./Gain.css";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
@@ -10,7 +10,7 @@ import {
 
 const Gain = props => {
   // gain value
-  const [gainValue, setGain] = useState(3.4);
+  const [gainValue, setGain] = useState(4.4);
   const [selected, select] = useState(null);
   const { removeModule, id, values } = props;
 
@@ -18,14 +18,19 @@ const Gain = props => {
   const setAudioParam = useCheckDistance();
   const outputting = useCreateConnection(id);
 
-  const { ctx, nodes } = context;
+  const refCtx = useRef(context);
+  const refValues = useRef(values);
+  const refId = useRef(id);
 
   //set up main gain module
   useEffect(() => {
+    const context = refCtx.current;
+    const values = refValues.current;
+    const id = refId.current;
+    const { ctx } = context;
     // create main gain node
     const gainNode = ctx.createGain();
     // set value
-    gainNode.gain.value = gainValue;
     // set gainNode values
     if (values) {
       for (let k in values) {
@@ -39,7 +44,7 @@ const Gain = props => {
     }
     // use id created by context to add node
     context.addNode(id, gainNode);
-  }, []);
+  }, [refCtx, refValues, refId]);
 
   // if an id was not passed in as props use the
   // generated id
@@ -52,14 +57,14 @@ const Gain = props => {
   };
 
   return (
-    <div className="module gain" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
-      <div className="close-button">
+    <div className='module gain' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+      <div className='close-button'>
         {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
+          <button className='module__button' onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className="module__text--bold">Gain</p>
+          <p className='module__text--bold'>Gain</p>
         )}
       </div>
       {/* knob for controlling gain */}
@@ -70,10 +75,10 @@ const Gain = props => {
         onChange={e => setAudioParam(e, gainValue, "gain", id, setGain)}
       />
       {/* input */}
-      <div className="gain__outputs">
-        <Input title="in" id={id} name="main-in" />
-        <Input title="gain" id={id} name="gain" />
-        <Output title="out" output={outputting} id={id} />
+      <div className='gain__outputs'>
+        <Input title='in' id={id} name='main-in' />
+        <Input title='gain' id={id} name='gain' />
+        <Output title='out' output={outputting} id={id} />
       </div>
     </div>
   );
