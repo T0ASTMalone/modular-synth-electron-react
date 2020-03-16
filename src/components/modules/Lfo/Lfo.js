@@ -19,18 +19,17 @@ import MsContext from "../../../context/MsContext";
 import { useCreateConnection } from "../../../utils/module-utils";
 
 const Lfo = props => {
-  const [freq, updateFreq] = useState(1);
-
-  const [selected, select] = useState(null);
-
   const { removeModule, id, values } = props;
+
+  const [freq, updateFreq] = useState(1);
+  const [selected, select] = useState(null);
 
   const context = useContext(MsContext);
   const { nodes } = context;
-  const isOutput = useCreateConnection(id);
+
   const refCtx = useRef(context);
-  const refValues = useRef(values);
-  const refId = useRef(id);
+
+  const isOutput = useCreateConnection(id);
 
   // update frequency using knob
   const checkDistance = val => {
@@ -48,10 +47,8 @@ const Lfo = props => {
   useEffect(() => {
     const context = refCtx.current;
     const { ctx } = context;
-    const values = refValues.current;
-    const id = refId.current;
-    const osc = ctx.createOscillator();
 
+    const osc = ctx.createOscillator();
     // using values passed in as props
     // set osc values
     if (values) {
@@ -71,7 +68,7 @@ const Lfo = props => {
     // add to nodes object in context
     // uuid as key and osc as value
     context.addNode(id, osc);
-  }, [refCtx, refValues, refId]);
+  }, [refCtx, values, id]);
 
   // if audio node exists set frequency to current knob value
   if (nodes[id].node) {

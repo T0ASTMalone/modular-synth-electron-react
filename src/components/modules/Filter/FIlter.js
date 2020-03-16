@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "./Filter.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
-import shortId from "shortid";
 import MsContext from "../../../context/MsContext";
 import {
   useCreateConnection,
@@ -23,7 +22,9 @@ const Filter = props => {
   const context = useContext(MsContext);
   const output = useCreateConnection(id);
   const setAudioParam = useCheckDistance();
-  const { ctx, nodes } = context;
+  const { nodes } = context;
+
+  const refCtx = useRef(context);
 
   const filterTypes = [
     "lowpass",
@@ -73,10 +74,10 @@ const Filter = props => {
 
   // set up filter
   useEffect(() => {
+    const context = refCtx.current;
+    const { ctx } = context;
     // create filter
     const filter = ctx.createBiquadFilter();
-    // give filter unique name
-    const inId = shortId.generate();
     // add to nodes object in context
     // uuid as key and filter as value
     context.addNode(id, filter);
@@ -101,13 +102,14 @@ const Filter = props => {
           }
         } else {
           filter[k] = values[k];
+          console.log(values[k]);
           updateType(values[k]);
         }
       }
     }
 
     // setInId(inId);
-  }, []);
+  }, [refCtx, values, id]);
 
   const mouseIn = () => {
     select(true);

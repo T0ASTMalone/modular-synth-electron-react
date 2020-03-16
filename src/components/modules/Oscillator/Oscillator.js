@@ -21,13 +21,10 @@ const Oscillator = props => {
   const { node } = nodes[id];
 
   const refCtx = useRef(context);
-  const refValues = useRef(values);
-  const refId = useRef(id);
 
   useEffect(() => {
+    console.log("ran set up effect");
     const context = refCtx.current;
-    const values = refValues.current;
-    const id = refId.current;
     const { ctx } = context;
     // create oscillator
     const osc = ctx.createOscillator();
@@ -47,7 +44,7 @@ const Oscillator = props => {
     osc.start();
     // add to context
     context.addNode(id, osc);
-  }, [refCtx, refValues, refId]);
+  }, [refCtx, values, id]);
 
   const updateWav = wav => {
     node.type = wav;

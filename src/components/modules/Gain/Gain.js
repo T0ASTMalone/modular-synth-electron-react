@@ -19,14 +19,10 @@ const Gain = props => {
   const outputting = useCreateConnection(id);
 
   const refCtx = useRef(context);
-  const refValues = useRef(values);
-  const refId = useRef(id);
 
   //set up main gain module
   useEffect(() => {
     const context = refCtx.current;
-    const values = refValues.current;
-    const id = refId.current;
     const { ctx } = context;
     // create main gain node
     const gainNode = ctx.createGain();
@@ -44,7 +40,7 @@ const Gain = props => {
     }
     // use id created by context to add node
     context.addNode(id, gainNode);
-  }, [refCtx, refValues, refId]);
+  }, [refCtx, values, id]);
 
   // if an id was not passed in as props use the
   // generated id

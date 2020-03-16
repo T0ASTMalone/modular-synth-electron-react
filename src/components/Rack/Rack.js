@@ -15,33 +15,26 @@ const Rack = props => {
   // create array of current modules from nodes object
   let currentModules = [];
   Object.keys(nodes).forEach((key, i) => {
-    if (i > 0) {
-      currentModules.push(nodes[key].type);
-    }
+    currentModules.push(nodes[key].type);
   });
-  console.log(currentModules);
 
   // remove main out module (module 0)
-  currentModules.shift();
 
   useEffect(() => {
     // create array of current modules from nodes array
     let currentModules = [];
     Object.keys(nodes).forEach((key, i) => {
-      if (i > 0) {
-        currentModules.push(nodes[key].type);
-      }
+      currentModules.push(nodes[key].type);
     });
+    console.log(currentModules);
 
     // reduce array to only contain one of each of the current modules
     const imports = currentModules.filter(
       (item, i) => currentModules.indexOf(item) === i
     );
 
-    console.log(imports);
-
     const getImports = mod => {
-      if (mod) {
+      if (mod && mod !== "main-gain") {
         return import(`../modules/${mod}/${mod}.js`);
       }
     };
@@ -53,7 +46,7 @@ const Rack = props => {
     importModules(imports).then(loadedModules => {
       loadModules(loadedModules);
     });
-  }, [update, nodes]);
+  }, [update]);
 
   const renderModule = (name, i, id) => {
     // get imported module by searching loadedModules for file with the same name
