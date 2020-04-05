@@ -22,7 +22,6 @@ import { useCreateConnection } from "../../../utils/module-utils";
 
 const Lfo = props => {
   const [freq, updateFreq] = useState(1);
-
   const [selected, select] = useState(null);
 
   const { removeModule, id, values } = props;
@@ -87,51 +86,51 @@ const Lfo = props => {
   };
 
   return (
-    <div className='module osc' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+    <div className="module osc" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
       {/* remove module button*/}
-      <div className='close-button'>
+      <div className="close-button">
         {selected ? (
-          <button className='module__button' onClick={() => removeModule(id)}>
+          <button className="module__button" onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className='module__text--bold'>Lfo</p>
+          <p className="module__text--bold">Lfo</p>
         )}
       </div>
       {/* outputs */}
-      <div className='osc__outputs'>
-        <Output title='out' id={id} />
+      <div className="osc__outputs">
+        <Output title="out" id={id} />
       </div>
-      <div className='osc__types'>
-        <div className='button-container'>
-          <p className='module__text'>Sin</p>
+      <div className="osc__types">
+        <div className="button-container">
+          <p className="module__text">Sin</p>
           <button
-            className='param-button'
+            className="param-button"
             onClick={() => updateWav("sine")}
           ></button>
         </div>
-        <div className='button-container'>
-          <p className='module__text'>Saw</p>
+        <div className="button-container">
+          <p className="module__text">Saw</p>
           <button
-            className='param-button'
+            className="param-button"
             onClick={() => updateWav("sawtooth")}
           ></button>
         </div>
-        <div className='button-container'>
-          <p className='module__text'>Sqr</p>
+        <div className="button-container">
+          <p className="module__text">Sqr</p>
           <button
-            className='param-button'
+            className="param-button"
             onClick={() => updateWav("square")}
           ></button>
         </div>
-        <div className='button-container'>
-          <p className='module__text'>Sub</p>
-          <button className='param-button'></button>
+        <div className="button-container">
+          <p className="module__text">Sub</p>
+          <button className="param-button"></button>
         </div>
       </div>
       {/* frequency knob */}
-      <div className='knob'>
-        <p className='module__text'>Freq</p>
+      <div className="knob">
+        <p className="module__text">Freq</p>
         <Knob
           onChange={checkDistance.bind(this)}
           min={1}
@@ -141,8 +140,8 @@ const Lfo = props => {
       </div>
 
       {/* V/oct input */}
-      <div className='osc__inputs'>
-        <Input title='V/oct' id={id} name='frequency' />
+      <div className="osc__inputs">
+        <Input title="V/oct" id={id} name="frequency" />
       </div>
     </div>
   );
