@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import "./MainGain.css";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
@@ -7,14 +7,13 @@ import { useCheckDistance } from "../../../utils/module-utils";
 
 const MainGain = props => {
   // gain value
-  const [gainValue, setGain] = useState(3.4);
+  const [gainValue, setGain] = useState(4.4);
   const [id, setId] = useState(null);
-  const [inId, setInId] = useState(null);
 
   const context = useContext(MsContext);
   const setAudioParam = useCheckDistance();
 
-  const { ctx } = context;
+  const refCtx = useRef(context);
   const { newId } = props;
 
   const nodeId = newId ? newId : id;
@@ -22,11 +21,13 @@ const MainGain = props => {
   //set up main gain module
   useEffect(() => {
     // create main gain node
+    const context = refCtx.current;
+    const ctx = context.ctx;
     const gainNode = ctx.createGain();
+    // console.log(gainNode);
     // connect to ctx destination
     gainNode.connect(ctx.destination);
-    // set value
-    gainNode.gain.value = gainValue;
+
     // add to context
     const id = context.load("main-gain");
     // use id created by context to add node
@@ -34,8 +35,7 @@ const MainGain = props => {
     // set to id
     setId(id);
     //set input ids
-    setInId(inId);
-  }, []);
+  }, [refCtx]);
 
   // if an id was not passed in as props use the
   // generated id

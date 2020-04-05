@@ -96,12 +96,12 @@ export const openFile = async () => {
     const { settings, connections } = newFile;
 
     if (!settings || !connections) {
-      throw "sorry something went wrong";
+      throw new Error("sorry something went wrong");
     }
     // format values for modules
     const moduleSettings = {};
     const loadedModules = {};
-    Object.keys(settings).map(key => {
+    Object.keys(settings).forEach(key => {
       const { id, values, type } = settings[key];
       // create settings obj for each module
       moduleSettings[id] = { ...values };
@@ -111,7 +111,7 @@ export const openFile = async () => {
 
     const cables = {};
     // format cables obj to load into context
-    Object.keys(connections).map(key => {
+    Object.keys(connections).forEach(key => {
       const { out, input } = connections[key];
       cables[out] = input;
     });
