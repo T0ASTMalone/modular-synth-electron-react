@@ -5,10 +5,10 @@ import MsContext from "../../../context/MsContext";
 import { Input, Output } from "../../io/io";
 import {
   useCreateConnection,
-  useCheckDistance
+  useCheckDistance,
 } from "../../../utils/module-utils";
 
-const Reverb = props => {
+const Reverb = (props) => {
   // reverb value
   const [reverb, setReverb] = useState(3.4);
   const [selected, select] = useState(null);
@@ -134,7 +134,7 @@ const Reverb = props => {
         max={5}
         step={1}
         value={duration}
-        onChange={e => checkDistance(e, duration, "duration")}
+        onChange={(e) => checkDistance(e, duration, "duration")}
       />
       {/* knob for controlling reverb decay */}
       <Knob
@@ -142,7 +142,7 @@ const Reverb = props => {
         max={5}
         step={1}
         value={decay}
-        onChange={e => checkDistance(e, decay, "decay")}
+        onChange={(e) => checkDistance(e, decay, "decay")}
       />
       {/* button to control reverse */}
       <button
@@ -159,5 +159,7 @@ const Reverb = props => {
     </div>
   );
 };
+
+Reverb.Name = "Reverb";
 
 export default Reverb;

@@ -5,7 +5,7 @@ import MsContext from "../../../context/MsContext";
 import { Input } from "../../io/io";
 import { useCheckDistance } from "../../../utils/module-utils";
 
-const MainGain = props => {
+const MainGain = (props) => {
   // gain value
   const [gainValue, setGain] = useState(4.4);
   const [id, setId] = useState(null);
@@ -41,20 +41,22 @@ const MainGain = props => {
   // generated id
 
   return (
-    <div className='module gain'>
-      <h3 className='module__text'>Amp</h3>
+    <div className="module gain">
+      <h3 className="module__text">Amp</h3>
       {/* knob for controlling gain */}
       <Knob
         min={0}
         max={6.8}
         value={gainValue}
-        onChange={e => setAudioParam(e, gainValue, "gain", nodeId, setGain)}
+        onChange={(e) => setAudioParam(e, gainValue, "gain", nodeId, setGain)}
       />
       {/* input */}
-      <Input title='in' id={nodeId} name='main-in' />
-      <Input title='gain' id={nodeId} name='gain' />
+      <Input title="in" id={nodeId} name="main-in" />
+      <Input title="gain" id={nodeId} name="gain" />
     </div>
   );
 };
+
+MainGain.Name = "MainGain";
 
 export default MainGain;

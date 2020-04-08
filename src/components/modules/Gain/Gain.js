@@ -5,10 +5,10 @@ import MsContext from "../../../context/MsContext";
 import { Input, Output } from "../../io/io";
 import {
   useCreateConnection,
-  useCheckDistance
+  useCheckDistance,
 } from "../../../utils/module-utils";
 
-const Gain = props => {
+const Gain = (props) => {
   // gain value
   const [gainValue, setGain] = useState(4.4);
   const [selected, select] = useState(null);
@@ -53,14 +53,14 @@ const Gain = props => {
   };
 
   return (
-    <div className='module gain' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
-      <div className='close-button'>
+    <div className="module gain" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+      <div className="close-button">
         {selected ? (
-          <button className='module__button' onClick={() => removeModule(id)}>
+          <button className="module__button" onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className='module__text--bold'>Gain</p>
+          <p className="module__text--bold">Gain</p>
         )}
       </div>
       {/* knob for controlling gain */}
@@ -68,16 +68,18 @@ const Gain = props => {
         min={0}
         max={6.8}
         value={gainValue}
-        onChange={e => setAudioParam(e, gainValue, "gain", id, setGain)}
+        onChange={(e) => setAudioParam(e, gainValue, "gain", id, setGain)}
       />
       {/* input */}
-      <div className='gain__outputs'>
-        <Input title='in' id={id} name='main-in' />
-        <Input title='gain' id={id} name='gain' />
-        <Output title='out' output={outputting} id={id} />
+      <div className="gain__outputs">
+        <Input title="in" id={id} name="main-in" />
+        <Input title="gain" id={id} name="gain" />
+        <Output title="out" output={outputting} id={id} />
       </div>
     </div>
   );
 };
+
+Gain.Name = "Gain";
 
 export default Gain;

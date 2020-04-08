@@ -3,7 +3,7 @@ import "./Rack.css";
 import MsContext from "../../context/MsContext";
 import MainGain from "../modules/MainGain/MainGain";
 
-const Rack = props => {
+const Rack = (props) => {
   const [loadedModules, loadModules] = useState([]);
 
   const context = useContext(MsContext);
@@ -33,29 +33,29 @@ const Rack = props => {
       (item, i) => currentModules.indexOf(item) === i
     );
 
-    const getImports = mod => {
+    const getImports = (mod) => {
       if (mod && mod !== "main-gain") {
         return import(`../modules/${mod}/${mod}.js`);
       }
     };
 
     // map over reduced array instead, in order to import only one of each module
-    const importModules = mods => Promise.all(mods.map(mod => getImports(mod)));
+    const importModules = (mods) =>
+      Promise.all(mods.map((mod) => getImports(mod)));
 
     // add imports to state as loaded modules for rendering
-    importModules(imports).then(loadedModules => {
+    importModules(imports).then((loadedModules) => {
       loadModules(loadedModules);
     });
   }, [update]);
 
   const renderModule = (name, i, id) => {
     // get imported module by searching loadedModules for file with the same name
-    const loadedMod = loadedModules.find(mod => {
+    const loadedMod = loadedModules.find((mod) => {
       if (mod) {
-        return mod.default.name === name;
+        return mod.default.Name === name;
       } else return undefined;
     });
-
     // if module was found return component
     if (loadedMod) {
       const values = modSettings ? modSettings[id] : null;
@@ -72,7 +72,7 @@ const Rack = props => {
     latestContext.current.createCtx(ctx);
   }, [latestContext]);
 
-  const removeModule = id => {
+  const removeModule = (id) => {
     context.unload(id);
   };
 
@@ -81,15 +81,15 @@ const Rack = props => {
   console.log(context.nodes);
 
   return (
-    <div className='rack'>
-      <div className='rack__controls'>
+    <div className="rack">
+      <div className="rack__controls">
         {/* rack controls */}
-        <button className='button'>Stop</button>
-        <button className='button'>Play</button>
-        <button className='button'>Rec</button>
+        <button className="button">Stop</button>
+        <button className="button">Play</button>
+        <button className="button">Rec</button>
       </div>
 
-      <div className='rack__modules'>
+      <div className="rack__modules">
         {/* 
           check if there are any current audio modules and 
           if those modules have been imported
@@ -111,7 +111,7 @@ const Rack = props => {
         {context.ctx ? <MainGain newId={mainOutId} /> : <></>}
       </div>
 
-      <div className='rack__visualAudio'>
+      <div className="rack__visualAudio">
         {/* 
           General information about the output 
           i.e. visualization of the output, spectrum analyzer, (kind of like op-1 stuff)

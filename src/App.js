@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useCallback
+  useCallback,
 } from "react";
 import "./App.css";
 import { saveFile, openFile } from "./utils/app-utils";
@@ -15,9 +15,12 @@ import MsContext from "./context/MsContext";
 // TitleBar
 import github from "./assets/images/github.png";
 import { defaultTemplate } from "./app-menu";
-const TitleBar = window.require("frameless-titlebar");
+
+import TitleBar from "frameless-titlebar";
+
 const { ipcRenderer, remote } = window.require("electron");
 const { dialog } = remote;
+const currentWindow = remote.getCurrentWindow();
 
 function App() {
   const context = useContext(MsContext);
@@ -111,9 +114,19 @@ function App() {
   }, [refCtx]);
 
   return (
-    <div className='App'>
-      <TitleBar icon={github} app='Electron' menu={defaultTemplate} />
-      <main className='app-main'>
+    <div className="App">
+      <TitleBar
+        icon={github} // app icon
+        currentWindow={currentWindow} // electron window instance
+        platform={process.platform} // win32, darwin, linux
+        menu={defaultTemplate}
+        title="frameless app"
+        onClose={() => currentWindow.close()}
+        onMinimize={() => currentWindow.minimize()}
+        onMaximize={() => currentWindow.maximize()}
+        onDoubleClick={() => currentWindow.maximize()}
+      />
+      <main className="app-main">
         {/* 
           update so that depending on sidebar variable the sidebar component's class is changed
           rather than just hiding the whole component

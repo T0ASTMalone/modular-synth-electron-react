@@ -5,10 +5,10 @@ import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import {
   useCreateConnection,
-  useCheckDistance
+  useCheckDistance,
 } from "../../../utils/module-utils";
 
-const Filter = props => {
+const Filter = (props) => {
   // state
   const [freq, setFreq] = useState(0);
   const [reso, setReso] = useState(3.4);
@@ -34,7 +34,7 @@ const Filter = props => {
     "highshelf",
     "peaking",
     "notch",
-    "allpass"
+    "allpass",
   ];
 
   // filter types
@@ -121,52 +121,52 @@ const Filter = props => {
 
   return (
     <div
-      className='module filter'
+      className="module filter"
       onMouseEnter={mouseIn}
       onMouseLeave={mouseOut}
     >
       {/* remove module button*/}
-      <div className='close-button'>
+      <div className="close-button">
         {selected ? (
-          <button className='module__button' onClick={() => removeModule(id)}>
+          <button className="module__button" onClick={() => removeModule(id)}>
             X
           </button>
         ) : (
-          <p className='module__text--bold'>{filterTypes[type]}</p>
+          <p className="module__text--bold">{filterTypes[type]}</p>
         )}
       </div>
       {/* inputs for all filter types */}
-      <div className='filter__ins'>
-        <Input title='in' id={id} name='main-in' />
-        <Input title='freq/in' id={id} name='frequency' />
+      <div className="filter__ins">
+        <Input title="in" id={id} name="main-in" />
+        <Input title="freq/in" id={id} name="frequency" />
       </div>
 
       {/* Frequency and Reso Knob */}
-      <div className='filter__settings'>
-        <div id='filter-type' className='button-container'>
-          <p className='module__text'>Type</p>
+      <div className="filter__settings">
+        <div id="filter-type" className="button-container">
+          <p className="module__text">Type</p>
           <button
-            id='type'
-            className='param-button'
+            id="type"
+            className="param-button"
             onClick={updateType}
           ></button>
         </div>
-        <div className='filter__knobs'>
-          <div className='button-container'>
-            <p className='module__text'>Freq</p>
+        <div className="filter__knobs">
+          <div className="button-container">
+            <p className="module__text">Freq</p>
             <Knob
               // onChange={checkDistance.bind(this, "freq", freq)}
-              onChange={e => setAudioParam(e, freq, "frequency", id, setFreq)}
+              onChange={(e) => setAudioParam(e, freq, "frequency", id, setFreq)}
               min={0}
               max={24000}
               value={freq}
             />
           </div>
-          <div className='button-container'>
-            <p className='module__text'>Q</p>
+          <div className="button-container">
+            <p className="module__text">Q</p>
             <Knob
-              id='reso'
-              onChange={e => setAudioParam(e, reso, "Q", id, setReso)}
+              id="reso"
+              onChange={(e) => setAudioParam(e, reso, "Q", id, setReso)}
               // onChange={checkDistance.bind(this, "reso", reso)}
               min={0}
               max={6.8}
@@ -178,12 +178,12 @@ const Filter = props => {
 
       {/* output and volume */}
 
-      <div className='filter__out'>
-        <Output title='out' output={output} id={id} />
-        <div className='button-container'>
-          <p className='module__text'>Gain</p>
+      <div className="filter__out">
+        <Output title="out" output={output} id={id} />
+        <div className="button-container">
+          <p className="module__text">Gain</p>
           <Knob
-            onChange={e => setAudioParam(e, gain, "gain", id, setGain)}
+            onChange={(e) => setAudioParam(e, gain, "gain", id, setGain)}
             min={0}
             max={6.8}
             value={gain}
@@ -193,5 +193,7 @@ const Filter = props => {
     </div>
   );
 };
+
+Filter.Name = "Filter";
 
 export default Filter;

@@ -8,28 +8,30 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
-    "concurrently": "^5.0.2",
+    "cross-env": "^7.0.2",
     "electron-is-dev": "^1.1.0",
     "electron-util": "^0.14.0",
-    "frameless-titlebar": "^1.0.8",
+    "frameless-titlebar": "^2.0.0",
     "randomcolor": "^0.5.4",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-rotary-knob": "^1.1.8",
-    "react-scripts": "3.3.0",
+    "react-scripts": "^3.4.1",
     "shortid": "^2.2.15",
-    "uuid": "^3.4.0",
-    "wait-on": "^3.3.0"
+    "uuid": "^3.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "electron": "concurrently \"set BROWSER=none && npm run start\" \"wait-on http://localhost:3000 && electron .\"",
-    "dist": "electron-builder build"
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "start": "concurrently \"cross-env Browser=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
+    "build": "npm run react-build && npm run electron-build",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
-  "main": "public/main.js",
+  "main": "public/electron.js",
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -46,16 +48,14 @@
     ]
   },
   "build": {
-    "extends": null,
-    "appId": "com.electron.map",
-    "productName": "mapSynth",
-    "win": {
-      "target": "nsis",
-      "icon": "build/icon.ico"
-    }
+    "npmRebuild": false,
+    "appId": "com.electron.map"
   },
+  "homepage": "./",
   "devDependencies": {
+    "concurrently": "^5.1.0",
     "electron": "^7.1.14",
-    "electron-builder": "^21.2.0"
+    "electron-builder": "^21.2.0",
+    "wait-on": "^4.0.1"
   }
 }

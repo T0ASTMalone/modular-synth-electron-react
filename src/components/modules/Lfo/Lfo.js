@@ -149,4 +149,6 @@ const Lfo = (props) => {
   );
 };
 
+Lfo.Name = "Lfo";
+
 export default Lfo;
