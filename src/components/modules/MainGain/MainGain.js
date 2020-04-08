@@ -24,7 +24,7 @@ const MainGain = (props) => {
     const context = refCtx.current;
     const ctx = context.ctx;
     const gainNode = ctx.createGain();
-    // console.log(gainNode);
+
     // connect to ctx destination
     gainNode.connect(ctx.destination);
 

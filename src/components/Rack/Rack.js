@@ -26,7 +26,6 @@ const Rack = (props) => {
     Object.keys(nodes).forEach((key, i) => {
       currentModules.push(nodes[key].type);
     });
-    console.log(currentModules);
 
     // reduce array to only contain one of each of the current modules
     const imports = currentModules.filter(
@@ -67,7 +66,6 @@ const Rack = (props) => {
   };
 
   useEffect(() => {
-    console.log("ran create context");
     const ctx = new AudioContext();
     latestContext.current.createCtx(ctx);
   }, [latestContext]);
@@ -77,8 +75,6 @@ const Rack = (props) => {
   };
 
   let mainOutId;
-
-  console.log(context.nodes);
 
   return (
     <div className="rack">

@@ -37,7 +37,7 @@ const Reverb = (props) => {
       impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
       impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
     }
-    console.log(impulse);
+
     return impulse;
   }
 
@@ -47,7 +47,6 @@ const Reverb = (props) => {
     const convolverNode = ctx.createConvolver();
     // setting up convolver node buffer
     convolverNode.buffer = impulseResponse(duration, decay, reverse);
-    console.log(convolverNode);
 
     if (values) {
       for (let k in values) {

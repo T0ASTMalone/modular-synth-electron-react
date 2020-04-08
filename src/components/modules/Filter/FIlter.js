@@ -102,7 +102,6 @@ const Filter = (props) => {
           }
         } else {
           filter[k] = values[k];
-          console.log(values[k]);
           updateType(values[k]);
         }
       }

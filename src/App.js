@@ -81,7 +81,6 @@ function App() {
   }, [toggleSidebar]);
 
   useEffect(() => {
-    console.log("ran set ups ipcRenderer save effect");
     const context = refCtx.current;
     const { getCurrentState } = context;
     // event emitter for saving file

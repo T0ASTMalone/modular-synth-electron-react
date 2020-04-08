@@ -23,7 +23,6 @@ const Oscillator = (props) => {
   const refCtx = useRef(context);
 
   useEffect(() => {
-    console.log("ran set up effect");
     const context = refCtx.current;
     const { ctx } = context;
     // create oscillator
