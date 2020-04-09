@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import "./Sidebar.css";
 
 import MsContext from "../../context/MsContext";
-import Explorer from "../Explorer/Explorer";
+import ModulesList from "../ModulesList/ModulesList";
 import Search from "../Search/Search";
 import CurrentPatch from "../CurrentPatch/CurrentPatch";
 
@@ -10,7 +10,6 @@ const Sidebar = (props) => {
   const context = useContext(MsContext);
 
   const { sbContent, toggleSidebar } = context;
-  console.log(sbContent);
   const { size } = props;
 
   const renderSbContent = (c) => {
@@ -23,7 +22,7 @@ const Sidebar = (props) => {
         content = <Search />;
         break;
       default:
-        content = <Explorer />;
+        content = <ModulesList />;
     }
     return content;
   };
