@@ -9,18 +9,27 @@ export const defaultTemplate = [
     label: "File",
     submenu: [
       {
+        id: "0000",
+        label: "New Patch",
+        accelerator: "CommandOrControl + n",
+        click: () => {
+          return mainWindow.webContents.send("new-patch");
+        },
+      },
+      {
         id: "0001",
         label: "Open Patch",
+        accelerator: "CommandOrControl + o",
         click: () => {
-          return mainWindow.webContents.send("open-file");
+          return mainWindow.webContents.send("open-patch");
         },
       },
       {
         id: "0002",
         label: "Save Patch",
-        accelerator: "CommandOrControl + S",
+        accelerator: "CommandOrControl + s",
         click: () => {
-          return mainWindow.webContents.send("save-file");
+          return mainWindow.webContents.send("save-patch");
         },
       },
     ],

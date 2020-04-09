@@ -14,13 +14,20 @@ const MsContext = React.createContext({
   sidebar: null,
   sbContent: "",
   loaded: [],
-  clearContext: () => {},
-  setSbContent: () => {},
-  toggleSidebar: () => {},
+  createContext: () => {},
   addNode: () => {},
+  createInput: () => {},
+  createOutput: () => {},
+  removeInput: () => {},
+  removeOutput: () => {},
+  load: () => {},
   loadPatch: () => {},
   loadPatchCables: () => {},
-  getCurrentState: () => {}
+  unload: () => {},
+  setSbContent: () => {},
+  toggleSidebar: () => {},
+  getCurrentState: () => {},
+  clearContext: () => {},
 });
 
 export default MsContext;
@@ -39,7 +46,7 @@ export class MsProvider extends Component {
       updateCables: false,
       sidebar: false,
       sbContent: "",
-      loaded: []
+      loaded: [],
     };
   }
 
@@ -49,7 +56,7 @@ export class MsProvider extends Component {
     this.setState({ nodes, updateCables: !updateCables });
   };
 
-  createCtx = ctx => {
+  createCtx = (ctx) => {
     this.setState({ ctx });
   };
 
@@ -68,14 +75,14 @@ export class MsProvider extends Component {
     // the module
     nodes[id] = {
       type,
-      node: null
+      node: null,
     };
     // update state
     this.setState({ nodes, update: !update });
     return id;
   };
 
-  _findInputs = id => {
+  _findInputs = (id) => {
     const { cables } = this.state;
 
     const inputs = [];
@@ -88,7 +95,7 @@ export class MsProvider extends Component {
     return inputs;
   };
 
-  unload = id => {
+  unload = (id) => {
     const { nodes, update, cables, updateCables } = this.state;
 
     // remove any connections that have
@@ -96,7 +103,7 @@ export class MsProvider extends Component {
     const inputs = this._findInputs(id);
 
     // remove connections with this mod as an input
-    inputs.forEach(input => {
+    inputs.forEach((input) => {
       delete cables[input];
     });
 
@@ -111,18 +118,9 @@ export class MsProvider extends Component {
     this.setState({ nodes, update: !update, updateCables: !updateCables });
   };
 
-  loadPatch = (mods, connections) => {
+  loadPatch = (mods) => {
     let { nodes, update } = this.state;
-    let mainOut;
-    let mainOutId;
-    // find main out
-    for (let k in nodes) {
-      if (nodes[k].type === "main-gain") {
-        mainOut = nodes[k];
-        // mainOutId = k;
-      }
-    }
-
+    let { mainOutId, mainOut } = this._findMainOut();
     // delete any loaded modules
     nodes = {};
 
@@ -132,7 +130,7 @@ export class MsProvider extends Component {
       if (type !== "main-gain") {
         nodes[id] = {
           type,
-          node: null
+          node: null,
         };
       } else {
         mainOutId = id;
@@ -145,18 +143,18 @@ export class MsProvider extends Component {
     this.setState({ nodes, update: !update });
   };
 
-  loadPatchCables = savedCables => {
+  loadPatchCables = (savedCables) => {
     this.setState({ cables: savedCables });
   };
 
-  setSbContent = sbContent => {
+  setSbContent = (sbContent) => {
     this.setState({ sbContent });
   };
 
   toggleSidebar = () => {
     const sidebar = this.state.sidebar;
     this.setState({
-      sidebar: !sidebar
+      sidebar: !sidebar,
     });
   };
 
@@ -168,7 +166,7 @@ export class MsProvider extends Component {
       cables,
       input: null,
       output: null,
-      updateCables: !updateCables
+      updateCables: !updateCables,
     });
   };
 
@@ -179,7 +177,7 @@ export class MsProvider extends Component {
     const input = {
       color,
       mod,
-      input: inputId
+      input: inputId,
     };
 
     this.setState({ input });
@@ -189,7 +187,7 @@ export class MsProvider extends Component {
     }
   };
 
-  createOutput = output => {
+  createOutput = (output) => {
     const { input } = this.state;
     this.setState({ output });
 
@@ -201,20 +199,72 @@ export class MsProvider extends Component {
   removeInput = (mod, inputId) => {
     const { cables, updateCables } = this.state;
     const output = Object.keys(cables).find(
-      key => cables[key].mod === mod && cables[key].input === inputId
+      (key) => cables[key].mod === mod && cables[key].input === inputId
     );
     delete cables[output];
     this.setState({ cables, input: null, output, updateCables: !updateCables });
   };
 
-  removeOutput = id => {
+  removeOutput = (id) => {
     const { cables, updateCables } = this.state;
     const input = cables[id];
     delete cables[id];
     this.setState({ cables, input, output: null, updateCables: !updateCables });
   };
 
-  clearContext = () => {};
+  _findMainOut = () => {
+    // find main out
+    let { nodes } = this.state;
+    let mainOut;
+    let mainOutId;
+    for (let k in nodes) {
+      if (nodes[k].type === "main-gain") {
+        mainOut = nodes[k];
+        mainOutId = k;
+      }
+    }
+    return { mainOutId, mainOut };
+  };
+
+  _removeLastCable = () => {
+    const { nodes, cables } = this.state;
+    // iterate over cables
+    for (let k in cables) {
+      // if there is a connection to main out
+      if (cables[k].input === "main-in") {
+        // disconnect what ever was connected
+        nodes[k].node.disconnect();
+      }
+    }
+  };
+
+  clearContext = () => {
+    // disconect what ever is connected to main out node
+    this._removeLastCable();
+
+    // get main out id and node
+    const { id, mainOut } = this._findMainOut();
+
+    // delete audio nodes
+    const nodes = {};
+
+    // recycle main out
+    nodes[id] = mainOut;
+
+    // update context
+    this.setState({
+      nodes,
+      cables: {},
+      input: null,
+      output: null,
+      error: null,
+      update: false,
+      updateCables: false,
+      sidebar: false,
+      sbContent: "",
+      loaded: [],
+    });
+  };
 
   getCurrentState = () => {
     const { nodes, cables } = this.state;
@@ -252,7 +302,7 @@ export class MsProvider extends Component {
       setSbContent: this.setSbContent,
       toggleSidebar: this.toggleSidebar,
       getCurrentState: this.getCurrentState,
-      clearContext: this.clearContext
+      clearContext: this.clearContext,
     };
 
     return (

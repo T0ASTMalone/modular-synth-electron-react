@@ -80,15 +80,54 @@ function App() {
     ipcRenderer.on("toggle-sidebar", (e, data) => toggleSidebar(e, data));
   }, [toggleSidebar]);
 
+  // file manegment effect
   useEffect(() => {
     const context = refCtx.current;
     const { getCurrentState } = context;
-    // event emitter for saving file
-    ipcRenderer.on("save-file", () => {
+
+    const save = () => {
       const { nodes, cables } = getCurrentState();
-      saveFile(nodes, cables);
+      return saveFile(nodes, cables);
+    };
+
+    const uSure = () => {
+      const options = {
+        type: "question",
+        title: "Hol' up?",
+        message:
+          "Would you like to save the current patch before opening a new one?",
+        buttons: ["yes", "no", "cancel"],
+        cancelId: 2,
+      };
+      return dialog.showMessageBoxSync(options);
+    };
+
+    // event emitter for saving file
+    ipcRenderer.on("save-patch", () => {
+      save();
     });
-    ipcRenderer.on("open-file", async () => {
+
+    // event emitter for opening a save file
+    ipcRenderer.on("open-patch", async () => {
+      const { nodes } = getCurrentState();
+      let confirm = 0;
+      if (Object.keys(nodes).length > 1) {
+        confirm = uSure();
+        switch (confirm) {
+          case 0:
+            const saved = save();
+            if (saved) {
+              context.clearContext();
+              return;
+            }
+            break;
+          case 1:
+            break;
+          default:
+            return;
+        }
+      }
+
       // open file explorer to have user select a file
       try {
         const file = await openFile();
@@ -110,6 +149,30 @@ function App() {
         return;
       }
     });
+
+    ipcRenderer.on("new-patch", async () => {
+      const { nodes } = getCurrentState();
+      let confirm = 0;
+      if (Object.keys(nodes).length > 1) {
+        confirm = uSure();
+        switch (confirm) {
+          case 0:
+            const saved = save();
+            if (saved) {
+              context.clearContext();
+              return;
+            }
+            break;
+          case 1:
+            context.clearContext();
+            break;
+          default:
+            return;
+        }
+      } else {
+        return;
+      }
+    });
   }, [refCtx]);
 
   return (
@@ -126,26 +189,23 @@ function App() {
         onDoubleClick={() => currentWindow.maximize()}
       />
       <main className="app-main">
-        {/* 
-          update so that depending on sidebar variable the sidebar component's class is changed
-          rather than just hiding the whole component
-        */}
         <Sidebar size={sidebar} />
 
         <Rack modSettings={modSettings ? modSettings : null} />
       </main>
-      {/* <div>
-        Icons made by{" "}
-        <a href="https://www.flaticon.com/authors/wichaiwi" title="Wichai.wi">
-          Wichai.wi
-        </a>{" "}
-        from{" "}
-        <a href="https://www.flaticon.com/" title="Flaticon">
-          www.flaticon.com
-        </a>
-      </div> */}
     </div>
   );
 }
 
 export default App;
+
+/* <div>
+  Icons made by{" "}
+  <a href="https://www.flaticon.com/authors/wichaiwi" title="Wichai.wi">
+    Wichai.wi
+  </a>{" "}
+  from{" "}
+  <a href="https://www.flaticon.com/" title="Flaticon">
+    www.flaticon.com
+  </a>
+</div> */
