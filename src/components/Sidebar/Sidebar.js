@@ -3,12 +3,31 @@ import "./Sidebar.css";
 
 import MsContext from "../../context/MsContext";
 import Explorer from "../Explorer/Explorer";
+import Search from "../Search/Search";
+import CurrentPatch from "../CurrentPatch/CurrentPatch";
 
-const Sidebar = props => {
+const Sidebar = (props) => {
   const context = useContext(MsContext);
 
   const { sbContent, toggleSidebar } = context;
+  console.log(sbContent);
   const { size } = props;
+
+  const renderSbContent = (c) => {
+    let content;
+    switch (c) {
+      case "current":
+        content = <CurrentPatch />;
+        break;
+      case "search":
+        content = <Search />;
+        break;
+      default:
+        content = <Explorer />;
+    }
+    return content;
+  };
+
   return (
     <div className={size ? "sidebar" : "sidebar sidebar--small"}>
       <div
@@ -25,13 +44,12 @@ const Sidebar = props => {
           &lt;
         </button>
       </div>
-      {/* <p className="test-content">{content}</p> */}
       <div
         className={
           size ? "sidebar-content" : "sidebar-content sidebar-content--small"
         }
       >
-        <Explorer />
+        {renderSbContent(sbContent)}
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import MsContext from "./context/MsContext";
 
 // TitleBar
-import github from "./assets/images/github.png";
+import sim from "./assets/images/simulation.svg";
 import { defaultTemplate } from "./app-menu";
 
 import TitleBar from "frameless-titlebar";
@@ -115,7 +115,7 @@ function App() {
   return (
     <div className="App">
       <TitleBar
-        icon={github} // app icon
+        icon={sim} // app icon
         currentWindow={currentWindow} // electron window instance
         platform={process.platform} // win32, darwin, linux
         menu={defaultTemplate}
@@ -131,8 +131,19 @@ function App() {
           rather than just hiding the whole component
         */}
         <Sidebar size={sidebar} />
+
         <Rack modSettings={modSettings ? modSettings : null} />
       </main>
+      {/* <div>
+        Icons made by{" "}
+        <a href="https://www.flaticon.com/authors/wichaiwi" title="Wichai.wi">
+          Wichai.wi
+        </a>{" "}
+        from{" "}
+        <a href="https://www.flaticon.com/" title="Flaticon">
+          www.flaticon.com
+        </a>
+      </div> */}
     </div>
   );
 }

@@ -49,7 +49,11 @@
   },
   "build": {
     "npmRebuild": false,
-    "appId": "com.electron.map"
+    "appId": "com.electron.map",
+    "productName": "modSynth",
+    "win": {
+      "icon": "build/icon.png"
+    }
   },
   "homepage": "./",
   "devDependencies": {

@@ -7,7 +7,7 @@ const Explorer = () => {
   const installed = ["Oscillator", "Filter", "Lfo", "Gain", "Reverb"];
   const context = useContext(MsContext);
 
-  const addModule = mod => {
+  const addModule = (mod) => {
     context.load(mod);
   };
 
@@ -27,11 +27,6 @@ const Explorer = () => {
             </div>
           );
         })}
-      </section>
-
-      <section className="explorer__uninstalled">
-        {/* list uninstalled modules */}
-        <h3>Explore</h3>
       </section>
     </div>
   );
