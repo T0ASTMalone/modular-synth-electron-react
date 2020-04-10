@@ -132,7 +132,7 @@ export const saveWave = (audiobuffer) => {
   const wav = toWav(audiobuffer);
   const chunk = new Uint8Array(wav);
   try {
-    fs.writeFileSync("blob.wav", new Buffer(chunk));
+    fs.writeFileSync("test.wav", new Buffer(chunk));
   } catch (err) {
     console.log(err);
     return err;
