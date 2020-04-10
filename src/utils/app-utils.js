@@ -1,4 +1,5 @@
 const fs = window.require("fs");
+const toWav = require("audiobuffer-to-wav");
 const { dialog } = window.require("electron").remote;
 
 // add format file for reading and
@@ -124,4 +125,17 @@ export const openFile = async () => {
   } catch (err) {
     return err;
   }
+};
+//Buffer.from(new Uint8Array(this.result)
+
+export const saveWave = (audiobuffer) => {
+  const wav = toWav(audiobuffer);
+  const chunk = new Uint8Array(wav);
+  try {
+    fs.writeFileSync("blob.wav", new Buffer(chunk));
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+  console.log("saved file");
 };

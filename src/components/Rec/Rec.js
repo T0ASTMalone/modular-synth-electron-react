@@ -1,39 +1,72 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import "./Rec.css";
 import MsContext from "../../context/MsContext";
 import { useGetOut } from "../../utils/module-utils";
+import { saveWave } from "../../utils/app-utils";
 
 const Rec = () => {
+  // set recorder in state when new recording starts
+  const [recorder, setRecorder] = useState(null);
   const context = useContext(MsContext);
   const dest = context.mediaStreamDestination;
+  const { ctx } = context;
   // get main node
   const main = useGetOut();
-  // create MediaRecorder options
 
-  // create media recorder
+  // create MediaRecorder options
+  // audioBitsPerSecond : will be set in settings of app
+
   let mediaRecorder;
 
   const rec = () => {
+    // create new recorder
     mediaRecorder = new MediaRecorder(dest.stream);
-    // connect main to stream destination
+
+    // connect main output to stream destination
     main.connect(dest);
+
+    console.log("started recording");
     // start media recorder
     mediaRecorder.start();
-    console.log("started recordingf");
+
+    // set recorder in state
+    setRecorder(mediaRecorder);
   };
 
-  const ondataavailable = (data) => {
+  const ondataavailable = async (e) => {
     console.log("formating data and promting user to save data");
-    //store data and ask to save
+
+    // get array buffer from media recodrer
+    const arrBuffer = await e.data.arrayBuffer();
+
+    // decode audio data
+    ctx.decodeAudioData(arrBuffer, (audioBuffer) => {
+      // prompt user to save recording
+      // or store recording and prompt to save at the end of a session
+      // or have allow for user to say save all recordings automatically
+
+      // testing save audio as .wav file
+      saveWave(audioBuffer);
+    });
   };
 
   const stop = () => {
-    console.log("stopped recording");
-    // stop media recorder
-    mediaRecorder.stop();
+    // if there is no recorder in state do nothing
+    if (!recorder) {
+      return;
+    }
 
-    // ondataavailable fires so add a call back function to handle that
-    mediaRecorder.ondataavailable = ondataavailable;
+    console.log("stopped recording");
+    // using the recorder in state
+
+    // stop media recorder
+    recorder.stop();
+
+    // disconnect main out from media stream destination
+    main.disconnect(dest);
+
+    // set ondataavailble
+    recorder.ondataavailable = ondataavailable;
   };
 
   const play = () => {

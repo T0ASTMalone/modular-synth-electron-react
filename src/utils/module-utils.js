@@ -150,9 +150,7 @@ export const useGetOut = () => {
   const { nodes } = context;
   let mainGain;
   for (let k in nodes) {
-    console.log(nodes[k]);
     if (nodes[k].type === "main-gain") {
-      console.log(nodes[k]);
       mainGain = nodes[k].node;
     }
   }
