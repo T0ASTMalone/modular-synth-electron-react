@@ -7,6 +7,7 @@ const MsContext = React.createContext({
   update: false,
   updateCables: false,
   ctx: null,
+  mediaStreamDestination: null,
   nodes: {},
   cables: {},
   input: null,
@@ -15,6 +16,7 @@ const MsContext = React.createContext({
   sbContent: "",
   loaded: [],
   createContext: () => {},
+  setMediaStreamDestination: () => {},
   addNode: () => {},
   createInput: () => {},
   createOutput: () => {},
@@ -58,6 +60,10 @@ export class MsProvider extends Component {
 
   createCtx = (ctx) => {
     this.setState({ ctx });
+  };
+
+  setMediaStreamDestination = (mediaStreamDestination) => {
+    this.setState({ mediaStreamDestination });
   };
 
   // pass in type and id (id is optional)
@@ -275,6 +281,7 @@ export class MsProvider extends Component {
     const value = {
       // state
       ctx: this.state.ctx,
+      mediaStreamDestination: this.state.mediaStreamDestination,
       nodes: this.state.nodes,
       cables: this.state.cables,
       error: this.state.error,
@@ -290,6 +297,7 @@ export class MsProvider extends Component {
 
       // methods
       createCtx: this.createCtx,
+      setMediaStreamDestination: this.setMediaStreamDestination,
       addNode: this.addNode,
       createInput: this.createInput,
       createOutput: this.createOutput,

@@ -7,15 +7,11 @@ import React, {
 } from "react";
 import "./App.css";
 import { saveFile, openFile } from "./utils/app-utils";
-// components
 import Rack from "./components/Rack/Rack";
 import Sidebar from "./components/Sidebar/Sidebar";
 import MsContext from "./context/MsContext";
-
-// TitleBar
 import sim from "./assets/images/simulation.svg";
 import { defaultTemplate } from "./app-menu";
-
 import TitleBar from "frameless-titlebar";
 
 const { ipcRenderer, remote } = window.require("electron");
@@ -25,7 +21,6 @@ const currentWindow = remote.getCurrentWindow();
 function App() {
   const context = useContext(MsContext);
   const [modSettings, setModSettings] = useState(null);
-
   const { sidebar, sbContent } = context;
 
   // create reference to context for using its methods
@@ -73,6 +68,8 @@ function App() {
   and move to that useEffect
   
   */
+  // set up event emitter for toggling the sidebare from
+  // titlebar
   useEffect(() => {
     // remove all listeners for toggle sidebar
     ipcRenderer.removeAllListeners("toggle-sidebar");
@@ -85,11 +82,13 @@ function App() {
     const context = refCtx.current;
     const { getCurrentState } = context;
 
+    // save file
     const save = () => {
       const { nodes, cables } = getCurrentState();
       return saveFile(nodes, cables);
     };
 
+    // dialog for confirming open new/saved patch
     const uSure = () => {
       const options = {
         type: "question",
@@ -150,6 +149,7 @@ function App() {
       }
     });
 
+    // event emitter for  opening a new project
     ipcRenderer.on("new-patch", async () => {
       const { nodes } = getCurrentState();
       let confirm = 0;
@@ -199,6 +199,7 @@ function App() {
 
 export default App;
 
+// the following is for the app icon (build/icon.png) but will change later
 /* <div>
   Icons made by{" "}
   <a href="https://www.flaticon.com/authors/wichaiwi" title="Wichai.wi">

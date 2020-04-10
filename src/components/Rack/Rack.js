@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import "./Rack.css";
 import MsContext from "../../context/MsContext";
 import MainGain from "../modules/MainGain/MainGain";
+import Rec from "../Rec/Rec";
 
 const Rack = (props) => {
   const [loadedModules, loadModules] = useState([]);
@@ -66,8 +67,11 @@ const Rack = (props) => {
   };
 
   useEffect(() => {
+    const context = latestContext.current;
     const ctx = new AudioContext();
-    latestContext.current.createCtx(ctx);
+    const mediaStream = ctx.createMediaStreamDestination();
+    context.createCtx(ctx);
+    context.setMediaStreamDestination(mediaStream);
   }, [latestContext]);
 
   const removeModule = (id) => {
@@ -78,12 +82,13 @@ const Rack = (props) => {
 
   return (
     <div className="rack">
-      <div className="rack__controls">
-        {/* rack controls */}
+      {/* <div className="rack__controls">
+      
         <button className="button">Stop</button>
         <button className="button">Play</button>
         <button className="button">Rec</button>
-      </div>
+      </div>*/}
+      <Rec />
 
       <div className="rack__modules">
         {/* 

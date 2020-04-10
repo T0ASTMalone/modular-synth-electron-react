@@ -1,7 +1,7 @@
 import { useEffect, useContext, useState } from "react";
 import MsContext from "../context/MsContext";
 
-export const useCreateConnection = id => {
+export const useCreateConnection = (id) => {
   const context = useContext(MsContext);
   const { cables, nodes, updateCables } = context;
   const [isConnected, setIsConnected] = useState(false);
@@ -38,7 +38,7 @@ export const useCreateConnection = id => {
   return isConnected;
 };
 
-export const useIsOutput = id => {
+export const useIsOutput = (id) => {
   const context = useContext(MsContext);
   const { cables, updateCables } = context;
   const [isConnected, setIsConnected] = useState({});
@@ -57,7 +57,7 @@ export const useIsOutput = id => {
   return isConnected;
 };
 
-export const useIsModulated = id => {
+export const useIsModulated = (id) => {
   const context = useContext(MsContext);
   const { cables, updateCables } = context;
   const [isConnected, setIsConnected] = useState({});
@@ -79,7 +79,7 @@ export const useIsModulated = id => {
   return isConnected;
 };
 
-const getMaxDis = audioParam => {
+const getMaxDis = (audioParam) => {
   let { minValue, maxValue } = audioParam;
   const min = minValue.toFixed(3).split("");
   const max = maxValue.toFixed(3).split("");
@@ -104,7 +104,7 @@ const getMaxDis = audioParam => {
   return mDis;
 };
 
-const getMaxDisInt = audioParam => {
+const getMaxDisInt = (audioParam) => {
   let { minValue, maxValue } = audioParam;
   const mDis = Math.abs(minValue - maxValue) * 0.1;
   return mDis;
@@ -143,4 +143,19 @@ export const useCheckDistance = () => {
   };
 
   return setAudioParam;
+};
+
+export const useGetOut = () => {
+  const context = useContext(MsContext);
+  const { nodes } = context;
+  let mainGain;
+  for (let k in nodes) {
+    console.log(nodes[k]);
+    if (nodes[k].type === "main-gain") {
+      console.log(nodes[k]);
+      mainGain = nodes[k].node;
+    }
+  }
+
+  return mainGain;
 };
