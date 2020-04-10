@@ -8,6 +8,10 @@ const { dialog } = window.require("electron").remote;
 // other files such as in context when opening a saved file
 // by double clicking it
 
+// change to variable in settings i.e. wav, mp3
+// update constant to use that variable
+const audioFormat = "*.wav";
+
 const createSettings = (nodes) => {
   // get settings for each node
   const settings = Object.keys(nodes).map((mod) => {
@@ -126,16 +130,25 @@ export const openFile = async () => {
     return err;
   }
 };
-//Buffer.from(new Uint8Array(this.result)
 
 export const saveWave = (audiobuffer) => {
+  const options = {
+    filters: [{ name: audioFormat, extensions: [audioFormat] }],
+    title: "Save Recording",
+  };
+
+  const path = dialog.showSaveDialogSync(options);
+
+  if (!path) {
+    return;
+  }
+
   const wav = toWav(audiobuffer);
   const chunk = new Uint8Array(wav);
   try {
-    fs.writeFileSync("test.wav", new Buffer(chunk));
+    fs.writeFileSync(path, new Buffer(chunk));
   } catch (err) {
     console.log(err);
     return err;
   }
-  console.log("saved file");
 };

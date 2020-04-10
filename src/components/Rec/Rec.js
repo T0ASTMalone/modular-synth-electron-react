@@ -25,7 +25,6 @@ const Rec = () => {
     // connect main output to stream destination
     main.connect(dest);
 
-    console.log("started recording");
     // start media recorder
     mediaRecorder.start();
 
@@ -34,8 +33,6 @@ const Rec = () => {
   };
 
   const ondataavailable = async (e) => {
-    console.log("formating data and promting user to save data");
-
     // get array buffer from media recodrer
     const arrBuffer = await e.data.arrayBuffer();
 
@@ -47,6 +44,7 @@ const Rec = () => {
 
       // testing save audio as .wav file
       saveWave(audioBuffer);
+      ctx.resume();
     });
   };
 
@@ -55,16 +53,14 @@ const Rec = () => {
     if (!recorder) {
       return;
     }
-
-    console.log("stopped recording");
     // using the recorder in state
 
     // stop media recorder
     recorder.stop();
-
+    // pause audio context output
+    ctx.suspend();
     // disconnect main out from media stream destination
     main.disconnect(dest);
-
     // set ondataavailble
     recorder.ondataavailable = ondataavailable;
   };
