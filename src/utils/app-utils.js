@@ -70,13 +70,23 @@ export const saveFile = (nodes, cables) => {
   if (!path) {
     return false;
   }
+  fs.mkdir(path, { recursive: true }, (path) => {
+    try {
+      console.log("ran save file");
+      fs.writeFileSync(path, saveFile);
+    } catch (err) {
+      dialog.showErrorBox("Failed to Save", err);
+      return false;
+    }
+  });
 
-  try {
-    fs.writeFileSync(path, saveFile);
-  } catch (err) {
-    dialog.showErrorBox("Failed to Save", err);
-    return false;
-  }
+  // try {
+  //   console.log("ran save file");
+  //   fs.writeFileSync(path, saveFile);
+  // } catch (err) {
+  //   dialog.showErrorBox("Failed to Save", err);
+  //   return false;
+  // }
   return true;
 };
 

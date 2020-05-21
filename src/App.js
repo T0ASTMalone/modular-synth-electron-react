@@ -182,7 +182,7 @@ function App() {
         currentWindow={currentWindow} // electron window instance
         platform={process.platform} // win32, darwin, linux
         menu={defaultTemplate}
-        title="frameless app"
+        title="modSynth"
         onClose={() => currentWindow.close()}
         onMinimize={() => currentWindow.minimize()}
         onMaximize={() => currentWindow.maximize()}

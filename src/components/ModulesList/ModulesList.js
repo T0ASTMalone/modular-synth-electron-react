@@ -14,18 +14,20 @@ const ModulesList = () => {
     <div className="explorer">
       <section className="explorer__installed">
         {/* list installed modules */}
-        <h3>Modules</h3>
-        {installed.map((mod, i) => {
-          return (
-            <div
-              key={i}
-              onDoubleClick={() => addModule(mod)}
-              className="explorer__module"
-            >
-              {mod}
-            </div>
-          );
-        })}
+        <h3 className="explorer__title">Modules</h3>
+        <ul className="explorer__modules">
+          {installed.map((mod, i) => {
+            return (
+              <li
+                key={i}
+                onDoubleClick={() => addModule(mod)}
+                className="explorer__module"
+              >
+                {mod}
+              </li>
+            );
+          })}
+        </ul>
       </section>
     </div>
   );

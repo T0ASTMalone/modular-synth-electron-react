@@ -82,14 +82,7 @@ const Rack = (props) => {
 
   return (
     <div className="rack">
-      {/* <div className="rack__controls">
-      
-        <button className="button">Stop</button>
-        <button className="button">Play</button>
-        <button className="button">Rec</button>
-      </div>*/}
       <Rec />
-
       <div className="rack__modules">
         {/* 
           check if there are any current audio modules and 
@@ -111,7 +104,6 @@ const Rack = (props) => {
         {/* main output for the rack will always be loaded */}
         {context.ctx ? <MainGain newId={mainOutId} /> : <></>}
       </div>
-
       <div className="rack__visualAudio">
         {/* 
           General information about the output 

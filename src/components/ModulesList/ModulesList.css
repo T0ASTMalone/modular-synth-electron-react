@@ -3,10 +3,22 @@
   flex-direction: column;
 }
 
+.explorer__title {
+  text-align: left;
+  margin-left: 20px;
+}
+
+.explorer__modules {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+  text-align: left;
+}
+
 .explorer__module {
   height: 25px;
   cursor: pointer;
-  padding: 2px;
+  padding: 2px 20px;
   user-select: none; /* standard syntax */
   -webkit-user-select: none; /* webkit (safari, chrome) browsers */
   -moz-user-select: none; /* mozilla browsers */

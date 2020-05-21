@@ -8,10 +8,10 @@ import CurrentPatch from "../CurrentPatch/CurrentPatch";
 
 const Sidebar = (props) => {
   const context = useContext(MsContext);
-
   const { sbContent, toggleSidebar } = context;
   const { size } = props;
 
+  // make current patch and modules list the same component with different data passed to it.
   const renderSbContent = (c) => {
     let content;
     switch (c) {
