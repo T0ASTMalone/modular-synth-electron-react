@@ -141,6 +141,17 @@ export const openFile = async () => {
   }
 };
 
+const openProject = () => {
+  const options = {
+    title: "Open Project",
+    properties: ["openDirectory"],
+  };
+
+  const path = dialog.showOpenDialogSync(options);
+
+  console.log(path);
+};
+
 export const saveWave = (audiobuffer) => {
   const options = {
     filters: [{ name: audioFormat, extensions: [audioFormat] }],

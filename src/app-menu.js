@@ -69,6 +69,14 @@ export const defaultTemplate = [
           return mainWindow.webContents.send("toggle-sidebar", data);
         },
       },
+      {
+        id: "04",
+        label: "recordings",
+
+        click: (data) => {
+          return mainWindow.webContents.send("toggle-sidebar", data);
+        },
+      },
     ],
   },
   {

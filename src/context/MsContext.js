@@ -102,6 +102,7 @@ export class MsProvider extends Component {
   };
 
   unload = (id) => {
+    console.log("ran with id: ", id);
     const { nodes, update, cables, updateCables } = this.state;
 
     // remove any connections that have

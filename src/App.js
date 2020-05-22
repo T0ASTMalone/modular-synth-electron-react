@@ -10,7 +10,7 @@ import { saveFile, openFile } from "./utils/app-utils";
 import Rack from "./components/Rack/Rack";
 import Sidebar from "./components/Sidebar/Sidebar";
 import MsContext from "./context/MsContext";
-import sim from "./assets/images/simulation.svg";
+import sim from "./assets/images/github.png";
 import { defaultTemplate } from "./app-menu";
 import TitleBar from "frameless-titlebar";
 
@@ -178,7 +178,7 @@ function App() {
   return (
     <div className="App">
       <TitleBar
-        icon={sim} // app icon
+        // icon={sim} // app icon
         currentWindow={currentWindow} // electron window instance
         platform={process.platform} // win32, darwin, linux
         menu={defaultTemplate}

@@ -5,6 +5,7 @@ import MsContext from "../../context/MsContext";
 import ModulesList from "../ModulesList/ModulesList";
 import Search from "../Search/Search";
 import CurrentPatch from "../CurrentPatch/CurrentPatch";
+import Recordings from "../Recordings/Recordings";
 
 const Sidebar = (props) => {
   const context = useContext(MsContext);
@@ -15,6 +16,9 @@ const Sidebar = (props) => {
   const renderSbContent = (c) => {
     let content;
     switch (c) {
+      case "recordings":
+        content = <Recordings />;
+        break;
       case "current":
         content = <CurrentPatch />;
         break;

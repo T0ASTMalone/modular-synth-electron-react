@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import "./ModulesList.css";
 import MsContext from "../../context/MsContext";
+import PatchListItem from "../PatchListItem/PatchListItem";
 
 const ModulesList = () => {
   const installed = ["Oscillator", "Filter", "Lfo", "Gain", "Reverb"];
@@ -15,16 +16,15 @@ const ModulesList = () => {
       <section className="explorer__installed">
         {/* list installed modules */}
         <h3 className="explorer__title">Modules</h3>
-        <ul className="explorer__modules">
+        <ul className="sidebar-list">
           {installed.map((mod, i) => {
             return (
-              <li
-                key={i}
-                onDoubleClick={() => addModule(mod)}
-                className="explorer__module"
-              >
-                {mod}
-              </li>
+              <PatchListItem
+                key={mod}
+                ui={false}
+                dbClick={addModule}
+                item={mod}
+              />
             );
           })}
         </ul>
