@@ -19,10 +19,9 @@ import MsContext from "../../../context/MsContext";
 import { useCreateConnection } from "../../../utils/module-utils";
 
 const Lfo = (props) => {
-  const { removeModule, id, values } = props;
+  const { id, values } = props;
 
   const [freq, updateFreq] = useState(1);
-  const [selected, select] = useState(null);
 
   const context = useContext(MsContext);
   const { nodes } = context;
@@ -79,26 +78,12 @@ const Lfo = (props) => {
     nodes[id].node.type = wav;
   };
 
-  const mouseIn = () => {
-    select(true);
-  };
-
-  const mouseOut = () => {
-    select(false);
-  };
-
   return (
-    <div className="module osc" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+    <div className="module osc">
       {/* remove module button*/}
-      <div className="close-button">
-        {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
-            X
-          </button>
-        ) : (
-          <p className="module__text--bold">Lfo</p>
-        )}
-      </div>
+
+      <p className="module__text--bold">Lfo</p>
+
       {/* outputs */}
       <div className="osc__outputs">
         <Output title="out" output={isOutput} id={id} />

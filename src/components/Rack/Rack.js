@@ -60,9 +60,7 @@ const Rack = (props) => {
     if (loadedMod) {
       const values = modSettings ? modSettings[id] : null;
       const Module = loadedMod.default;
-      return (
-        <Module key={i} id={id} values={values} removeModule={removeModule} />
-      );
+      return <Module key={i} id={id} values={values} />;
     }
   };
 
@@ -73,10 +71,6 @@ const Rack = (props) => {
     context.createCtx(ctx);
     context.setMediaStreamDestination(mediaStream);
   }, [latestContext]);
-
-  const removeModule = (id) => {
-    context.unload(id);
-  };
 
   let mainOutId;
 

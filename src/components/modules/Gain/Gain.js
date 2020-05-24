@@ -11,8 +11,7 @@ import {
 const Gain = (props) => {
   // gain value
   const [gainValue, setGain] = useState(4.4);
-  const [selected, select] = useState(null);
-  const { removeModule, id, values } = props;
+  const { id, values } = props;
 
   const context = useContext(MsContext);
   const setAudioParam = useCheckDistance();
@@ -44,25 +43,11 @@ const Gain = (props) => {
 
   // if an id was not passed in as props use the
   // generated id
-  const mouseIn = () => {
-    select(true);
-  };
-
-  const mouseOut = () => {
-    select(false);
-  };
 
   return (
-    <div className="module gain" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
-      <div className="close-button">
-        {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
-            X
-          </button>
-        ) : (
-          <p className="module__text--bold">Gain</p>
-        )}
-      </div>
+    <div className="module gain">
+      <p className="module__text--bold">Gain</p>
+
       {/* knob for controlling gain */}
       <Knob
         min={0}

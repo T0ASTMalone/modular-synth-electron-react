@@ -10,8 +10,7 @@ import {
 
 const Oscillator = (props) => {
   const [freq, setFreq] = useState(440);
-  const [selected, select] = useState(null);
-  const { removeModule, id, values } = props;
+  const { id, values } = props;
 
   const context = useContext(MsContext);
   const setAudioParam = useCheckDistance();
@@ -49,26 +48,10 @@ const Oscillator = (props) => {
     node.type = wav;
   };
 
-  const mouseIn = () => {
-    select(true);
-  };
-
-  const mouseOut = () => {
-    select(false);
-  };
-
   return (
-    <div className="module osc" onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
-      {/* remove module button*/}
-      <div className="close-button">
-        {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
-            X
-          </button>
-        ) : (
-          <p className="module__text--bold">Oscillator</p>
-        )}
-      </div>
+    <div className="module osc">
+      <p className="module__text--bold">Oscillator</p>
+
       {/* {selected ? <button className='module__button'>X</button> : <></>} */}
       {/* outputs */}
       <div className="osc__outputs">

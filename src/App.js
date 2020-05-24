@@ -6,12 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import "./App.css";
-import {
-  saveFile,
-  openProject,
-  createTmpProject,
-  checkUnsavedRec,
-} from "./utils/app-utils";
+import { saveFile, openProject, createTmpProject } from "./utils/app-utils";
 import Rack from "./components/Rack/Rack";
 import Sidebar from "./components/Sidebar/Sidebar";
 import MsContext from "./context/MsContext";
@@ -131,7 +126,7 @@ function App() {
 
     // event emitter for opening a save file
     ipcRenderer.on("open-patch", async () => {
-      const { nodes, tmpPathobj, rootPath } = getCurrentState();
+      const { nodes, tmpPathobj } = getCurrentState();
 
       let confirm = 0;
       if (Object.keys(nodes).length > 1) {
@@ -140,7 +135,6 @@ function App() {
           case 0:
             const saved = save();
             if (saved) {
-              checkUnsavedRec(`${rootPath}/recordings/tmpRec`);
               context.clearContext();
               return;
             }
@@ -232,7 +226,6 @@ function App() {
       />
       <main className="app-main">
         <Sidebar size={sidebar} />
-
         <Rack modSettings={modSettings ? modSettings : null} />
       </main>
     </div>

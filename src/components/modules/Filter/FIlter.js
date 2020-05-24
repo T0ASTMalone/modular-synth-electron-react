@@ -15,9 +15,8 @@ const Filter = (props) => {
   const [gain, setGain] = useState(3.4);
   // const [inId, setInId] = useState(null);
   const [type, setType] = useState(0);
-  const [selected, select] = useState(null);
 
-  const { removeModule, id, values } = props;
+  const { id, values } = props;
 
   const context = useContext(MsContext);
   const output = useCreateConnection(id);
@@ -110,30 +109,12 @@ const Filter = (props) => {
     // setInId(inId);
   }, [refCtx, values, id]);
 
-  const mouseIn = () => {
-    select(true);
-  };
-
-  const mouseOut = () => {
-    select(false);
-  };
-
   return (
-    <div
-      className="module filter"
-      onMouseEnter={mouseIn}
-      onMouseLeave={mouseOut}
-    >
+    <div className="module filter">
       {/* remove module button*/}
-      <div className="close-button">
-        {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
-            X
-          </button>
-        ) : (
-          <p className="module__text--bold">{filterTypes[type]}</p>
-        )}
-      </div>
+
+      <p className="module__text--bold">{filterTypes[type]}</p>
+
       {/* inputs for all filter types */}
       <div className="filter__ins">
         <Input title="in" id={id} name="main-in" />

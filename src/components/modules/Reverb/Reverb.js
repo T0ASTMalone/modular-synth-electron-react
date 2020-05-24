@@ -11,11 +11,10 @@ import {
 const Reverb = (props) => {
   // reverb value
   const [reverb, setReverb] = useState(3.4);
-  const [selected, select] = useState(null);
   const [duration, setDuration] = useState(4);
   const [decay, setDecay] = useState(4);
   const [reverse, setReverse] = useState(false);
-  const { removeModule, id, values } = props;
+  const { id, values } = props;
 
   const context = useContext(MsContext);
   const outputting = useCreateConnection(id);
@@ -103,29 +102,11 @@ const Reverb = (props) => {
 
   // if an id was not passed in as props use the
   // generated id
-  const mouseIn = () => {
-    select(true);
-  };
-
-  const mouseOut = () => {
-    select(false);
-  };
 
   return (
-    <div
-      className="module reverb"
-      onMouseEnter={mouseIn}
-      onMouseLeave={mouseOut}
-    >
-      <div className="close-button">
-        {selected ? (
-          <button className="module__button" onClick={() => removeModule(id)}>
-            X
-          </button>
-        ) : (
-          <p className="module__text--bold">Reverb</p>
-        )}
-      </div>
+    <div className="module reverb">
+      <p className="module__text--bold">Reverb</p>
+
       {/* knob for controlling reverb duration */}
 
       <Knob
