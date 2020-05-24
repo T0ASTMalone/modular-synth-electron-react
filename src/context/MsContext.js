@@ -8,6 +8,8 @@ const MsContext = React.createContext({
   updateCables: false,
   ctx: null,
   mediaStreamDestination: null,
+  tmpPathobj: {},
+  rootPath: "",
   nodes: {},
   cables: {},
   input: null,
@@ -30,6 +32,8 @@ const MsContext = React.createContext({
   toggleSidebar: () => {},
   getCurrentState: () => {},
   clearContext: () => {},
+  setRootPath: () => {},
+  setTmpobj: () => {},
 });
 
 export default MsContext;
@@ -49,6 +53,8 @@ export class MsProvider extends Component {
       sidebar: false,
       sbContent: "",
       loaded: [],
+      tmpPathobj: {},
+      rootPath: "",
     };
   }
 
@@ -64,6 +70,14 @@ export class MsProvider extends Component {
 
   setMediaStreamDestination = (mediaStreamDestination) => {
     this.setState({ mediaStreamDestination });
+  };
+
+  setTmpobj = (tmpPathobj) => {
+    this.setState({ tmpPathobj });
+  };
+
+  setRootPath = (rootPath) => {
+    this.setState({ rootPath });
   };
 
   // pass in type and id (id is optional)
@@ -258,6 +272,9 @@ export class MsProvider extends Component {
     // recycle main out
     nodes[id] = mainOut;
 
+    const { tmpPathobj } = this.state;
+
+    tmpPathobj.removeCallback();
     // update context
     this.setState({
       nodes,
@@ -270,12 +287,13 @@ export class MsProvider extends Component {
       sidebar: false,
       sbContent: "",
       loaded: [],
+      tmpPathobj: {},
     });
   };
 
   getCurrentState = () => {
-    const { nodes, cables } = this.state;
-    return { nodes, cables };
+    const { nodes, cables, tmpPathobj } = this.state;
+    return { nodes, cables, tmpPathobj };
   };
 
   render() {
@@ -291,6 +309,8 @@ export class MsProvider extends Component {
       loaded: this.state.loaded,
       update: this.state.update,
       updateCables: this.state.updateCables,
+      tmpPathobj: this.state.tmpPathobj,
+      rootPath: this.state.rootPath,
 
       //output only for testing
       output: this.state.output,
@@ -312,6 +332,8 @@ export class MsProvider extends Component {
       toggleSidebar: this.toggleSidebar,
       getCurrentState: this.getCurrentState,
       clearContext: this.clearContext,
+      setTmpobj: this.setTmpobj,
+      setRootPath: this.setRootPath,
     };
 
     return (

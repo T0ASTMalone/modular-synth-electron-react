@@ -6,11 +6,15 @@ import React, {
   useCallback,
 } from "react";
 import "./App.css";
-import { saveFile, openFile } from "./utils/app-utils";
+import {
+  saveFile,
+  openProject,
+  createTmpProject,
+  checkUnsavedRec,
+} from "./utils/app-utils";
 import Rack from "./components/Rack/Rack";
 import Sidebar from "./components/Sidebar/Sidebar";
 import MsContext from "./context/MsContext";
-import sim from "./assets/images/github.png";
 import { defaultTemplate } from "./app-menu";
 import TitleBar from "frameless-titlebar";
 
@@ -26,6 +30,7 @@ function App() {
   // create reference to context for using its methods
   // inside of use effect
   const refCtx = useRef(context);
+
   const toggleSidebar = useCallback(
     (e, data) => {
       // add function that grabs sidebar and sbContent from context and use
@@ -80,13 +85,31 @@ function App() {
   // file manegment effect
   useEffect(() => {
     const context = refCtx.current;
-    const { getCurrentState } = context;
+    const { getCurrentState, setTmpobj, setRootPath } = context;
 
     // save file
     const save = () => {
       const { nodes, cables } = getCurrentState();
+      // if this is a new project
       return saveFile(nodes, cables);
+      // if this is an existing project
+      // add saveExistingProject here
     };
+
+    // create empty patch dir
+    const createNewPatch = async () => {
+      console.log("ran create init patch");
+      // get tmp dir object which contains clean up method
+      // that will delete the tmp dir
+      const tmpPathobj = await createTmpProject();
+      // set tmpPathobj in context
+      setTmpobj(tmpPathobj);
+      // set project root path in context
+      setRootPath(tmpPathobj.name);
+    };
+
+    // create initial empty patch
+    createNewPatch();
 
     // dialog for confirming open new/saved patch
     const uSure = () => {
@@ -108,7 +131,8 @@ function App() {
 
     // event emitter for opening a save file
     ipcRenderer.on("open-patch", async () => {
-      const { nodes } = getCurrentState();
+      const { nodes, tmpPathobj, rootPath } = getCurrentState();
+
       let confirm = 0;
       if (Object.keys(nodes).length > 1) {
         confirm = uSure();
@@ -116,20 +140,34 @@ function App() {
           case 0:
             const saved = save();
             if (saved) {
+              checkUnsavedRec(`${rootPath}/recordings/tmpRec`);
               context.clearContext();
               return;
             }
             break;
           case 1:
+            context.clearContext();
             break;
           default:
             return;
         }
       }
+      console.log();
 
       // open file explorer to have user select a file
       try {
-        const file = await openFile();
+        // const file = await openFile();
+        const { file, path, tmpobj } = await openProject();
+
+        // if there is a previous tmp dir remove it
+        if (tmpPathobj.name) {
+          tmpPathobj.removeCallback();
+        }
+
+        // set new tmp dir
+        setTmpobj(tmpobj);
+        setRootPath(path);
+        console.log(file, path);
         if (!file) {
           return;
         }
@@ -144,7 +182,8 @@ function App() {
         setModSettings(moduleSettings);
         await context.loadPatch(loadedModules, cables);
       } catch (err) {
-        dialog.showErrorBox("Error loading patch", err);
+        console.log(err);
+        dialog.showErrorBox("Error loading patch", err.message);
         return;
       }
     });
@@ -160,11 +199,13 @@ function App() {
             const saved = save();
             if (saved) {
               context.clearContext();
+              createNewPatch();
               return;
             }
             break;
           case 1:
             context.clearContext();
+            createNewPatch();
             break;
           default:
             return;
@@ -175,6 +216,7 @@ function App() {
     });
   }, [refCtx]);
 
+  console.log(context);
   return (
     <div className="App">
       <TitleBar
@@ -198,15 +240,3 @@ function App() {
 }
 
 export default App;
-
-// the following is for the app icon (build/icon.png) but will change later
-/* <div>
-  Icons made by{" "}
-  <a href="https://www.flaticon.com/authors/wichaiwi" title="Wichai.wi">
-    Wichai.wi
-  </a>{" "}
-  from{" "}
-  <a href="https://www.flaticon.com/" title="Flaticon">
-    www.flaticon.com
-  </a>
-</div> */

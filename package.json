@@ -19,6 +19,7 @@
     "react-rotary-knob": "^1.1.8",
     "react-scripts": "^3.4.1",
     "shortid": "^2.2.15",
+    "tmp": "^0.2.1",
     "uuid": "^3.4.0"
   },
   "scripts": {

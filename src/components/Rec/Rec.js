@@ -9,7 +9,7 @@ const Rec = () => {
   const [recorder, setRecorder] = useState(null);
   const context = useContext(MsContext);
   const dest = context.mediaStreamDestination;
-  const { ctx } = context;
+  const { ctx, rootPath } = context;
   // get main node
   const main = useGetOut();
 
@@ -43,7 +43,7 @@ const Rec = () => {
       // or have allow for user to say save all recordings automatically
 
       // testing save audio as .wav file
-      saveWave(audioBuffer);
+      saveWave(audioBuffer, rootPath);
       ctx.resume();
     });
   };
