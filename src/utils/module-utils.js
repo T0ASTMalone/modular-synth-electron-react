@@ -1,16 +1,20 @@
 import { useEffect, useContext, useState } from "react";
+import { useLogger } from "./hooks/logger";
 import MsContext from "../context/MsContext";
 
 export const useCreateConnection = (id) => {
   const context = useContext(MsContext);
   const { cables, nodes, updateCables } = context;
   const [isConnected, setIsConnected] = useState(false);
+  const logger = useLogger("useCreateConnection");
 
   useEffect(() => {
     const { node } = nodes[id];
 
     const out = cables[id];
     // if this module is an output in a current cable
+    // outputs are the keys for the cables
+    // cables = {outputId : {input info}, ...}
     if (out && node) {
       const { mod, input } = out;
       // get cables module and input on that module
@@ -19,8 +23,14 @@ export const useCreateConnection = (id) => {
         if (input === "main-in") {
           // if input is main in, connect to module
           node.connect(nodes[mod].node);
+          logger.info(
+            `connecting node ${nodes[id].type} to ${nodes[mod].type}`
+          );
         } else {
           // if input is not main connect to corresponding audio parameter
+          logger.info(
+            `connecting node ${nodes[id].type} to ${nodes[mod].type} audio param ${input}`
+          );
           node.connect(nodes[mod].node[input]);
         }
         setIsConnected(out.color);
@@ -145,6 +155,7 @@ export const useCheckDistance = () => {
   return setAudioParam;
 };
 
+// gets main output node
 export const useGetOut = () => {
   const context = useContext(MsContext);
   const { nodes } = context;

@@ -1,8 +1,10 @@
+import Logger from "../services/logger";
+
 const fs = window.require("fs");
 const tmp = window.require("tmp");
 const toWav = require("audiobuffer-to-wav");
 const { dialog, process } = window.require("electron").remote;
-
+const logger = new Logger("app-utils");
 // add format file for reading and
 // add format file for writing functions
 // to make saveFile and openFile more readable and to use in
@@ -235,6 +237,7 @@ export const openProject = async () => {
   const path = dialog.showOpenDialogSync(options);
 
   if (!path) {
+    logger.warn("no path selected");
     return false;
   }
 
@@ -251,6 +254,7 @@ export const openProject = async () => {
   const patch = dir.find((file) => file.name === "patch.json");
 
   if (!patch) {
+    logger.err("invalid project selected...aborting");
     throw new Error("There is no valid patch.json file in this project");
   }
 
@@ -262,10 +266,11 @@ export const openProject = async () => {
   const tmpobj = createTmpRecDir(pathToRec);
 
   try {
+    logger.info("loading patch");
     const file = await openFile(patchPath);
     return { file, path: path[0], tmpobj };
   } catch (err) {
-    console.error(err);
+    logger.err("failed to load patch");
     return err;
   }
 };

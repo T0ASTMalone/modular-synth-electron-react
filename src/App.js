@@ -12,14 +12,18 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import MsContext from "./context/MsContext";
 import { defaultTemplate } from "./app-menu";
 import TitleBar from "frameless-titlebar";
+// import Logger from "./services/logger";
+import { useLogger } from "./utils/hooks/logger";
 
 const { ipcRenderer, remote } = window.require("electron");
 const { dialog } = remote;
 const currentWindow = remote.getCurrentWindow();
+//const logger = new Logger("App");
 
 function App() {
   const context = useContext(MsContext);
   const [modSettings, setModSettings] = useState(null);
+  const logger = useLogger("App");
   const { sidebar, sbContent } = context;
 
   // create reference to context for using its methods
@@ -71,6 +75,7 @@ function App() {
   // set up event emitter for toggling the sidebare from
   // titlebar
   useEffect(() => {
+    logger.info("initializing sidebar...");
     // remove all listeners for toggle sidebar
     ipcRenderer.removeAllListeners("toggle-sidebar");
     // create new listener for toggle sidebar
@@ -79,11 +84,13 @@ function App() {
 
   // file manegment effect
   useEffect(() => {
+    logger.info("initializing app...");
     const context = refCtx.current;
     const { getCurrentState, setTmpobj, setRootPath } = context;
 
     // save file
     const save = () => {
+      logger.info("saving patch");
       const { nodes, cables } = getCurrentState();
       // if this is a new project
       return saveFile(nodes, cables);
@@ -93,7 +100,7 @@ function App() {
 
     // create empty patch dir
     const createNewPatch = async () => {
-      console.log("ran create init patch");
+      logger.info("creating new patch...");
       // get tmp dir object which contains clean up method
       // that will delete the tmp dir
       const tmpPathobj = await createTmpProject();
@@ -146,28 +153,38 @@ function App() {
             return;
         }
       }
-      console.log();
 
       // open file explorer to have user select a file
       try {
         // const file = await openFile();
         const { file, path, tmpobj } = await openProject();
 
+        if (!path) {
+          return;
+        }
+
         // if there is a previous tmp dir remove it
         if (tmpPathobj.name) {
+          logger.info("deleting tmpDir...");
+          // tmp package method to remove tmp dir
           tmpPathobj.removeCallback();
         }
 
         // set new tmp dir
+        logger.info("creating tmp dir");
         setTmpobj(tmpobj);
         setRootPath(path);
-        console.log(file, path);
+        logger.info(`new dir at : ${path}, named: ${file}`);
+
         if (!file) {
+          logger.info("no file selected...aborting");
           return;
         }
+
         const { loadedModules, moduleSettings, cables } = file;
 
         if (!loadedModules || !moduleSettings || !cables) {
+          logger.err("file not found");
           throw new Error(
             "sorry something went wrong while reading file content"
           );
@@ -176,7 +193,6 @@ function App() {
         setModSettings(moduleSettings);
         await context.loadPatch(loadedModules, cables);
       } catch (err) {
-        console.log(err);
         dialog.showErrorBox("Error loading patch", err.message);
         return;
       }
@@ -210,7 +226,8 @@ function App() {
     });
   }, [refCtx]);
 
-  console.log(context);
+  console.log(context)
+
   return (
     <div className="App">
       <TitleBar
