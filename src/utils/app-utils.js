@@ -66,14 +66,23 @@ const createPatchFile = (nodes, cables) => {
 };
 
 const mvAllRecordings = (oldPath, newPath) => {
-  const tmpRecordings = fs.readdir(`${oldPath}/recordings/tmpRec`);
+  // get all recording from tmp recordings folder
+  const tmpRecordings = fs.readdirSync(`${oldPath}/recordings/tmpRec`);
   console.log(tmpRecordings);
-
+  // if no path is passed ing
   if (!newPath) {
+    // make the old path the same as the new path
+    // meaning the tmp recordings are in an existing patch
+    // and are simply being moved to the recordings folder
     newPath = oldPath;
   }
 
-  //fs.rename(`${oldPath}/recordings/tmpRec/${name}`, `${newPath}/recordings/${name}`)
+  for (let name of tmpRecordings) {
+    fs.renameSync(
+      `${oldPath}/recordings/tmpRec/${name}`,
+      `${newPath}/recordings/${name}`
+    );
+  }
 };
 
 // save existing
@@ -86,10 +95,11 @@ export const saveExistingProject = (
   // write to patch.json at the path provided
   const patch = createPatchFile(nodes, cables);
   try {
-    console.log("ran save file");
-    fs.writeFileSync(path, patch);
+    logger.info("updating patch settings");
+    fs.writeFileSync(`${path}/patch.json`, patch);
   } catch (err) {
-    dialog.showErrorBox("Failed to Save", err);
+    logger.err(`saveExistingProject: ${err.message}`);
+    // dialog.showErrorBox("Failed to Save", err);
     return false;
   }
   // if save recordings is set to true
@@ -130,6 +140,7 @@ export const saveFile = (nodes, cables, oldPath, saveRecordings = false) => {
         mvAllRecordings(oldPath, path);
       }
     } catch (err) {
+      logger.err(`Faild to save : ${err.message}`);
       dialog.showErrorBox("Failed to Save", err);
       return false;
     }
@@ -290,6 +301,10 @@ export const saveWave = (audiobuffer, path) => {
 };
 
 export const checkUnsavedRec = (path) => {
-  const rec = fs.readdir(path);
-  console.log(rec);
+  const rec = fs.readdirSync(`${path}/recordings/tmpRec`).length;
+  if (rec !== 0) {
+    return true;
+  } else {
+    return false;
+  }
 };

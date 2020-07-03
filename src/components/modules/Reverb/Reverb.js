@@ -7,6 +7,7 @@ import {
   useCreateConnection,
   useCheckDistance,
 } from "../../../utils/module-utils";
+import { useLogger } from "../../../utils/hooks/logger";
 
 const Reverb = (props) => {
   // reverb value
@@ -19,11 +20,14 @@ const Reverb = (props) => {
   const context = useContext(MsContext);
   const outputting = useCreateConnection(id);
 
+  const logger = useLogger("Reverb");
+
   const { ctx, nodes } = context;
 
   // todo
   // make knobs for duration, decay, and a button for reverse
   function impulseResponse(duration, decay, reverse) {
+    logger.info("setting inpules response for reverb");
     var sampleRate = ctx.sampleRate;
     var length = sampleRate * duration;
     var impulse = ctx.createBuffer(2, length, sampleRate);
@@ -42,6 +46,7 @@ const Reverb = (props) => {
 
   //set up main reverb module
   useEffect(() => {
+    logger.info("initializing reverb");
     // create main reverb node
     const convolverNode = ctx.createConvolver();
     // setting up convolver node buffer
@@ -84,6 +89,7 @@ const Reverb = (props) => {
   // the check distance hook
 
   const updateBuffer = (val, param) => {
+    logger.info("updating buffer for reverb");
     switch (param) {
       case "reverse":
         nodes[id].node.buffer = impulseResponse(duration, decay, val);

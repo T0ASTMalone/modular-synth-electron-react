@@ -6,7 +6,13 @@ import React, {
   useCallback,
 } from "react";
 import "./App.css";
-import { saveFile, openProject, createTmpProject } from "./utils/app-utils";
+import {
+  saveFile,
+  openProject,
+  createTmpProject,
+  saveExistingProject,
+  checkUnsavedRec,
+} from "./utils/app-utils";
 import Rack from "./components/Rack/Rack";
 import Sidebar from "./components/Sidebar/Sidebar";
 import MsContext from "./context/MsContext";
@@ -75,7 +81,7 @@ function App() {
   // set up event emitter for toggling the sidebare from
   // titlebar
   useEffect(() => {
-    logger.info("initializing sidebar...");
+    logger.info("initializing sidebar toggle");
     // remove all listeners for toggle sidebar
     ipcRenderer.removeAllListeners("toggle-sidebar");
     // create new listener for toggle sidebar
@@ -84,23 +90,54 @@ function App() {
 
   // file manegment effect
   useEffect(() => {
-    logger.info("initializing app...");
+    logger.info("initializing app");
     const context = refCtx.current;
-    const { getCurrentState, setTmpobj, setRootPath } = context;
+    const { getCurrentState, setTmpobj, setRootPath, setIsExisting } = context;
 
     // save file
     const save = () => {
-      logger.info("saving patch");
-      const { nodes, cables } = getCurrentState();
-      // if this is a new project
-      return saveFile(nodes, cables);
-      // if this is an existing project
-      // add saveExistingProject here
+      // check for patch.json
+      const { nodes, cables, isExisting, rootPath } = getCurrentState();
+
+      if (isExisting) {
+        logger.info(`saving existing project at : ${rootPath}/patch.json`);
+        // check for unsaved recordings in tmp folder
+        const unsavedRec = checkUnsavedRec(rootPath);
+        // whether to save unsaved recordings or not
+        let saveRec = false;
+
+        if (unsavedRec) {
+          // ask user to save or not
+          const option = saveUnsavedRecDialog();
+          switch (option) {
+            case 0:
+              saveRec = true;
+              break;
+            case 1:
+              saveRec = false;
+              break;
+            default:
+              return;
+          }
+        }
+        // update fourth value to the outcome of the previous check
+        saveExistingProject(nodes, cables, rootPath, saveRec);
+      } else {
+        try {
+          logger.info("saving patch");
+          // if this is a new project
+          saveFile(nodes, cables);
+        } catch (e) {
+          logger.err(`Error saving new patch: ${e}`);
+          return;
+        }
+        setIsExisting(true);
+      }
     };
 
     // create empty patch dir
     const createNewPatch = async () => {
-      logger.info("creating new patch...");
+      logger.info("creating new patch");
       // get tmp dir object which contains clean up method
       // that will delete the tmp dir
       const tmpPathobj = await createTmpProject();
@@ -112,6 +149,18 @@ function App() {
 
     // create initial empty patch
     createNewPatch();
+
+    const saveUnsavedRecDialog = () => {
+      const options = {
+        type: "question",
+        title: "Hol' up?",
+        message:
+          "There are unsaved recordings in this project would you like to save those too?",
+        buttons: ["yes", "no", "cancel"],
+        cancelId: 2,
+      };
+      return dialog.showMessageBoxSync(options);
+    };
 
     // dialog for confirming open new/saved patch
     const uSure = () => {
@@ -165,7 +214,7 @@ function App() {
 
         // if there is a previous tmp dir remove it
         if (tmpPathobj.name) {
-          logger.info("deleting tmpDir...");
+          logger.info("deleting tmpDir");
           // tmp package method to remove tmp dir
           tmpPathobj.removeCallback();
         }
@@ -192,6 +241,7 @@ function App() {
         await context.loadPatchCables(cables);
         setModSettings(moduleSettings);
         await context.loadPatch(loadedModules, cables);
+        setIsExisting(true);
       } catch (err) {
         dialog.showErrorBox("Error loading patch", err.message);
         return;
@@ -208,14 +258,17 @@ function App() {
           case 0:
             const saved = save();
             if (saved) {
+              logger.info("saved patch");
               context.clearContext();
               createNewPatch();
               return;
             }
             break;
           case 1:
+            logger.warn("deleting unsaved patch");
             context.clearContext();
             createNewPatch();
+            setIsExisting(false);
             break;
           default:
             return;
@@ -225,8 +278,6 @@ function App() {
       }
     });
   }, [refCtx]);
-
-  console.log(context)
 
   return (
     <div className="App">

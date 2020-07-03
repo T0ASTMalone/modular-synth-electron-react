@@ -7,6 +7,7 @@ import {
   useCreateConnection,
   useCheckDistance,
 } from "../../../utils/module-utils";
+import { useLogger } from "../../../utils/hooks/logger";
 
 const Filter = (props) => {
   // state
@@ -24,6 +25,8 @@ const Filter = (props) => {
   const { nodes } = context;
 
   const refCtx = useRef(context);
+
+  const logger = useLogger("Filter");
 
   const filterTypes = [
     "lowpass",
@@ -73,6 +76,7 @@ const Filter = (props) => {
 
   // set up filter
   useEffect(() => {
+    logger.info("initializing filter");
     const context = refCtx.current;
     const { ctx } = context;
     // create filter
@@ -83,6 +87,7 @@ const Filter = (props) => {
     // set id in state
 
     if (values) {
+      logger.info("implementing patch settings");
       // using values passed in as props
       // set module values
       for (let k in values) {

@@ -17,6 +17,7 @@ import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import { useCreateConnection } from "../../../utils/module-utils";
+import { useLogger } from "../../../utils/hooks/logger";
 
 const Lfo = (props) => {
   const { id, values } = props;
@@ -29,6 +30,8 @@ const Lfo = (props) => {
   const refCtx = useRef(context);
 
   const isOutput = useCreateConnection(id);
+
+  const logger = useLogger("Lfo");
 
   // update frequency using knob
   const checkDistance = (val) => {
@@ -44,6 +47,7 @@ const Lfo = (props) => {
   };
 
   useEffect(() => {
+    logger.info("initializing Lfo");
     const context = refCtx.current;
     const { ctx } = context;
 
@@ -51,6 +55,7 @@ const Lfo = (props) => {
     // using values passed in as props
     // set osc values
     if (values) {
+      logger.info("setting patch settings in lfo ");
       for (let k in values) {
         if (typeof osc[k] === "object" && "value" in osc[k]) {
           osc[k].value = values[k];

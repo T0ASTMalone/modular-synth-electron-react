@@ -1,6 +1,8 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
 import "./Rack.css";
+import React, { useEffect, useState, useContext, useRef } from "react";
+import { useLogger } from "../../utils/hooks/logger";
 import MsContext from "../../context/MsContext";
+
 import MainGain from "../modules/MainGain/MainGain";
 import Rec from "../Rec/Rec";
 
@@ -9,6 +11,8 @@ const Rack = (props) => {
 
   const context = useContext(MsContext);
   const latestContext = useRef(context);
+
+  const logger = useLogger("Rack");
 
   const { nodes, update } = context;
   const { modSettings } = props;
@@ -45,11 +49,13 @@ const Rack = (props) => {
 
     // add imports to state as loaded modules for rendering
     importModules(imports).then((loadedModules) => {
+      logger.info("loading modules");
       loadModules(loadedModules);
     });
   }, [update]);
 
   const renderModule = (name, i, id) => {
+    logger.info(`rendering ${name}`);
     // get imported module by searching loadedModules for file with the same name
     const loadedMod = loadedModules.find((mod) => {
       if (mod) {
@@ -65,6 +71,7 @@ const Rack = (props) => {
   };
 
   useEffect(() => {
+    logger.info("createing audio context");
     const context = latestContext.current;
     const ctx = new AudioContext();
     const mediaStream = ctx.createMediaStreamDestination();

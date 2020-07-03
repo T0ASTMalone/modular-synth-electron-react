@@ -4,11 +4,13 @@ import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
 import { Input } from "../../io/io";
 import { useCheckDistance } from "../../../utils/module-utils";
+import { useLogger } from "../../../utils/hooks/logger";
 
 const MainGain = (props) => {
   // gain value
   const [gainValue, setGain] = useState(4.4);
   const [id, setId] = useState(null);
+  const logger = useLogger("Main Gain");
 
   const context = useContext(MsContext);
   const setAudioParam = useCheckDistance();
@@ -20,6 +22,7 @@ const MainGain = (props) => {
 
   //set up main gain module
   useEffect(() => {
+    logger.info("initializing Main gain");
     // create main gain node
     const context = refCtx.current;
     const ctx = context.ctx;
@@ -27,7 +30,7 @@ const MainGain = (props) => {
 
     // connect to ctx destination
     gainNode.connect(ctx.destination);
-
+    logger.info("connecting main gain to audio destination");
     // add to context
     const id = context.load("main-gain");
     // use id created by context to add node

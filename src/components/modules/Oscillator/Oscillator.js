@@ -7,6 +7,7 @@ import {
   useCreateConnection,
   useCheckDistance,
 } from "../../../utils/module-utils";
+import { useLogger } from "../../../utils/hooks/logger";
 
 const Oscillator = (props) => {
   const [freq, setFreq] = useState(440);
@@ -21,7 +22,10 @@ const Oscillator = (props) => {
 
   const refCtx = useRef(context);
 
+  const logger = useLogger("Oscillator");
+
   useEffect(() => {
+    logger.info("initializing Osillator");
     const context = refCtx.current;
     const { ctx } = context;
     // create oscillator

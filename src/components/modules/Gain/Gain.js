@@ -7,6 +7,7 @@ import {
   useCreateConnection,
   useCheckDistance,
 } from "../../../utils/module-utils";
+import { uesLogger, useLogger } from "../../../utils/hooks/logger";
 
 const Gain = (props) => {
   // gain value
@@ -19,8 +20,11 @@ const Gain = (props) => {
 
   const refCtx = useRef(context);
 
+  const logger = useLogger("Gain");
+
   //set up main gain module
   useEffect(() => {
+    logger.info("initializing gain");
     const context = refCtx.current;
     const { ctx } = context;
     // create main gain node
@@ -28,6 +32,7 @@ const Gain = (props) => {
     // set value
     // set gainNode values
     if (values) {
+      logger.info("implementing patch settings for gain");
       for (let k in values) {
         if (typeof gainNode[k] === "object" && "value" in gainNode[k]) {
           gainNode[k].value = values[k];

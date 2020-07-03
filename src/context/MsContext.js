@@ -17,6 +17,7 @@ const MsContext = React.createContext({
   sidebar: null,
   sbContent: "",
   loaded: [],
+  isExisting: false,
   createContext: () => {},
   setMediaStreamDestination: () => {},
   addNode: () => {},
@@ -55,8 +56,14 @@ export class MsProvider extends Component {
       loaded: [],
       tmpPathobj: {},
       rootPath: "",
+      isExisting: false,
     };
   }
+
+  // set to true if currently in an existing project
+  setIsExisting = (isExisting) => {
+    this.setState({ isExisting });
+  };
 
   addNode = (id, audioNode) => {
     const { nodes, updateCables } = this.state;
@@ -292,8 +299,8 @@ export class MsProvider extends Component {
   };
 
   getCurrentState = () => {
-    const { nodes, cables, tmpPathobj } = this.state;
-    return { nodes, cables, tmpPathobj };
+    const { nodes, cables, tmpPathobj, isExisting, rootPath } = this.state;
+    return { nodes, cables, tmpPathobj, isExisting, rootPath };
   };
 
   render() {
@@ -311,6 +318,7 @@ export class MsProvider extends Component {
       updateCables: this.state.updateCables,
       tmpPathobj: this.state.tmpPathobj,
       rootPath: this.state.rootPath,
+      isExisting: this.state.isExisting,
 
       //output only for testing
       output: this.state.output,
@@ -334,6 +342,7 @@ export class MsProvider extends Component {
       clearContext: this.clearContext,
       setTmpobj: this.setTmpobj,
       setRootPath: this.setRootPath,
+      setIsExisting: this.setIsExisting,
     };
 
     return (

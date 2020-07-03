@@ -2,16 +2,20 @@ import React, { useContext } from "react";
 import "./io.css";
 import MsContext from "../../context/MsContext";
 import { useIsModulated } from "../../utils/module-utils";
+import { useLogger } from "../../utils/hooks/logger";
 
-const Input = props => {
+const Input = (props) => {
   const { title, id, name, connected } = props;
   const context = useContext(MsContext);
   const ins = useIsModulated(id);
   const color = ins[name];
+  const logger = useLogger("Input");
+
   const connectionExists = () => {
     let connections = context.cables;
     for (let key in connections) {
       if (connections[key].mod === id && connections[key].input === name) {
+        logger.info(`${name} is connected to ${connections[key].mod} `);
         return true;
       }
     }
@@ -30,7 +34,7 @@ const Input = props => {
     borderRadius: "50%",
     width: " 20px",
     height: "20px",
-    border: color ? `5px solid ${color}` : "5px solid cadetblue"
+    border: color ? `5px solid ${color}` : "5px solid cadetblue",
   };
 
   return (
@@ -45,9 +49,10 @@ const Input = props => {
   );
 };
 
-const Output = props => {
+const Output = (props) => {
   const { title, id, output } = props;
   const context = useContext(MsContext);
+  const logger = useLogger("Output");
 
   const connectionExists = () => {
     let connections = context.cables;
@@ -63,7 +68,9 @@ const Output = props => {
   const handleConnection = () => {
     if (connectionExists()) {
       context.removeOutput(id);
+      logger.info(`disconnecting output ${output}`);
     } else {
+      logger.info(`connecting output ${output}`);
       context.createOutput(id);
     }
   };
@@ -72,7 +79,7 @@ const Output = props => {
     borderRadius: "50%",
     width: " 20px",
     height: "20px",
-    border: output ? `5px solid ${output}` : "5px solid cadetblue"
+    border: output ? `5px solid ${output}` : "5px solid cadetblue",
   };
 
   return (
