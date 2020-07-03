@@ -196,7 +196,7 @@ function App() {
             }
             break;
           case 1:
-            context.clearContext();
+            logger.warn("user will not save current patch");
             break;
           default:
             return;
@@ -205,23 +205,31 @@ function App() {
 
       // open file explorer to have user select a file
       try {
-        // const file = await openFile();
-        const { file, path, tmpobj } = await openProject();
+        // have user select project to open
+        const project = await openProject();
 
-        if (!path) {
+        // if returns false or invalid path is chosen cancel operation
+        if (!project) {
           return;
         }
+        // if project is chosen clear old project
+        context.clearContext();
+
+        // get project contents
+        const { file, path, tmpobj } = project;
 
         // if there is a previous tmp dir remove it
         if (tmpPathobj.name) {
           logger.info("deleting tmpDir");
-          // tmp package method to remove tmp dir
+          // tmp (npm package) method to remove tmp dir
           tmpPathobj.removeCallback();
         }
 
         // set new tmp dir
         logger.info("creating tmp dir");
+        // set tmp folder object in context
         setTmpobj(tmpobj);
+        // set chosen project path in context
         setRootPath(path);
         logger.info(`new dir at : ${path}, named: ${file}`);
 
