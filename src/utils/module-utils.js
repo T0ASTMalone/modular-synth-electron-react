@@ -2,6 +2,11 @@ import { useEffect, useContext, useState } from "react";
 import { useLogger } from "./hooks/logger";
 import MsContext from "../context/MsContext";
 
+/**
+ * Triggered when the updateCables value is updated, this hook will connect
+ * an audio node if it finds a cable with the same id in the cables object.
+ * @param {string} id
+ */
 export const useCreateConnection = (id) => {
   const context = useContext(MsContext);
   const { cables, nodes, updateCables } = context;
@@ -48,6 +53,13 @@ export const useCreateConnection = (id) => {
   return isConnected;
 };
 
+/**
+ * Determins if output is part of a cable object. If it is this hook returns
+ * the color that is in the cable object. Triggered when updateCables value
+ * is updated
+ *
+ * @param {string} id
+ */
 export const useIsOutput = (id) => {
   const context = useContext(MsContext);
   const { cables, updateCables } = context;
@@ -67,6 +79,13 @@ export const useIsOutput = (id) => {
   return isConnected;
 };
 
+/**
+ * Should be useIsInput. Determins if input is part of a cable object. If it is
+ * this hook returns an object { [ inputName ] : color } containing the input
+ * name with it value set to the color that belongs to the cable object. This
+ * hook is triggered when the updateCables value is updated.
+ * @param {string} id
+ */
 export const useIsModulated = (id) => {
   const context = useContext(MsContext);
   const { cables, updateCables } = context;
@@ -89,6 +108,11 @@ export const useIsModulated = (id) => {
   return isConnected;
 };
 
+/**
+ * Calculates the max distance that a knob should be able to travel based on the
+ * min and max values for the provided audio parameter
+ * @param {AudioParam} audioParam
+ */
 const getMaxDis = (audioParam) => {
   let { minValue, maxValue } = audioParam;
   const min = minValue.toFixed(3).split("");

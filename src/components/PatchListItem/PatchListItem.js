@@ -7,8 +7,10 @@ const PatchListItem = (props) => {
   return (
     <li
       className={
+        // if ui is true or module is the main gain
         ui || item === "main-gain"
-          ? "list-item list-item-no-hov active"
+          ? // do not render x (remove button)
+            "list-item list-item-no-hov active"
           : active
           ? "list-item list-item-active"
           : "list-item"

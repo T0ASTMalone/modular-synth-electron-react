@@ -59,34 +59,68 @@ export class MsProvider extends Component {
       isExisting: false,
     };
   }
-
-  // set to true if currently in an existing project
-  setIsExisting = (isExisting) => {
-    this.setState({ isExisting });
-  };
-
-  addNode = (id, audioNode) => {
-    const { nodes, updateCables } = this.state;
-    nodes[id].node = audioNode;
-    this.setState({ nodes, updateCables: !updateCables });
-  };
-
+  /**
+   * Set Audio Context
+   * @param {AudioContext} ctx
+   */
   createCtx = (ctx) => {
     this.setState({ ctx });
   };
 
+  /**
+   * true : if current project is an existing saved project
+   *
+   * false : if current project is a new project
+   * @param {boolean} isExisting
+   */
+  setIsExisting = (isExisting) => {
+    this.setState({ isExisting });
+  };
+
+  /**
+   * Add audio node to nodes object and trigger update by updating the
+   * updateCablesvalue
+   * @param {string} id
+   * @param {AudioNode} audioNode
+   */
+  addNode = (id, audioNode) => {
+    const { nodes, updateCables } = this.state;
+    nodes[id].node = audioNode;
+    // futer miguel doesn't get why I am updating cables here
+    this.setState({ nodes, updateCables: !updateCables });
+  };
+
+  /**
+   * Sets mediaStreamDestination for recording application audio
+   * @param {MediaStreamAudioDestinationNode} mediaStreamDestination
+   */
   setMediaStreamDestination = (mediaStreamDestination) => {
     this.setState({ mediaStreamDestination });
   };
 
+  /**
+   * Sets tmp object that has the name (path) of the dir and a clean up
+   * function that will delete the tmp dir
+   * @param {{name: string removeCallback: Function}} tmpPathobj
+   */
   setTmpobj = (tmpPathobj) => {
+    console.log(tmpPathobj);
     this.setState({ tmpPathobj });
   };
 
+  /**
+   * sets root path for current project
+   * @param {string} rootPath
+   */
   setRootPath = (rootPath) => {
     this.setState({ rootPath });
   };
 
+  /**
+   * loads module that was selected from sidebar
+   * @param {string} type (module time (i.e. Oscillator, Lfo etc...))
+   * @param {int} id : optional module id
+   */
   // pass in type and id (id is optional)
   load = (type, id) => {
     // get nodes object and update from state
@@ -109,6 +143,10 @@ export class MsProvider extends Component {
     return id;
   };
 
+  /**
+   * returns any inputs to the node with the id that is passe din
+   * @param {int} id
+   */
   _findInputs = (id) => {
     const { cables } = this.state;
 
@@ -122,6 +160,10 @@ export class MsProvider extends Component {
     return inputs;
   };
 
+  /**
+   * removes module from rack by id
+   * @param {int} id
+   */
   unload = (id) => {
     console.log("ran with id: ", id);
     const { nodes, update, cables, updateCables } = this.state;
@@ -146,6 +188,10 @@ export class MsProvider extends Component {
     this.setState({ nodes, update: !update, updateCables: !updateCables });
   };
 
+  /**
+   * load modules from saved patch into context
+   * @param {[{id: int, type: string}]} mods
+   */
   loadPatch = (mods) => {
     let { nodes, update } = this.state;
     let { mainOutId, mainOut } = this._findMainOut();
@@ -171,14 +217,26 @@ export class MsProvider extends Component {
     this.setState({ nodes, update: !update });
   };
 
+  /**
+   * load cables (inputs and outputs) from saved patch
+   * @param {{[outputId]: {color: string, mod: string, input: string}}} savedCables
+   */
   loadPatchCables = (savedCables) => {
     this.setState({ cables: savedCables });
   };
 
+  /**
+   * change what content is rendered in the sidebar
+   * posible values for sb content
+   * @param {string} sbContent
+   */
   setSbContent = (sbContent) => {
     this.setState({ sbContent });
   };
 
+  /**
+   * toggle sidebar
+   */
   toggleSidebar = () => {
     const sidebar = this.state.sidebar;
     this.setState({
@@ -186,6 +244,19 @@ export class MsProvider extends Component {
     });
   };
 
+  /**
+   * Create cable that represents routing one modules output signal to anothers
+   * main input or to one of its audio parameters.
+   *
+   * Example routing:
+   *
+   * Oscillator output -> Filter input
+   *
+   * Lfo output -> Oscillator frequency parameter
+   *
+   * @param {string} input
+   * @param {string} output
+   */
   _createConnection = (input, output) => {
     const { cables, updateCables } = this.state;
     cables[output] = input;
@@ -198,6 +269,13 @@ export class MsProvider extends Component {
     });
   };
 
+  /**
+   * Create input and asign color to input that will be used to represent the
+   * connection. If an output has been selected, a connection is created by
+   * calling this._createConnection(input, output).
+   * @param {string} mod
+   * @param {string} inputId
+   */
   createInput = (mod, inputId) => {
     const { output } = this.state;
     const color = randomColor();
@@ -215,6 +293,11 @@ export class MsProvider extends Component {
     }
   };
 
+  /**
+   * Create output and if an input has already been selected calls
+   * this._createConnection(input, output)
+   * @param {string} output
+   */
   createOutput = (output) => {
     const { input } = this.state;
     this.setState({ output });
@@ -224,15 +307,32 @@ export class MsProvider extends Component {
     }
   };
 
+  /**
+   * Remove cable (disconnect modules) and replace ouput from cable in conntext
+   * to wait for a valid input to be selected or until the output is changed
+   * for another.
+   *
+   * @param {string} mod
+   * @param {string} inputId
+   */
   removeInput = (mod, inputId) => {
     const { cables, updateCables } = this.state;
+    // find cable with mod and with input id as the input
     const output = Object.keys(cables).find(
       (key) => cables[key].mod === mod && cables[key].input === inputId
     );
+    // remove cable
     delete cables[output];
+    // set remaining output from cable as the ouput in context
     this.setState({ cables, input: null, output, updateCables: !updateCables });
   };
 
+  /**
+   * Remove cable (disconnect modules) and replace input from cable in conntext
+   * to wait for a valid input to be selected or until the output is changed
+   * for another.
+   * @param {string} id
+   */
   removeOutput = (id) => {
     const { cables, updateCables } = this.state;
     const input = cables[id];
@@ -240,6 +340,10 @@ export class MsProvider extends Component {
     this.setState({ cables, input, output: null, updateCables: !updateCables });
   };
 
+  /**
+   * Returns the main output for the rack and its id
+   * @return mainOutId, mainOut (AudioNode)
+   */
   _findMainOut = () => {
     // find main out
     let { nodes } = this.state;
@@ -254,6 +358,9 @@ export class MsProvider extends Component {
     return { mainOutId, mainOut };
   };
 
+  /**
+   * Remove anything that is connected to the main output
+   */
   _removeLastCable = () => {
     const { nodes, cables } = this.state;
     // iterate over cables
@@ -266,6 +373,9 @@ export class MsProvider extends Component {
     }
   };
 
+  /**
+   * Reset everything to its zero value (new patch)
+   */
   clearContext = () => {
     // disconect what ever is connected to main out node
     this._removeLastCable();
@@ -298,6 +408,13 @@ export class MsProvider extends Component {
     });
   };
 
+  /**
+   *
+   * For use in useEffect hook when a ref to context is used to prevent
+   * triggering useEffect when context is updated and the context being
+   * referenced is outdated. This method will return the most updated values
+   * in context
+   */
   getCurrentState = () => {
     const { nodes, cables, tmpPathobj, isExisting, rootPath } = this.state;
     return { nodes, cables, tmpPathobj, isExisting, rootPath };

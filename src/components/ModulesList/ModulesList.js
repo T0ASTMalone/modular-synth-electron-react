@@ -6,6 +6,7 @@ import PatchListItem from "../PatchListItem/PatchListItem";
 const ModulesList = () => {
   const installed = ["Oscillator", "Filter", "Lfo", "Gain", "Reverb"];
   const context = useContext(MsContext);
+  console.log(context);
 
   const addModule = (mod) => {
     context.load(mod);

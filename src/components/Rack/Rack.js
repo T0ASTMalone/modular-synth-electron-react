@@ -13,6 +13,7 @@ const Rack = (props) => {
   const latestContext = useRef(context);
 
   const logger = useLogger("Rack");
+  const refLogger = useRef(logger);
 
   const { nodes, update } = context;
   const { modSettings } = props;
@@ -26,6 +27,12 @@ const Rack = (props) => {
   // remove main out module (module 0)
 
   useEffect(() => {
+    const ctx = latestContext.current;
+    const logger = refLogger.current;
+
+    const { getCurrentState } = ctx;
+    const { nodes } = getCurrentState();
+
     // create array of current modules from nodes array
     let currentModules = [];
     Object.keys(nodes).forEach((key, i) => {
@@ -52,7 +59,7 @@ const Rack = (props) => {
       logger.info("loading modules");
       loadModules(loadedModules);
     });
-  }, [update]);
+  }, [update, refLogger]);
 
   const renderModule = (name, i, id) => {
     logger.info(`rendering ${name}`);
