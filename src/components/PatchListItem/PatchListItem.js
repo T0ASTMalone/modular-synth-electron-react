@@ -18,8 +18,15 @@ const PatchListItem = (props) => {
       onDoubleClick={() => dbClick(item)}
       onClick={() => click(item)}
     >
-      {item}
-      {ui === true && <button onClick={() => btnClick(id)}>X</button>}
+      <div className="list-item-text">{item}</div>
+      {ui === true && (
+        <button
+          className="sidebar-button list-item-button"
+          onClick={() => btnClick(id)}
+        >
+          X
+        </button>
+      )}
     </li>
   );
 };

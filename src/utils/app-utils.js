@@ -54,11 +54,11 @@ const createSettings = (nodes) => {
  * Creates json file containing the patch settings and connections based on the
  * current state of the project. Takes the nodes and cables objects from
  * context.
- * @param {{[id]: {type: string, node: AudioNode}}} nodes
- * @param {{[outputId]: {color: string, mod: string, input: string}}} cables
+ * @param {nodes} nodes
+ * @param {cables} cables
  */
 // create patch.json
-const createPatchFile = (nodes, cables) => {
+const _createPatchFile = (nodes, cables) => {
   const settings = createSettings(nodes);
 
   // create connections array to write to file
@@ -79,10 +79,6 @@ const createPatchFile = (nodes, cables) => {
   return JSON.stringify({ settings, connections });
 };
 
-/**
- * Gets array of tmp_recording names in tmpRec dir
- * @param {string} path
- */
 export const getTmpRec = (path) => {
   try {
     return fs.readdirSync(`${path}/recordings/tmpRec`);
@@ -92,11 +88,6 @@ export const getTmpRec = (path) => {
   }
 };
 
-/**
- * Gets array of recording names in recordings dir
- * @param {string} path
- * @return Array[string]
- */
 export const getRec = (path) => {
   try {
     return fs.readdirSync(`${path}/recordings`);
@@ -108,9 +99,11 @@ export const getRec = (path) => {
 
 /**
  * Moves all recordings currently in the tmpRec dir to the new path provided
+ *
  * @param {string} oldPath
  * @param {string} newPath
  */
+
 const mvAllRecordings = (oldPath, newPath) => {
   // get all recording from tmp recordings folder
   const tmpRecordings = fs.readdirSync(`${oldPath}/recordings/tmpRec`);
@@ -131,14 +124,6 @@ const mvAllRecordings = (oldPath, newPath) => {
   }
 };
 
-/**
- * Updates existing project
- *
- * @param {{[id]: {type: string, node: AudioNode}}} nodes
- * @param {{[outputId]: {color: string, mod: string, input: string}}} cables
- * @param {string} path
- * @param {boolean} saveRecordings
- */
 export const saveExistingProject = (
   nodes,
   cables,
@@ -146,7 +131,7 @@ export const saveExistingProject = (
   saveRecordings = false
 ) => {
   // write to patch.json at the path provided
-  const patch = createPatchFile(nodes, cables);
+  const patch = _createPatchFile(nodes, cables);
   try {
     logger.info("updating patch settings");
     fs.writeFileSync(`${path}/patch.json`, patch);
@@ -165,7 +150,7 @@ export const saveExistingProject = (
 // "Save as" option
 export const saveFile = (nodes, cables, oldPath, saveRecordings = false) => {
   // stringify to write to file
-  const saveFile = createPatchFile(nodes, cables);
+  const saveFile = _createPatchFile(nodes, cables);
 
   const options = {
     title: "Save Patch",
@@ -202,21 +187,6 @@ export const saveFile = (nodes, cables, oldPath, saveRecordings = false) => {
   return true;
 };
 
-/**
- * Creates a temporary project directory for new projects using the npm package
- * tmp and is deleted when the program is closed or until the user saves the
- * new project
- * @example
- * root
- * |-- recordings
- *     |-- rec*.wav
- *     |-- tmpRec
- *         |-- tmp_rec*.wav
- *
- *
- * Note: There is not patch.json in tmp project dir as this is only created
- * when a project is saved
- */
 export const createTmpProject = () => {
   // set up tmp project for new patches
   const options = {
@@ -241,7 +211,7 @@ export const createTmpProject = () => {
   const recDir = tmp.dirSync(recOptions);
 
   // create tmpdir for tmp recordings
-  createTmpRecDir(recDir.name);
+  _createTmpRecDir(recDir.name);
 
   // return tmpdir object {name(path), removeCallback}
   return tmpDir;
@@ -251,9 +221,11 @@ export const createTmpProject = () => {
  * Creates tmpRec dir in project recordings dir using the npm package tmp. This
  * folder will hold any recordings created durring the session and will be
  * deleted when the session ends or the program is closed
+ *
  * @param {string} path
+ * @return {tmpObj} tmpObj
  */
-const createTmpRecDir = (path) => {
+const _createTmpRecDir = (path) => {
   // options for tmp rec dir
   const options = {
     name: "tmpRec",
@@ -270,11 +242,6 @@ const createTmpRecDir = (path) => {
   return tmpRecDir;
 };
 
-/**
- * Extracts state of saved project which includes loadedModules, moduleSettings,
- * and cables.
- * @param {string} path
- */
 export const openFile = async (path) => {
   // read file selected
   try {
@@ -313,16 +280,6 @@ export const openFile = async (path) => {
   }
 };
 
-/**
- * @throws Missing patch.json
- *
- * Prompts user to choos a project folder that contains a valid patch.json file
- * and returns the patch.json contents {loadedModules, moduleSettings, cables},
- * path to the project and the tmpFolder object
- * {name: path to tmp folder, removeCallback(): function that delets tmp folder}
- *
- * @return Promis<{file, path, tmpobj}>
- */
 export const openProject = async () => {
   // options for electron dialog
   // set to open a directory
@@ -361,7 +318,7 @@ export const openProject = async () => {
 
   // create tmp rec dir inside pathToRec to store
   // temporary recordings
-  const tmpobj = createTmpRecDir(pathToRec);
+  const tmpobj = _createTmpRecDir(pathToRec);
 
   try {
     logger.info("loading patch");
@@ -373,12 +330,6 @@ export const openProject = async () => {
   }
 };
 
-/**
- * Converst AudioBuffer to wav format then turns wav to chunk to write to a new
- * file using fs.writeFileSync at the path provided
- * @param {AudioBuffer} audiobuffer
- * @param {string} path
- */
 export const saveWave = (audiobuffer, path) => {
   const wav = toWav(audiobuffer);
   const chunk = new Uint8Array(wav);
@@ -393,11 +344,6 @@ export const saveWave = (audiobuffer, path) => {
   }
 };
 
-/**
- * Checks if there are any recordings in the tmpRec folder of the current
- * project.
- * @param {string} path
- */
 export const checkUnsavedRec = (path) => {
   const rec = fs.readdirSync(`${path}/recordings/tmpRec`).length;
   if (rec !== 0) {

@@ -9,7 +9,7 @@ const CurrentPatch = () => {
 
   return (
     <div className="curretn-patch">
-      <h2>Current Patch</h2>
+      <h3 className="sidebar-title">Current Patch</h3>
       {/* {Object.keys(nodes).map((mod) => renderListItem(nodes[mod].type, mod))} */}
       <ul className="sidebar-list">
         {Object.keys(nodes).map((mod) => {

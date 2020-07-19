@@ -117,7 +117,7 @@ function App() {
               saveRec = false;
               break;
             default:
-              return;
+              return false;
           }
         }
         // update fourth value to the outcome of the previous check
@@ -129,10 +129,12 @@ function App() {
           saveFile(nodes, cables);
         } catch (e) {
           logger.err(`Error saving new patch: ${e}`);
-          return;
+          return false;
         }
         setIsExisting(true);
       }
+
+      return false;
     };
 
     // create empty patch dir
@@ -288,7 +290,7 @@ function App() {
   }, [refCtx]);
 
   return (
-    <div className="App">
+    <div>
       <TitleBar
         // icon={sim} // app icon
         currentWindow={currentWindow} // electron window instance

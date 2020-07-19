@@ -76,6 +76,10 @@ code {
   background-color: rgba(40, 44, 52, 1);
 }
 
+button {
+  cursor: pointer;
+}
+
 button:focus {
   outline: none;
 }

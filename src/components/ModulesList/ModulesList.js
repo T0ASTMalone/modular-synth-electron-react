@@ -16,7 +16,7 @@ const ModulesList = () => {
     <div className="explorer">
       <section className="explorer__installed">
         {/* list installed modules */}
-        <h3 className="explorer__title">Modules</h3>
+        <h3 className="sidebar-title">Modules</h3>
         <ul className="sidebar-list">
           {installed.map((mod, i) => {
             return (

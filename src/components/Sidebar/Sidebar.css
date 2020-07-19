@@ -45,3 +45,7 @@
   padding-left: 0;
   text-align: left;
 }
+
+.sidebar-title {
+  padding: 0 10px;
+}

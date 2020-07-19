@@ -1,12 +1,7 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState, useRef } from "react";
 import { useLogger } from "./hooks/logger";
 import MsContext from "../context/MsContext";
 
-/**
- * Triggered when the updateCables value is updated, this hook will connect
- * an audio node if it finds a cable with the same id in the cables object.
- * @param {string} id
- */
 export const useCreateConnection = (id) => {
   const context = useContext(MsContext);
   const { cables, nodes, updateCables } = context;
@@ -53,13 +48,6 @@ export const useCreateConnection = (id) => {
   return isConnected;
 };
 
-/**
- * Determins if output is part of a cable object. If it is this hook returns
- * the color that is in the cable object. Triggered when updateCables value
- * is updated
- *
- * @param {string} id
- */
 export const useIsOutput = (id) => {
   const context = useContext(MsContext);
   const { cables, updateCables } = context;
@@ -79,22 +67,26 @@ export const useIsOutput = (id) => {
   return isConnected;
 };
 
-/**
- * Should be useIsInput. Determins if input is part of a cable object. If it is
- * this hook returns an object { [ inputName ] : color } containing the input
- * name with it value set to the color that belongs to the cable object. This
- * hook is triggered when the updateCables value is updated.
- * @param {string} id
- */
 export const useIsModulated = (id) => {
   const context = useContext(MsContext);
-  const { cables, updateCables } = context;
   const [isConnected, setIsConnected] = useState({});
+  const logger = useLogger("useIsModulated");
+
+  const { updateCables } = context;
+
+  const refContext = useRef(context);
+  const refId = useRef(id);
+  const refLogger = useRef(logger);
 
   useEffect(() => {
+    const ctx = refContext.current;
+    const id = refId.current;
+    const logger = refLogger.current;
+    const { cables } = ctx.getCurrentState();
     // input is found
     // add input name to is connected
     const inputs = {};
+    logger.info(updateCables);
     for (let k in cables) {
       const cable = cables[k];
       if (cable.mod === id) {
@@ -103,7 +95,7 @@ export const useIsModulated = (id) => {
     }
 
     setIsConnected(inputs);
-  }, [updateCables]);
+  }, [updateCables, refContext, refId, refLogger]);
 
   return isConnected;
 };
@@ -179,7 +171,6 @@ export const useCheckDistance = () => {
   return setAudioParam;
 };
 
-// gets main output node
 export const useGetOut = () => {
   const context = useContext(MsContext);
   const { nodes } = context;

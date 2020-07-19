@@ -11,7 +11,8 @@ const Recordings = () => {
   // reference to logger for use in useEffect without retriggering it
   const refLogger = useRef(logger);
   // for selecting recordings to save, delete or export
-  const [selected, setSelected] = useState({});
+  const [selectedRec, setSelectedRec] = useState({});
+  const [selectedTmp, setSelectedTmp] = useState({});
   const context = useContext(MsContext);
   // ref to context for use in useEffect without retriggering it
   const refCtx = useRef(context);
@@ -20,8 +21,8 @@ const Recordings = () => {
   // project recordings
   const [recordings, setRecordings] = useState([]);
 
-  const btnClick = (name) => {
-    const items = selected;
+  const selectRec = (name) => {
+    const items = selectedRec;
     // if rec is already selected
     if (items[name]) {
       // remove from selected list (deselect)
@@ -31,7 +32,21 @@ const Recordings = () => {
       items[name] = name;
     }
     // updated list
-    setSelected({ ...items });
+    setSelectedRec({ ...items });
+  };
+
+  const selectTmp = (name) => {
+    const items = selectedTmp;
+    // if rec is already selected
+    if (items[name]) {
+      // remove from selected list (deselect)
+      delete items[name];
+    } else {
+      // add to selected list
+      items[name] = name;
+    }
+    // updated list
+    setSelectedTmp({ ...items });
   };
 
   useEffect(() => {
@@ -68,11 +83,14 @@ const Recordings = () => {
   // };
 
   const deletRecordings = () => {
-    console.log("deleting recordings", selected);
+    // delete all selected recordings
   };
 
   const saveSelectedRecordings = () => {
-    console.log("saving selected recording", selected);
+    // only save selected Tmp recordings
+    console.log("saving selected recordings", selectedTmp);
+    const recordings = Object.keys(selectedTmp);
+    console.log(recordings);
   };
 
   const saveAllRecordings = () => {
@@ -80,10 +98,10 @@ const Recordings = () => {
   };
 
   const exportSelectedRecording = () => {
-    console.log("exporting to user specified file", selected);
+    // export all selected recordings
   };
 
-  console.log(tmpRec);
+  console.log(selectedRec);
   console.log(recordings);
 
   return (
@@ -94,41 +112,49 @@ const Recordings = () => {
         <button onClick={() => deletRecordings()}>Delete</button>
         <button onClick={() => exportSelectedRecording()}>Export</button>
       </div>
+      {recordings.length > 1 ? (
+        <div className="recordings-container recordings-saved">
+          <h3 className="sidebar-title">Saved</h3>
+          <ul className="sidebar-list">
+            {recordings.map((rec, i) => {
+              let active = selectedRec[rec] ? true : false;
+              return (
+                <PatchListItem
+                  key={i}
+                  item={rec}
+                  ui={false}
+                  click={selectRec}
+                  active={active}
+                />
+              );
+            })}
+          </ul>
+        </div>
+      ) : (
+        <h3>No recordings here</h3>
+      )}
 
-      <div className="recordings-saved">
-        <h3>Saved</h3>
-        <ul className="sidebar-list">
-          {recordings.map((rec, i) => {
-            let active = selected[rec] ? true : false;
-            return (
-              <PatchListItem
-                key={i}
-                item={rec}
-                ui={false}
-                click={btnClick}
-                active={active}
-              />
-            );
-          })}
-        </ul>
-      </div>
-      <div className="recordings-tmp">
-        <h3>Unsaved</h3>
-        <ul className="sidebar-list">
-          {tmpRec.map((rec, i) => {
-            let active = selected[rec] ? true : false;
-            return (
-              <PatchListItem
-                key={i}
-                item={rec}
-                ui={false}
-                click={btnClick}
-                active={active}
-              />
-            );
-          })}
-        </ul>
-      </div>
+      {tmpRec.length > 1 ? (
+        <div className="recordings-container recordings-tmp">
+          <h3 className="sidebar-title">Unsaved</h3>
+          <ul className="sidebar-list">
+            {tmpRec.map((rec, i) => {
+              let active = selectedTmp[rec] ? true : false;
+              return (
+                <PatchListItem
+                  key={i}
+                  item={rec}
+                  ui={false}
+                  click={selectTmp}
+                  active={active}
+                />
+              );
+            })}
+          </ul>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
