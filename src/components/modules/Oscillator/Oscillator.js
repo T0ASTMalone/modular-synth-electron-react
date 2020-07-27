@@ -54,7 +54,7 @@ const Oscillator = (props) => {
 
   return (
     <div className="module osc">
-      <p className="module__text--bold">Oscillator</p>
+      <h3 className="module__text--bold">Oscillator</h3>
 
       {/* {selected ? <button className='module__button'>X</button> : <></>} */}
       {/* outputs */}
