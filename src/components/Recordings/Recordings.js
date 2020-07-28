@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import "./Recordings.css";
 import PatchListItem from "../PatchListItem/PatchListItem";
-import { getTmpRec, getRec } from "../../utils/app-utils";
+import { getTmpRec, getRec, mvAllRecordings } from "../../utils/app-utils";
 import MsContext from "../../context/MsContext";
 import { useLogger } from "../../utils/hooks/logger";
 
@@ -10,16 +10,20 @@ const Recordings = () => {
   const logger = useLogger("Recordings");
   // reference to logger for use in useEffect without retriggering it
   const refLogger = useRef(logger);
+
   // for selecting recordings to save, delete or export
   const [selectedRec, setSelectedRec] = useState({});
   const [selectedTmp, setSelectedTmp] = useState({});
-  const context = useContext(MsContext);
-  // ref to context for use in useEffect without retriggering it
-  const refCtx = useRef(context);
   // recordings in tmp folder
   const [tmpRec, setTmpRecordings] = useState([]);
   // project recordings
   const [recordings, setRecordings] = useState([]);
+
+  const context = useContext(MsContext);
+  // ref to context for use in useEffect without retriggering it
+  const refCtx = useRef(context);
+
+  const { update, triggerUpdate } = context;
 
   const selectRec = (name) => {
     const items = selectedRec;
@@ -75,7 +79,7 @@ const Recordings = () => {
     setRecordings(recordings);
     // read recordings folder for project or tmp folder
     // for new patches
-  }, [refCtx, refLogger]);
+  }, [refCtx, refLogger, update]);
 
   // const renameRecording = () => {
   //   // rename recording
@@ -88,21 +92,35 @@ const Recordings = () => {
 
   const saveSelectedRecordings = () => {
     // only save selected Tmp recordings
-    console.log("saving selected recordings", selectedTmp);
     const recordings = Object.keys(selectedTmp);
     console.log(recordings);
   };
 
   const saveAllRecordings = () => {
-    console.log("saving all selected recordings", tmpRec);
+
+    /* 
+      TODO: Need to check if user is in a tmp project or
+            if in a saved project root path will change
+            depending on that
+    */
+
+    // get root path and tmpRec path
+    const path = context.rootPath;
+
+    try {
+      logger.info(`Saving ${tmpRec.length} recordings`);
+      // old and new path are the same because
+      // we are saving from within the project
+      mvAllRecordings(path, path);
+      triggerUpdate();
+    } catch (e) {
+      logger.err(`Failed to save recordings: ${e.message}`);
+    }
   };
 
   const exportSelectedRecording = () => {
     // export all selected recordings
   };
-
-  console.log(selectedRec);
-  console.log(recordings);
 
   return (
     <div className="recordings">
@@ -112,7 +130,7 @@ const Recordings = () => {
         <button onClick={() => deletRecordings()}>Delete</button>
         <button onClick={() => exportSelectedRecording()}>Export</button>
       </div>
-      {recordings.length > 1 ? (
+      {recordings.length >= 1 ? (
         <div className="recordings-container recordings-saved">
           <h3 className="sidebar-title">Saved</h3>
           <ul className="sidebar-list">
@@ -134,7 +152,7 @@ const Recordings = () => {
         <h3>No recordings here</h3>
       )}
 
-      {tmpRec.length > 1 ? (
+      {tmpRec.length >= 1 ? (
         <div className="recordings-container recordings-tmp">
           <h3 className="sidebar-title">Unsaved</h3>
           <ul className="sidebar-list">

@@ -35,6 +35,7 @@ const MsContext = React.createContext({
   clearContext: () => {},
   setRootPath: () => {},
   setTmpobj: () => {},
+  triggerUpdate: () => {},
 });
 
 export default MsContext;
@@ -373,6 +374,11 @@ export class MsProvider extends Component {
     }
   };
 
+  triggerUpdate = () => {
+    const { update } = this.state;
+    this.setState({ update: !update });
+  };
+
   /**
    * Reset everything to its zero value (new patch)
    */
@@ -460,6 +466,7 @@ export class MsProvider extends Component {
       setTmpobj: this.setTmpobj,
       setRootPath: this.setRootPath,
       setIsExisting: this.setIsExisting,
+      triggerUpdate: this.triggerUpdate,
     };
 
     return (

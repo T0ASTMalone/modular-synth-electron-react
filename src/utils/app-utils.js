@@ -104,7 +104,7 @@ export const getRec = (path) => {
  * @param {string} newPath
  */
 
-const mvAllRecordings = (oldPath, newPath) => {
+export const mvAllRecordings = (oldPath, newPath) => {
   // get all recording from tmp recordings folder
   const tmpRecordings = fs.readdirSync(`${oldPath}/recordings/tmpRec`);
   console.log(tmpRecordings);
