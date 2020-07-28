@@ -97,6 +97,47 @@ export const getRec = (path) => {
   }
 };
 
+// method for getting path from user
+export const getPath = (options) => {
+  let path;
+
+  try {
+    path = dialog.showOpenDialogSync(options);
+  } catch (e) {
+    logger.err(e.message);
+  }
+
+  return path;
+};
+
+// method for confirming
+// dialog for confirming open new/saved patch
+export const confirm = (title, message) => {
+  const options = {
+    type: "question",
+    title: title,
+    message: message,
+    buttons: ["yes", "no", "cancel"],
+    cancelId: 2,
+  };
+  return dialog.showMessageBoxSync(options);
+};
+
+export const exportRec = (oldPath, newPath) => {
+  try {
+    const rec = fs.readdirSync(oldPath);
+
+    for (let name of rec) {
+      fs.renameSync(`${oldPath}/${name}`, `${newPath}/${name}`);
+    }
+  } catch (e) {
+    logger.err(e.message);
+    return false;
+  }
+
+  return true;
+};
+
 /**
  * Moves all recordings currently in the tmpRec dir to the new path provided
  *

@@ -4,6 +4,8 @@ import PatchListItem from "../PatchListItem/PatchListItem";
 import { getTmpRec, getRec, mvAllRecordings } from "../../utils/app-utils";
 import MsContext from "../../context/MsContext";
 import { useLogger } from "../../utils/hooks/logger";
+import { getPath, confirm } from "../../utils/app-utils";
+import { exportRec } from "../../utils/app-utils";
 
 const Recordings = () => {
   // logger hook
@@ -23,7 +25,7 @@ const Recordings = () => {
   // ref to context for use in useEffect without retriggering it
   const refCtx = useRef(context);
 
-  const { update, triggerUpdate } = context;
+  const { update, triggerUpdate, isExisting, rootPath, tmpObj } = context;
 
   const selectRec = (name) => {
     const items = selectedRec;
@@ -96,22 +98,41 @@ const Recordings = () => {
     console.log(recordings);
   };
 
+  const mvFromTmp = () => {
+    const title = "This is not a saved project!";
+    const msg = "Would you like to save your recordings to their own folder?";
+    const conf = confirm(title, msg);
+
+    if (conf === 2 || conf === 1) {
+      return;
+    }
+
+    const options = {
+      title: "Select a folder to save all recordings",
+      properties: ["openDirectory"],
+    };
+
+    let path = getPath(options);
+
+    if (!path) {
+      return;
+    }
+
+    console.log(rootPath);
+    const old = `${rootPath}/recordings/tmpRec`;
+
+    // export to folder path
+    if (exportRec(old, path)) triggerUpdate();
+  };
+
   const saveAllRecordings = () => {
-
-    /* 
-      TODO: Need to check if user is in a tmp project or
-            if in a saved project root path will change
-            depending on that
-    */
-
-    // get root path and tmpRec path
-    const path = context.rootPath;
+    if (!isExisting) return mvFromTmp();
 
     try {
       logger.info(`Saving ${tmpRec.length} recordings`);
-      // old and new path are the same because
-      // we are saving from within the project
-      mvAllRecordings(path, path);
+      // just passing root path as recordings are just being
+      // moved within the project
+      mvAllRecordings(rootPath);
       triggerUpdate();
     } catch (e) {
       logger.err(`Failed to save recordings: ${e.message}`);
