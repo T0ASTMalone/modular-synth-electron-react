@@ -176,6 +176,7 @@ const Recordings = () => {
 
     let path = exportToPath(tmpRec, `${rootPath}\\recordings\\tmpRec`, options);
 
+    logger.info(`exporting selected recordings to ${path}`);
     exportToPath(savedRec, `${rootPath}\\recordings`, null, path);
   };
 
