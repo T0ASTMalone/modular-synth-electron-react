@@ -1,6 +1,7 @@
 import Logger from "../services/logger";
 
 const fs = window.require("fs");
+const path = window.require("path");
 const tmp = window.require("tmp");
 const toWav = require("audiobuffer-to-wav");
 const { dialog, process } = window.require("electron").remote;
@@ -126,7 +127,9 @@ export const confirm = (title, message) => {
 export const exportRec = (names, oldPath, newPath) => {
   try {
     for (let name of names) {
-      fs.renameSync(`${oldPath}/${name}`, `${newPath}/${name}`);
+      const source = fs.createReadStream(`${oldPath}\\${name}`);
+      const dest = fs.createWriteStream(path.resolve(newPath, name));
+      source.pipe(dest);
     }
   } catch (e) {
     logger.err(e.message);

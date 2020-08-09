@@ -183,3 +183,33 @@ export const useGetOut = () => {
 
   return mainGain;
 };
+
+export const createPathAndUpdate = (names, areTmp, root, func) => {
+  let success = null;
+
+  let path = areTmp ? `${root}\\recordings\\tmpRec` : `${root}\\recordings`;
+
+  const updatedNames = [];
+  // create full path names for saved recordings
+  for (let rec in names) {
+    const name = `${path}\\${rec}`;
+    updatedNames.push(name);
+    const deleted = func(name);
+    success = !success ? deleted : success;
+  }
+
+  return success;
+};
+
+export const createFullPaths = (names, areTmp, root) => {
+  let path = areTmp ? `${root}\\recordings\\tmpRec` : `${root}\\recordings`;
+
+  const updatedNames = [];
+  // create full path names for saved recordings
+  for (let rec in names) {
+    const name = `${path}\\${rec}`;
+    updatedNames.push(name);
+  }
+
+  return updatedNames;
+};

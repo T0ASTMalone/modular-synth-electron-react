@@ -1,13 +1,19 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import "./Recordings.css";
 import PatchListItem from "../PatchListItem/PatchListItem";
-import { getTmpRec, getRec, mvAllRecordings } from "../../utils/app-utils";
 import MsContext from "../../context/MsContext";
 import { useLogger } from "../../utils/hooks/logger";
-import { getPath, confirm } from "../../utils/app-utils";
-import { exportRec } from "../../utils/app-utils";
-import { mvSelectedRecordings } from "../../utils/app-utils";
-import { deleteFile } from "../../utils/app-utils";
+import { createPathAndUpdate } from "../../utils/module-utils";
+import {
+  getPath,
+  confirm,
+  mvSelectedRecordings,
+  deleteFile,
+  exportRec,
+  getTmpRec,
+  getRec,
+  mvAllRecordings,
+} from "../../utils/app-utils";
 
 const Recordings = () => {
   // logger hook
@@ -98,21 +104,16 @@ const Recordings = () => {
 
     let success = null;
 
-    // create full path names for temprecordings
-    for (let tmp in tmpRec) {
-      const name = `${rootPath}\\recordings\\tmpRec\\${tmp}`;
-      const deleted = deleteFile(name);
-      success = !success ? deleted : success;
-    }
+    success = createPathAndUpdate(tmpRec, true, rootPath, deleteFile);
 
-    // create full path names for saved recordings
-    for (let rec in savedRec) {
-      const name = `${rootPath}\\recordings\\${rec}`;
-      const deleted = deleteFile(name);
-      success = !success ? deleted : success;
-    }
+    const deleted = createPathAndUpdate(savedRec, false, rootPath, deleteFile);
 
-    if (success) triggerUpdate();
+    success = !success ? deleted : success;
+
+    if (success) {
+      // clear selected
+      completeAction();
+    }
   };
 
   const saveSelectedRecordings = () => {
@@ -121,15 +122,11 @@ const Recordings = () => {
 
     if (!isExisting) return mvFromTmp(recordings);
 
-    const oldPath = `${rootPath}\\recordings\\tmpRec`;
-
-    let newPath = `${rootPath}\\recordings`;
-
-    if (mvSelectedRecordings(recordings, oldPath, newPath)) triggerUpdate();
+    if (mvSelectedRecordings(recordings, rootPath, rootPath)) {
+      completeAction();
+    }
   };
 
-  // TODO: this might be changed to just be the export method and the
-  // save all button will be conditionally rendered based on isExisting
   const mvFromTmp = (names) => {
     // TODO: change if is existing 'Whould you like to save these recordings (list recordings)'
     const title = "This is not a saved project!";
@@ -143,16 +140,11 @@ const Recordings = () => {
       properties: ["openDirectory"],
     };
 
-    let path = getPath(options);
-
-    if (!path) {
-      return;
-    }
-
     const old = `${rootPath}/recordings/tmpRec`;
 
-    // export to folder path
-    if (exportRec(names, old, path)) triggerUpdate();
+    exportToPath(names, old, options);
+
+    completeAction();
   };
 
   const saveAllRecordings = () => {
@@ -163,14 +155,49 @@ const Recordings = () => {
       // just passing root path as recordings are just being
       // moved within the project
       mvAllRecordings(rootPath);
-      triggerUpdate();
     } catch (e) {
       logger.err(`Failed to save recordings: ${e.message}`);
     }
+
+    completeAction();
   };
 
   const exportSelectedRecording = () => {
     // export all selected recordings
+    if (!isExisting) return mvFromTmp(selectedTmp);
+
+    const options = {
+      title: "Select a folder to export selected recordings",
+      properties: ["openDirectory"],
+    };
+
+    let savedRec = Object.keys(selectedRec);
+    let tmpRec = Object.keys(selectedTmp);
+
+    let path = exportToPath(tmpRec, `${rootPath}\\recordings\\tmpRec`, options);
+
+    exportToPath(savedRec, `${rootPath}\\recordings`, null, path);
+  };
+
+  const exportToPath = (names, old, options, p = null) => {
+    let path = !p ? getPath(options)[0] : p;
+
+    if (!path) {
+      return;
+    }
+
+    // export to folder path
+    if (exportRec(names, old, path)) {
+      completeAction();
+    }
+
+    return path;
+  };
+
+  const completeAction = () => {
+    setSelectedRec({});
+    setSelectedTmp({});
+    triggerUpdate();
   };
 
   return (
