@@ -123,13 +123,23 @@ export const confirm = (title, message) => {
   return dialog.showMessageBoxSync(options);
 };
 
-export const exportRec = (oldPath, newPath) => {
+export const exportRec = (names, oldPath, newPath) => {
   try {
-    const rec = fs.readdirSync(oldPath);
-
-    for (let name of rec) {
+    for (let name of names) {
       fs.renameSync(`${oldPath}/${name}`, `${newPath}/${name}`);
     }
+  } catch (e) {
+    logger.err(e.message);
+    return false;
+  }
+
+  return true;
+};
+
+export const deleteFile = (name) => {
+  logger.warn(`Deleting ${name}`);
+  try {
+    fs.unlinkSync(name);
   } catch (e) {
     logger.err(e.message);
     return false;
@@ -163,6 +173,22 @@ export const mvAllRecordings = (oldPath, newPath) => {
       `${newPath}/recordings/${name}`
     );
   }
+};
+
+export const mvSelectedRecordings = (names, oldPath, newPath) => {
+  try {
+    for (let name of names) {
+      fs.renameSync(
+        `${oldPath}/recordings/tmpRec/${name}`,
+        `${newPath}/recordings/${name}`
+      );
+    }
+  } catch (e) {
+    logger.err(e.message);
+    return false;
+  }
+
+  return true;
 };
 
 export const saveExistingProject = (

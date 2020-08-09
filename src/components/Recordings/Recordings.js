@@ -6,6 +6,8 @@ import MsContext from "../../context/MsContext";
 import { useLogger } from "../../utils/hooks/logger";
 import { getPath, confirm } from "../../utils/app-utils";
 import { exportRec } from "../../utils/app-utils";
+import { mvSelectedRecordings } from "../../utils/app-utils";
+import { deleteFile } from "../../utils/app-utils";
 
 const Recordings = () => {
   // logger hook
@@ -25,7 +27,7 @@ const Recordings = () => {
   // ref to context for use in useEffect without retriggering it
   const refCtx = useRef(context);
 
-  const { update, triggerUpdate, isExisting, rootPath, tmpObj } = context;
+  const { update, triggerUpdate, isExisting, rootPath } = context;
 
   const selectRec = (name) => {
     const items = selectedRec;
@@ -89,23 +91,52 @@ const Recordings = () => {
   // };
 
   const deletRecordings = () => {
+    logger.warn("deleting all selected recordings...");
     // delete all selected recordings
+    const tmpRec = selectedTmp;
+    const savedRec = selectedRec;
+
+    let success = null;
+
+    // create full path names for temprecordings
+    for (let tmp in tmpRec) {
+      const name = `${rootPath}\\recordings\\tmpRec\\${tmp}`;
+      const deleted = deleteFile(name);
+      success = !success ? deleted : success;
+    }
+
+    // create full path names for saved recordings
+    for (let rec in savedRec) {
+      const name = `${rootPath}\\recordings\\${rec}`;
+      const deleted = deleteFile(name);
+      success = !success ? deleted : success;
+    }
+
+    if (success) triggerUpdate();
   };
 
   const saveSelectedRecordings = () => {
     // only save selected Tmp recordings
     const recordings = Object.keys(selectedTmp);
-    console.log(recordings);
+
+    if (!isExisting) return mvFromTmp(recordings);
+
+    const oldPath = `${rootPath}\\recordings\\tmpRec`;
+
+    let newPath = `${rootPath}\\recordings`;
+
+    if (mvSelectedRecordings(recordings, oldPath, newPath)) triggerUpdate();
   };
 
-  const mvFromTmp = () => {
+  // TODO: this might be changed to just be the export method and the
+  // save all button will be conditionally rendered based on isExisting
+  const mvFromTmp = (names) => {
+    // TODO: change if is existing 'Whould you like to save these recordings (list recordings)'
     const title = "This is not a saved project!";
     const msg = "Would you like to save your recordings to their own folder?";
     const conf = confirm(title, msg);
 
-    if (conf === 2 || conf === 1) {
-      return;
-    }
+    if (conf === 2 || conf === 1) return;
 
     const options = {
       title: "Select a folder to save all recordings",
@@ -118,15 +149,14 @@ const Recordings = () => {
       return;
     }
 
-    console.log(rootPath);
     const old = `${rootPath}/recordings/tmpRec`;
 
     // export to folder path
-    if (exportRec(old, path)) triggerUpdate();
+    if (exportRec(names, old, path)) triggerUpdate();
   };
 
   const saveAllRecordings = () => {
-    if (!isExisting) return mvFromTmp();
+    if (!isExisting) return mvFromTmp(tmpRec);
 
     try {
       logger.info(`Saving ${tmpRec.length} recordings`);
