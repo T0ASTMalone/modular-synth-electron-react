@@ -3,7 +3,7 @@
   height: 29px;
   display: flex;
   justify-content: space-between;
-
+  width: 17vw;
   padding: 2px 10px;
   user-select: none; /* standard syntax */
   -webkit-user-select: none; /* webkit (safari, chrome) browsers */
@@ -38,4 +38,37 @@
 .list-item-button:hover {
   background-color: #bcc5db;
   color: #282c34;
+}
+
+/* @media only screen and (min-width: 1800px) {
+  .list-item {
+    width: 18vw;
+  }
+}
+ 
+@media only screen and (min-width: 1300px) and (max-width: 1495px) {
+  .list-item {
+    width: 16.7vw;
+  }
+}
+@media only screen and (min-width: 1601px) and (max-width: 1799px) {
+  .list-item {
+    width: 17vw;
+  }
+}
+@media only screen and (min-width: 1496px) and (max-width: 1600px) {
+  .list-item {
+    width: 16.7vw;
+  }
+}
+@media only screen and (min-width: 1200px) and (max-width: 1299px) {
+  .list-item {
+    width: 15.5vw;
+  }
+} */
+
+@media only screen and (min-width: 1200px) {
+  .list-item {
+    width: 12vw;
+  }
 }

@@ -1,4 +1,4 @@
-import "./Rack.css";
+import "./Rack.scss";
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { useLogger } from "../../utils/hooks/logger";
 import MsContext from "../../context/MsContext";
@@ -15,7 +15,7 @@ const Rack = (props) => {
   const logger = useLogger("Rack");
   const refLogger = useRef(logger);
 
-  const { nodes, update } = context;
+  const { nodes, update, sidebar, toggleSidebar } = context;
   const { modSettings } = props;
 
   // create array of current modules from nodes object
@@ -89,7 +89,19 @@ const Rack = (props) => {
   let mainOutId;
 
   return (
-    <div className="rack">
+    <div className={sidebar ? "rack open" : "rack"}>
+      <div className={sidebar ? "sidebar-toggle" : "sidebar-toggle"}>
+        <button
+          onClick={toggleSidebar}
+          className={
+            !sidebar
+              ? "sidebar-button show"
+              : "sidebar-button button--closed hidden"
+          }
+        >
+          &lt;
+        </button>
+      </div>
       <Rec />
       <div className="rack__modules">
         {/* 

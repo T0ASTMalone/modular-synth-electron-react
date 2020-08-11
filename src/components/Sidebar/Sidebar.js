@@ -32,17 +32,15 @@ const Sidebar = (props) => {
   };
 
   return (
-    <div className={size ? "sidebar" : "sidebar sidebar--small"}>
+    <div className={size ? "sidebar sidebar-open" : "sidebar"}>
       <div
         className={
-          size
-            ? "sidebar-toggle sidebar-toggle--open"
-            : "sidebar-toggle sidebar-toggle--closed"
+          size ? "sidebar-toggle sidebar-toggle--open " : "sidebar-toggle"
         }
       >
         <button
           onClick={toggleSidebar}
-          className={size ? "sidebar-button" : "sidebar-button button--closed"}
+          className={!size ? "sidebar-button" : "sidebar-button button--closed"}
         >
           &lt;
         </button>

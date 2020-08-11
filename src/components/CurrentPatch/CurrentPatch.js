@@ -8,7 +8,7 @@ const CurrentPatch = () => {
   const { nodes, unload } = context;
 
   return (
-    <div className="curretn-patch">
+    <div className="current-patch">
       <h3 className="sidebar-title">Current Patch</h3>
       {/* {Object.keys(nodes).map((mod) => renderListItem(nodes[mod].type, mod))} */}
       <ul className="sidebar-list">
