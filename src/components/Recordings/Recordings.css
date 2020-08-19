@@ -1,3 +1,9 @@
 .recordings-controls {
   padding: 0 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.button-img {
+  width: 18px;
 }

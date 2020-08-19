@@ -31,6 +31,7 @@
 
 .sidebar-content {
   height: calc(100% - 68px);
+  width: 17vw;
 }
 
 .sidebar-content--small {
@@ -89,6 +90,7 @@
 }
 
 .sidebar-button {
+  padding: 4px;
   width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -102,7 +104,7 @@
 
 .sidebar-toggle {
   display: flex;
-  padding: 12.5px;
+  padding: 10px;
 }
 
 .sidebar-toggle--open {

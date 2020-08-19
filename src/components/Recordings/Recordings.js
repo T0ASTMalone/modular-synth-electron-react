@@ -4,6 +4,10 @@ import PatchListItem from "../PatchListItem/PatchListItem";
 import MsContext from "../../context/MsContext";
 import { useLogger } from "../../utils/hooks/logger";
 import { createPathAndUpdate } from "../../utils/module-utils";
+import SaveAll from "../../assets/svg/layers.svg";
+import Save from "../../assets/svg/layer.svg";
+import Delete from "../../assets/svg/delete.svg";
+import Export from "../../assets/svg/export.svg";
 import {
   getPath,
   confirm,
@@ -204,10 +208,24 @@ const Recordings = () => {
   return (
     <div className="recordings">
       <div className="recordings-controls">
-        <button onClick={() => saveSelectedRecordings()}>Save</button>
-        <button onClick={() => saveAllRecordings()}>Save All</button>
-        <button onClick={() => deletRecordings()}>Delete</button>
-        <button onClick={() => exportSelectedRecording()}>Export</button>
+        <button className="sidebar-button" onClick={() => saveAllRecordings()}>
+          <img className="button-img" src={SaveAll} alt="Save All" />
+        </button>
+        <button
+          className="sidebar-button"
+          onClick={() => saveSelectedRecordings()}
+        >
+          <img className="button-img" src={Save} alt="Save" />
+        </button>
+        <button className="sidebar-button" onClick={() => deletRecordings()}>
+          <img className="button-img" src={Delete} alt="Delete" />
+        </button>
+        <button
+          className="sidebar-button"
+          onClick={() => exportSelectedRecording()}
+        >
+          <img className="button-img" src={Export} alt="Export" />
+        </button>
       </div>
       {recordings.length >= 1 ? (
         <div className="recordings-container recordings-saved">
@@ -228,7 +246,7 @@ const Recordings = () => {
           </ul>
         </div>
       ) : (
-        <h3>No recordings here</h3>
+        <></>
       )}
 
       {tmpRec.length >= 1 ? (
