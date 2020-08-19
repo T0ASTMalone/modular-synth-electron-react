@@ -9,7 +9,7 @@ const Rec = () => {
   const [recorder, setRecorder] = useState(null);
   const context = useContext(MsContext);
   const dest = context.mediaStreamDestination;
-  const { ctx, rootPath } = context;
+  const { ctx, rootPath, sidebar, toggleSidebar } = context;
   // get main node
   const main = useGetOut();
 
@@ -72,16 +72,31 @@ const Rec = () => {
 
   return (
     <div className="rack__controls">
-      {/* rack controls */}
-      <button className="button" onClick={() => stop()}>
-        Stop
-      </button>
-      <button className="button" onClick={() => play()}>
-        Play
-      </button>
-      <button className="button" onClick={() => rec()}>
-        Rec
-      </button>
+      <div id="rack-sb-toggle" className="controls sidebar-toggle">
+        <button
+          onClick={toggleSidebar}
+          className={
+            !sidebar
+              ? "sidebar-button show"
+              : "sidebar-button button--closed hidden"
+          }
+        >
+          &lt;
+        </button>
+      </div>
+      <div className="controls main-controls">
+        {/* rack controls */}
+        <button className="button" onClick={() => stop()}>
+          Stop
+        </button>
+        <button className="button" onClick={() => play()}>
+          Play
+        </button>
+        <button className="button" onClick={() => rec()}>
+          Rec
+        </button>
+      </div>
+      <div className="controls right-controls"></div>
     </div>
   );
 };

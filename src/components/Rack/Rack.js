@@ -90,18 +90,6 @@ const Rack = (props) => {
 
   return (
     <div className={sidebar ? "rack open" : "rack"}>
-      <div className={sidebar ? "sidebar-toggle" : "sidebar-toggle"}>
-        <button
-          onClick={toggleSidebar}
-          className={
-            !sidebar
-              ? "sidebar-button show"
-              : "sidebar-button button--closed hidden"
-          }
-        >
-          &lt;
-        </button>
-      </div>
       <Rec />
       <div className="rack__modules">
         {/* 
