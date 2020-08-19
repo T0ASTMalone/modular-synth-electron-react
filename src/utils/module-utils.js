@@ -80,13 +80,10 @@ export const useIsModulated = (id) => {
 
   useEffect(() => {
     const ctx = refContext.current;
-    const id = refId.current;
-    const logger = refLogger.current;
     const { cables } = ctx.getCurrentState();
     // input is found
     // add input name to is connected
     const inputs = {};
-    logger.info(updateCables);
     for (let k in cables) {
       const cable = cables[k];
       if (cable.mod === id) {

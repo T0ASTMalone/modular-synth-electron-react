@@ -105,7 +105,6 @@ export class MsProvider extends Component {
    * @param {{name: string removeCallback: Function}} tmpPathobj
    */
   setTmpobj = (tmpPathobj) => {
-    console.log(tmpPathobj);
     this.setState({ tmpPathobj });
   };
 

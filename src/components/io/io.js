@@ -5,7 +5,7 @@ import { useIsModulated } from "../../utils/module-utils";
 import { useLogger } from "../../utils/hooks/logger";
 
 const Input = (props) => {
-  const { title, id, name, connected } = props;
+  const { title, id, name } = props;
   const context = useContext(MsContext);
   const ins = useIsModulated(id);
   const color = ins[name];
