@@ -45,6 +45,9 @@ const Rec = () => {
       // testing save audio as .wav file
       saveWave(audioBuffer, rootPath);
       ctx.resume();
+
+      // clean up recorder
+      setRecorder(null);
     });
   };
 
