@@ -15,6 +15,7 @@ const MsContext = React.createContext({
   input: null,
   output: null,
   sidebar: null,
+  mainInput: null,
   sbContent: "",
   loaded: [],
   isExisting: false,
@@ -47,6 +48,7 @@ export class MsProvider extends Component {
       ctx: null,
       nodes: {},
       cables: {},
+      mainInput: null,
       input: null,
       output: null,
       error: null,
@@ -258,13 +260,21 @@ export class MsProvider extends Component {
    * @param {string} output
    */
   _createConnection = (input, output) => {
-    const { cables, updateCables } = this.state;
+    const { cables, updateCables, nodes } = this.state;
     cables[output] = input;
+    // let currentInput = null;
+    // const node = nodes[input.mod];
+
+    // if(node.type === 'main-gain'){
+    //   currentInput = input;
+    // }
 
     this.setState({
       cables,
+      // input: currentInput,
       input: null,
       output: null,
+      mainInput: null,
       updateCables: !updateCables,
     });
   };
@@ -290,6 +300,34 @@ export class MsProvider extends Component {
 
     if (output && output !== input.mod) {
       this._createConnection(input, output);
+    } else {
+      this.setState({ mainIn: null });
+    }
+  };
+
+  /**
+   * Create input and asign color to input that will be used to represent the
+   * connection. If an output has been selected, a connection is created by
+   * calling this._createConnection(input, output).
+   * @param {string} mod
+   * @param {string} inputId
+   */
+  createMainInput = (mod, inputId) => {
+    const { output } = this.state;
+    const color = randomColor();
+
+    const mainInput = {
+      color,
+      mod,
+      input: inputId,
+    };
+
+    this.setState({ mainInput });
+
+    if (output && output !== mainInput.mod) {
+      this._createConnection(mainInput, output);
+    } else {
+      this.setState({ input: null });
     }
   };
 
@@ -299,11 +337,13 @@ export class MsProvider extends Component {
    * @param {string} output
    */
   createOutput = (output) => {
-    const { input } = this.state;
+    const { input, mainInput } = this.state;
     this.setState({ output });
 
     if (input && output !== input.mod) {
       this._createConnection(input, output);
+    } else if (mainInput && output !== mainInput.mod) {
+      this._createConnection(mainInput, output);
     }
   };
 
@@ -466,6 +506,7 @@ export class MsProvider extends Component {
       setRootPath: this.setRootPath,
       setIsExisting: this.setIsExisting,
       triggerUpdate: this.triggerUpdate,
+      createMainInput: this.createMainInput,
     };
 
     return (

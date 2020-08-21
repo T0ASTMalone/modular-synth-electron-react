@@ -10,18 +10,22 @@ const MainGain = (props) => {
   // gain value
   const [gainValue, setGain] = useState(4.4);
   const [id, setId] = useState(null);
+  const [inputCount, setInputCount] = useState(0);
   const logger = useLogger("Main Gain");
 
   const context = useContext(MsContext);
   const setAudioParam = useCheckDistance();
 
   const refCtx = useRef(context);
+  const refLogger = useRef(logger);
   const { newId } = props;
+  const { updateCables } = context;
 
   const nodeId = newId ? newId : id;
 
   //set up main gain module
   useEffect(() => {
+    const logger = refLogger.current;
     logger.info("initializing Main gain");
     // create main gain node
     const context = refCtx.current;
@@ -38,7 +42,32 @@ const MainGain = (props) => {
     // set to id
     setId(id);
     //set input ids
-  }, [refCtx]);
+  }, [refCtx, refLogger]);
+
+  useEffect(() => {
+    const ctx = refCtx.current;
+    const { cables } = ctx.getCurrentState();
+    let count = 0;
+
+    for (let c in cables) {
+      if (cables[c].mod === id) {
+        count++;
+      }
+    }
+    setInputCount(count);
+  }, [updateCables, refCtx, id]);
+
+  const renderInputs = () => {
+    const inputs = [];
+
+    console.log(inputCount);
+    inputs.push(<Input key={0} title="in" id={nodeId} name="main-in" />);
+    for (let i = 1; i < inputCount + 1; i++) {
+      inputs.push(<Input key={i} title="in" id={nodeId} name="main-in" />);
+    }
+
+    return inputs;
+  };
 
   // if an id was not passed in as props use the
   // generated id
@@ -54,7 +83,7 @@ const MainGain = (props) => {
         onChange={(e) => setAudioParam(e, gainValue, "gain", nodeId, setGain)}
       />
       {/* input */}
-      <Input title="in" id={nodeId} name="main-in" />
+      {renderInputs()}
       <Input title="gain" id={nodeId} name="gain" />
     </div>
   );

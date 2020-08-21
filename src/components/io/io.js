@@ -23,6 +23,15 @@ const Input = (props) => {
   };
 
   const handleConnection = () => {
+    const { nodes } = context;
+    const node = nodes[id];
+
+    if (node.type === "main-gain") {
+      console.log("your dealing with a main gain");
+      context.createMainInput(id, name);
+      return;
+    }
+
     if (connectionExists()) {
       context.removeInput(id, name);
     } else {
