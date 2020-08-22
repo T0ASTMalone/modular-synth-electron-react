@@ -37,6 +37,7 @@ const MsContext = React.createContext({
   setRootPath: () => {},
   setTmpobj: () => {},
   triggerUpdate: () => {},
+  removeMainInput: () => {},
 });
 
 export default MsContext;
@@ -368,6 +369,33 @@ export class MsProvider extends Component {
   };
 
   /**
+   * Remove cable (disconnect modules) connected to main gain and replace
+   * ouput from cable in conntext to wait for a valid input to be selected or
+   * until the output is changed for another.
+   *
+   * @param {number} number
+   * @param {string} inputId
+   */
+  removeMainInput = (number, inputId) => {
+    const { cables, updateCables } = this.state;
+
+    let count = 0;
+    let output = null;
+
+    for (let key in cables) {
+      if (cables[key].mod === inputId && count === number) {
+        delete cables[key];
+        output = key;
+        break;
+      } else {
+        count++;
+      }
+    }
+
+    this.setState({ cables, input: null, output, updateCables: !updateCables });
+  };
+
+  /**
    * Remove cable (disconnect modules) and replace input from cable in conntext
    * to wait for a valid input to be selected or until the output is changed
    * for another.
@@ -507,6 +535,7 @@ export class MsProvider extends Component {
       setIsExisting: this.setIsExisting,
       triggerUpdate: this.triggerUpdate,
       createMainInput: this.createMainInput,
+      removeMainInput: this.removeMainInput,
     };
 
     return (

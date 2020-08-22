@@ -50,7 +50,7 @@ const MainGain = (props) => {
     let count = 0;
 
     for (let c in cables) {
-      if (cables[c].mod === id) {
+      if (cables[c].mod === id && cables[c].input === "main-in") {
         count++;
       }
     }
@@ -61,9 +61,14 @@ const MainGain = (props) => {
     const inputs = [];
 
     console.log(inputCount);
-    inputs.push(<Input key={0} title="in" id={nodeId} name="main-in" />);
+    inputs.push(
+      <Input key={0} number={0} title="in" id={nodeId} name="main-in" />
+    );
     for (let i = 1; i < inputCount + 1; i++) {
-      inputs.push(<Input key={i} title="in" id={nodeId} name="main-in" />);
+      if (i > 5) break;
+      inputs.push(
+        <Input key={i} number={i} title="in" id={nodeId} name="main-in" />
+      );
     }
 
     return inputs;
@@ -83,7 +88,7 @@ const MainGain = (props) => {
         onChange={(e) => setAudioParam(e, gainValue, "gain", nodeId, setGain)}
       />
       {/* input */}
-      {renderInputs()}
+      <div className="main-outputs">{renderInputs()}</div>
       <Input title="gain" id={nodeId} name="gain" />
     </div>
   );

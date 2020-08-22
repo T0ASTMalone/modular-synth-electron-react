@@ -5,9 +5,9 @@ import { useIsModulated } from "../../utils/module-utils";
 import { useLogger } from "../../utils/hooks/logger";
 
 const Input = (props) => {
-  const { title, id, name } = props;
+  const { title, id, name, number = -1 } = props;
   const context = useContext(MsContext);
-  const ins = useIsModulated(id);
+  const ins = useIsModulated(id, number);
   const color = ins[name];
   const logger = useLogger("Input");
 
@@ -22,14 +22,31 @@ const Input = (props) => {
     return false;
   };
 
+  const mainConnectionExists = () => {
+    let connections = context.cables;
+
+    let onlyMainCables = [];
+
+    for (let key in connections) {
+      if (connections[key].mod === id) {
+        onlyMainCables.push(connections[key]);
+        logger.info(`${name} is connected to ${connections[key].mod} `);
+      }
+    }
+
+    if (onlyMainCables[number]) return true;
+
+    return false;
+  };
+
   const handleConnection = () => {
     const { nodes } = context;
     const node = nodes[id];
 
-    if (node.type === "main-gain") {
-      console.log("your dealing with a main gain");
-      context.createMainInput(id, name);
-      return;
+    if (node.type === "main-gain" && name === "main-in") {
+      return !mainConnectionExists()
+        ? context.createMainInput(id, name)
+        : context.removeMainInput(number, id);
     }
 
     if (connectionExists()) {
@@ -43,7 +60,7 @@ const Input = (props) => {
     borderRadius: "50%",
     width: " 20px",
     height: "20px",
-    border: color ? `5px solid ${color}` : "5px solid cadetblue",
+    border: color ? `5px solid ${color}` : "5px solid #5a5959",
   };
 
   return (
@@ -88,7 +105,7 @@ const Output = (props) => {
     borderRadius: "50%",
     width: " 20px",
     height: "20px",
-    border: output ? `5px solid ${output}` : "5px solid cadetblue",
+    border: output ? `5px solid ${output}` : "5px solid #5a5959",
   };
 
   return (

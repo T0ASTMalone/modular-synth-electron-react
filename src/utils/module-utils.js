@@ -67,7 +67,7 @@ export const useIsOutput = (id) => {
   return isConnected;
 };
 
-export const useIsModulated = (id) => {
+export const useIsModulated = (id, number) => {
   const context = useContext(MsContext);
   const [isConnected, setIsConnected] = useState({});
   const logger = useLogger("useIsModulated");
@@ -84,12 +84,30 @@ export const useIsModulated = (id) => {
     // input is found
     // add input name to is connected
     const inputs = {};
-    for (let k in cables) {
-      const cable = cables[k];
-      if (cable.mod === id) {
-        inputs[cable.input] = cable.color;
+
+    const regInput = () => {
+      for (let k in cables) {
+        const cable = cables[k];
+        if (cable.mod === id) {
+          inputs[cable.input] = cable.color;
+        }
       }
-    }
+    };
+
+    const mainInput = () => {
+      let count = 0;
+
+      for (let key in cables) {
+        if (cables[key].mod === id && count === number) {
+          inputs[cables[key].input] = cables[key].color;
+          break;
+        } else {
+          count++;
+        }
+      }
+    };
+
+    number === -1 ? regInput() : mainInput();
 
     setIsConnected(inputs);
   }, [updateCables, refContext, refId, refLogger]);

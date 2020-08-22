@@ -2,19 +2,22 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  border: 5px solid cadetblue;
+  border: 5px solid rgb(90, 89, 89);
 }
 
 .out,
 .in {
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
-  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .in__text,
 .out__text {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
 }
