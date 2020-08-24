@@ -1,0 +1,23 @@
+.pulse-params {
+  width: 123px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-items: center;
+  justify-content: center;
+}
+
+.pulse-io {
+  display: flex;
+  justify-content: center;
+}
+
+.beats {
+  display: flex;
+  justify-content: space-around;
+}
+
+.pad {
+  width: 20px;
+  height: 20px;
+  background-color: black;
+}

@@ -489,8 +489,8 @@ export class MsProvider extends Component {
    * in context
    */
   getCurrentState = () => {
-    const { nodes, cables, tmpPathobj, isExisting, rootPath } = this.state;
-    return { nodes, cables, tmpPathobj, isExisting, rootPath };
+    const { nodes, cables, tmpPathobj, isExisting, rootPath, ctx } = this.state;
+    return { nodes, cables, tmpPathobj, isExisting, rootPath, ctx };
   };
 
   render() {

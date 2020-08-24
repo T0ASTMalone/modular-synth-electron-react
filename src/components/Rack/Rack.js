@@ -32,6 +32,7 @@ const Rack = (props) => {
 
     const { getCurrentState } = ctx;
     const { nodes } = getCurrentState();
+    console.log(nodes);
 
     // create array of current modules from nodes array
     let currentModules = [];
@@ -39,13 +40,18 @@ const Rack = (props) => {
       currentModules.push(nodes[key].type);
     });
 
+    currentModules.forEach((n) => console.log(n));
+
     // reduce array to only contain one of each of the current modules
     const imports = currentModules.filter(
       (item, i) => currentModules.indexOf(item) === i
     );
 
+    imports.forEach((im) => console.log(im));
+
     const getImports = (mod) => {
       if (mod && mod !== "main-gain") {
+        console.log(mod);
         return import(`../modules/${mod}/${mod}.js`);
       }
     };

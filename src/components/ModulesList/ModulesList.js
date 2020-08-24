@@ -4,7 +4,7 @@ import MsContext from "../../context/MsContext";
 import PatchListItem from "../PatchListItem/PatchListItem";
 
 const ModulesList = () => {
-  const installed = ["Oscillator", "Filter", "Lfo", "Gain", "Reverb"];
+  const installed = ["Oscillator", "Filter", "Lfo", "Gain", "Reverb", "Pulse"];
   const context = useContext(MsContext);
   console.log(context);
 
