@@ -3,6 +3,8 @@ import "./Pulse.scss";
 // import { Output, Input } from "../../io/io";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
+import Logger from "../../../services/logger";
+import { useLogger } from "../../../utils/hooks/logger";
 // import { useLogger } from "../../../utils/hooks/logger";
 // import {
 //   useCheckDistance,
@@ -16,6 +18,10 @@ const Pulse = (props) => {
   const [sus, setSus] = useState(1);
   const [bpm, setBpm] = useState(60);
   const [pads, setSelectedPads] = useState({});
+  const [playing, setPlaying] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [timerId, setTimerId] = useState(undefined);
+  const Logger = useLogger("Pulse");
 
   // const setAudioParam = useCheckDistance();
   const context = useContext(MsContext);
@@ -35,18 +41,22 @@ const Pulse = (props) => {
     }
   };
 
-  const playBeat = () => {
-    const sweepLength = 2;
+  const playBeat = (attack, frequency, release, sustain) => {
+    // const sweepLength = 2;
+    const sweepLength = sustain;
     const osc = ctx.createOscillator();
     osc.type = "square";
-    osc.frequency.value = freq;
+    osc.frequency.value = frequency;
 
     // Envelope
     const env = ctx.createGain();
     env.gain.cancelScheduledValues(ctx.currentTime);
     env.gain.setValueAtTime(0, ctx.currentTime);
-    env.gain.linearRampToValueAtTime(1, ctx.currentTime + att);
-    env.gain.linearRampToValueAtTime(0, ctx.currentTime + sweepLength - rel);
+    env.gain.linearRampToValueAtTime(1, ctx.currentTime + attack);
+    env.gain.linearRampToValueAtTime(
+      0,
+      ctx.currentTime + sweepLength - release
+    );
 
     osc.connect(env).connect(ctx.destination);
     osc.start();
@@ -101,11 +111,11 @@ const Pulse = (props) => {
       // console.log(beatNumber, time);
 
       if (pads[currentNote]) {
-        playBeat();
+        playBeat(att, freq, rel, sus);
       }
     }
 
-    let timerID;
+    // let timerID;
     function scheduler() {
       // while there are notes that will need to play before the next interval,
       // schedule them and advance the pointer.
@@ -113,7 +123,8 @@ const Pulse = (props) => {
         scheduleNote(currentNote, nextNoteTime);
         nextNote();
       }
-      timerID = window.setTimeout(scheduler, lookahead);
+      // timerID = window.setTimeout(scheduler, lookahead);
+      setTimerId(window.setTimeout(scheduler, lookahead));
     }
 
     // We also need a draw function to update the UI, so we can see when the beat progresses.
@@ -140,11 +151,13 @@ const Pulse = (props) => {
     //   // set up to draw again
     //   requestAnimationFrame(draw);
     // }
-    let isPlaying = false;
+
     play.current = (ev) => {
-      isPlaying = !isPlaying;
+      console.log(bpm);
+      let isPlaying = !playing;
 
       if (isPlaying) {
+        console.log("player is not currently playing");
         // start playing
 
         // check if context is in suspended state (autoplay policy)
@@ -157,13 +170,28 @@ const Pulse = (props) => {
         scheduler(); // kick off scheduling
         //requestAnimationFrame(draw); // start the drawing loop.
         //ev.target.dataset.playing = "true";
+        setPlaying(true);
       } else {
-        window.clearTimeout(timerID);
+        window.clearTimeout(timerId);
         //ev.target.dataset.playing = "false";
+        setPlaying(false);
       }
     };
-  }, [bpm, ctxRef, pads, playBeatRef]);
+  }, [
+    bpm,
+    ctxRef,
+    pads,
+    playBeatRef,
+    att,
+    playing,
+    freq,
+    started,
+    timerId,
+    rel,
+    sus,
+  ]);
 
+  // console.log("hello ");
   return (
     <div className="module pulse">
       <div className="pulse-params">
@@ -178,7 +206,7 @@ const Pulse = (props) => {
         <Knob
           onChange={(e) => checkDistance(e, setAtt, 0.1, att)}
           step="0.1"
-          min={0}
+          min={0.01}
           max={1}
           value={att}
         />
