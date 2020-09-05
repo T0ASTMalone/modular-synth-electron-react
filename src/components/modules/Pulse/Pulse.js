@@ -25,7 +25,8 @@ const Pulse = (props) => {
   const [bpm, setBpm] = useState(60);
   const [pads, setSelectedPads] = useState({});
   const [playing, setPlaying] = useState(false);
-  const [started, setStarted] = useState(false);
+  const [currPad, setCurrPad] = useState({ 0: { note: 8 } });
+  // const [started, setStarted] = useState(false);
   const [timerId, setTimerId] = useState(undefined);
   const Logger = useLogger("Pulse");
 
@@ -49,13 +50,12 @@ const Pulse = (props) => {
 
   const selectPad = (pad) => {
     const selectedPads = pads;
-    console.log(selectedPads, pads);
     if (selectedPads[pad]) {
       selectedPads[pad] = false;
-      setSelectedPads(selectedPads);
+      setSelectedPads({ ...selectedPads });
     } else {
       selectedPads[pad] = true;
-      setSelectedPads(selectedPads);
+      setSelectedPads({ ...selectedPads });
     }
   };
 
@@ -78,12 +78,21 @@ const Pulse = (props) => {
     function nextNote() {
       const secondsPerBeat = 60.0 / bpmRef.current;
       nextNoteTime += secondsPerBeat; // Add beat length to last beat time
-
       // Advance the beat number, wrap to zero
       currentNote++;
-      if (currentNote === 4) {
+
+      const currentPad = currPad;
+      currentPad[0].note = currentPad[0].note + 1;
+
+      if (currentPad[0].note >= 8) {
+        currentPad[0].note = 0;
+      }
+
+      if (currentNote === 8) {
         currentNote = 0;
       }
+
+      setCurrPad(currentPad);
     }
 
     // Create a queue for the notes that are to be played, with the current time that we want them to play:
@@ -181,7 +190,6 @@ const Pulse = (props) => {
     ctxRef,
     pads,
     playing,
-    started,
     timerId,
     playBeatRef,
     att,
@@ -189,7 +197,30 @@ const Pulse = (props) => {
     rel,
     freq,
     bpmRef,
+    currPad,
   ]);
+
+  const renderPads = () => {
+    console.log("rendering pads");
+    const padsArr = [];
+
+    for (let i = 0; i < 8; i++) {
+      padsArr.push(
+        <button
+          key={i}
+          onClick={() => selectPad(i)}
+          className={
+            (currPad[0].note === i ? "current-note " : "") +
+            (pads[i] ? "selected-pad pad" : "pad")
+          }
+        ></button>
+      );
+    }
+
+    return padsArr;
+  };
+
+  console.log(currPad[0].note);
 
   return (
     <div className="module pulse">
@@ -233,10 +264,7 @@ const Pulse = (props) => {
       </div>
       <div className="beats">
         {/* pads */}
-        <button onClick={() => selectPad(0)} className="pad"></button>
-        <button onClick={() => selectPad(1)} className="pad"></button>
-        <button onClick={() => selectPad(2)} className="pad"></button>
-        <button onClick={() => selectPad(3)} className="pad"></button>
+        {renderPads()}
       </div>
       <div className="pulse-io">
         <button onClick={(ev) => play.current(ev)} className="pad"></button>
