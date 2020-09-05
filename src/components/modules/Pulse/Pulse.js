@@ -1,4 +1,10 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import "./Pulse.scss";
 // import { Output, Input } from "../../io/io";
 import { Knob } from "react-rotary-knob";
@@ -41,28 +47,6 @@ const Pulse = (props) => {
     }
   };
 
-  const playBeat = (attack, frequency, release, sustain) => {
-    // const sweepLength = 2;
-    const sweepLength = sustain;
-    const osc = ctx.createOscillator();
-    osc.type = "square";
-    osc.frequency.value = frequency;
-
-    // Envelope
-    const env = ctx.createGain();
-    env.gain.cancelScheduledValues(ctx.currentTime);
-    env.gain.setValueAtTime(0, ctx.currentTime);
-    env.gain.linearRampToValueAtTime(1, ctx.currentTime + attack);
-    env.gain.linearRampToValueAtTime(
-      0,
-      ctx.currentTime + sweepLength - release
-    );
-
-    osc.connect(env).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + sweepLength);
-  };
-
   const selectPad = (pad) => {
     const selectedPads = pads;
     console.log(selectedPads, pads);
@@ -75,24 +59,24 @@ const Pulse = (props) => {
     }
   };
 
-  const playBeatRef = useRef(playBeat);
+  // const playBeatRef = useRef(playBeat);
+  const playBeatRef = useRef(() => {});
   const play = useRef(() => {});
+  const bpmRef = useRef(bpm);
   const ctxRef = useRef(context);
 
   useEffect(() => {
-    let tempo = bpm;
     const { getCurrentState } = ctxRef.current;
     const { ctx } = getCurrentState();
-    const playBeat = playBeatRef.current;
+    bpmRef.current = bpm;
 
-    const lookahead = 25.0; // How frequently to call scheduling function (in milliseconds)
-    const scheduleAheadTime = 0.1; // How far ahead to schedule audio (sec)
-
+    const lookahead = 10.0; // How frequently to call scheduling function (in milliseconds)
+    const scheduleAheadTime = 0.5; // How far ahead to schedule audio (sec)
     let currentNote = 0; // The note we are currently playing
     let nextNoteTime = 0.0; // when the next note is due.
 
     function nextNote() {
-      const secondsPerBeat = 60.0 / tempo;
+      const secondsPerBeat = 60.0 / bpmRef.current;
       nextNoteTime += secondsPerBeat; // Add beat length to last beat time
 
       // Advance the beat number, wrap to zero
@@ -111,7 +95,7 @@ const Pulse = (props) => {
       // console.log(beatNumber, time);
 
       if (pads[currentNote]) {
-        playBeat(att, freq, rel, sus);
+        playBeatRef.current();
       }
     }
 
@@ -152,14 +136,29 @@ const Pulse = (props) => {
     //   requestAnimationFrame(draw);
     // }
 
+    playBeatRef.current = () => {
+      const sweepLength = sus;
+      const osc = ctx.createOscillator();
+      osc.type = "square";
+      osc.frequency.value = freq;
+      // Envelope
+      const env = ctx.createGain();
+      env.gain.cancelScheduledValues(ctx.currentTime);
+      env.gain.setValueAtTime(0, ctx.currentTime);
+      env.gain.linearRampToValueAtTime(1, ctx.currentTime + att);
+      env.gain.linearRampToValueAtTime(0, ctx.currentTime + sweepLength - rel);
+
+      osc.connect(env).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + sweepLength);
+    };
+
     play.current = (ev) => {
       console.log(bpm);
       let isPlaying = !playing;
 
       if (isPlaying) {
-        console.log("player is not currently playing");
         // start playing
-
         // check if context is in suspended state (autoplay policy)
         if (ctx.state === "suspended") {
           ctx.resume();
@@ -181,17 +180,17 @@ const Pulse = (props) => {
     bpm,
     ctxRef,
     pads,
-    playBeatRef,
-    att,
     playing,
-    freq,
     started,
     timerId,
-    rel,
+    playBeatRef,
+    att,
     sus,
+    rel,
+    freq,
+    bpmRef,
   ]);
 
-  // console.log("hello ");
   return (
     <div className="module pulse">
       <div className="pulse-params">
@@ -200,7 +199,7 @@ const Pulse = (props) => {
           onChange={(e) => checkDistance(e, setFreq, 2000, freq)}
           step="1"
           min={0}
-          max={20000}
+          max={10000}
           value={freq}
         />
         <Knob
@@ -228,7 +227,7 @@ const Pulse = (props) => {
           onChange={(e) => checkDistance(e, setBpm, 20, bpm)}
           step="1"
           min={0}
-          max={200}
+          max={800}
           value={bpm}
         />
       </div>
