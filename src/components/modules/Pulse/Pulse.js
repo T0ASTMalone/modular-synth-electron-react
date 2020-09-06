@@ -26,7 +26,6 @@ const Pulse = (props) => {
   const [pads, setSelectedPads] = useState({});
   const [playing, setPlaying] = useState(false);
   const [currPad, setCurrPad] = useState({ 0: { note: 8 } });
-  // const [started, setStarted] = useState(false);
   const [timerId, setTimerId] = useState(undefined);
   const Logger = useLogger("Pulse");
 
@@ -50,8 +49,9 @@ const Pulse = (props) => {
 
   const selectPad = (pad) => {
     const selectedPads = pads;
+    console.log("/selectPad", pads);
     if (selectedPads[pad]) {
-      selectedPads[pad] = false;
+      delete selectedPads[pad];
       setSelectedPads({ ...selectedPads });
     } else {
       selectedPads[pad] = true;
@@ -62,6 +62,7 @@ const Pulse = (props) => {
   // const playBeatRef = useRef(playBeat);
   const playBeatRef = useRef(() => {});
   const play = useRef(() => {});
+  const scheduleNote = useRef(() => {});
   const bpmRef = useRef(bpm);
   const ctxRef = useRef(context);
 
@@ -82,13 +83,10 @@ const Pulse = (props) => {
       currentNote++;
 
       const currentPad = currPad;
-      currentPad[0].note = currentPad[0].note + 1;
-
-      if (currentPad[0].note >= 8) {
-        currentPad[0].note = 0;
-      }
+      currentPad[0].note = currentNote;
 
       if (currentNote === 8) {
+        currentPad[0].note = 0;
         currentNote = 0;
       }
 
@@ -98,52 +96,39 @@ const Pulse = (props) => {
     // Create a queue for the notes that are to be played, with the current time that we want them to play:
     const notesInQueue = [];
 
-    function scheduleNote(beatNumber, time) {
-      // push the note on the queue, even if we're not playing.
-      notesInQueue.push({ note: beatNumber, time: time });
-      // console.log(beatNumber, time);
+    // function scheduleNote(beatNumber, time) {
+    //   // push the note on the queue, even if we're not playing.
+    //   notesInQueue.push({ note: beatNumber, time: time });
+    //   // console.log(beatNumber, time);
 
-      if (pads[currentNote]) {
-        playBeatRef.current();
-      }
-    }
+    //   if (pads[currentNote]) {
+    //     console.log(pads);
+    //     playBeatRef.current();
+    //   }
+    // }
 
     // let timerID;
     function scheduler() {
       // while there are notes that will need to play before the next interval,
       // schedule them and advance the pointer.
       while (nextNoteTime < ctx.currentTime + scheduleAheadTime) {
-        scheduleNote(currentNote, nextNoteTime);
+        scheduleNote.current(currentNote, nextNoteTime);
         nextNote();
       }
       // timerID = window.setTimeout(scheduler, lookahead);
       setTimerId(window.setTimeout(scheduler, lookahead));
     }
 
+    scheduleNote.current = (beatNumber, time) => {
+      // push the note on the queue, even if we're not playing.
+      notesInQueue.push({ note: beatNumber, time: time });
+      // console.log(beatNumber, time);
+      if (pads[currPad[0].note]) {
+        playBeatRef.current();
+      }
+    };
+
     // We also need a draw function to update the UI, so we can see when the beat progresses.
-
-    // let lastNoteDrawn = 3;
-    // function draw() {
-    //   let drawNote = lastNoteDrawn;
-    //   const currentTime = ctx.currentTime;
-
-    //   while (notesInQueue.length && notesInQueue[0].time < currentTime) {
-    //     drawNote = notesInQueue[0].note;
-    //     notesInQueue.splice(0, 1); // remove note from queue
-    //   }
-
-    //   // We only need to draw if the note has moved.
-    //   if (lastNoteDrawn !== drawNote) {
-    //     pads.forEach((el) => {
-    //       el.children[lastNoteDrawn].style.borderColor = "hsla(0, 0%, 10%, 1)";
-    //       el.children[drawNote].style.borderColor = "hsla(49, 99%, 50%, 1)";
-    //     });
-
-    //     lastNoteDrawn = drawNote;
-    //   }
-    //   // set up to draw again
-    //   requestAnimationFrame(draw);
-    // }
 
     playBeatRef.current = () => {
       const sweepLength = sus;
@@ -201,16 +186,20 @@ const Pulse = (props) => {
   ]);
 
   const renderPads = () => {
-    console.log("rendering pads");
     const padsArr = [];
+    let curr = currPad[0].note - 1;
 
-    for (let i = 0; i < 8; i++) {
+    if (curr === -1) {
+      curr = 7;
+    }
+
+    for (let i = 0; i <= 7; i++) {
       padsArr.push(
         <button
           key={i}
           onClick={() => selectPad(i)}
           className={
-            (currPad[0].note === i ? "current-note " : "") +
+            (curr === i ? "current-note " : "") +
             (pads[i] ? "selected-pad pad" : "pad")
           }
         ></button>
@@ -219,8 +208,6 @@ const Pulse = (props) => {
 
     return padsArr;
   };
-
-  console.log(currPad[0].note);
 
   return (
     <div className="module pulse">
