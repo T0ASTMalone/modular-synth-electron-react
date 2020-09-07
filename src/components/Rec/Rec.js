@@ -3,6 +3,7 @@ import "./Rec.css";
 import MsContext from "../../context/MsContext";
 import { useGetOut } from "../../utils/module-utils";
 import { saveWave } from "../../utils/app-utils";
+import Open from "../../assets/svg/open.svg";
 
 const Rec = () => {
   // set recorder in state when new recording starts

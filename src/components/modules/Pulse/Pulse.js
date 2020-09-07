@@ -1,17 +1,9 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./Pulse.scss";
-// import { Output, Input } from "../../io/io";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
-import Logger from "../../../services/logger";
 import { useLogger } from "../../../utils/hooks/logger";
-// import { useLogger } from "../../../utils/hooks/logger";
+import { Output, Input } from "../../io/io";
 // import {
 //   useCheckDistance,
 //   useCreateConnection,
@@ -31,7 +23,6 @@ const Pulse = (props) => {
 
   // const setAudioParam = useCheckDistance();
   const context = useContext(MsContext);
-  const { ctx } = context;
 
   const { id, values } = props;
 
@@ -49,7 +40,6 @@ const Pulse = (props) => {
 
   const selectPad = (pad) => {
     const selectedPads = pads;
-    console.log("/selectPad", pads);
     if (selectedPads[pad]) {
       delete selectedPads[pad];
       setSelectedPads({ ...selectedPads });
@@ -96,17 +86,6 @@ const Pulse = (props) => {
     // Create a queue for the notes that are to be played, with the current time that we want them to play:
     const notesInQueue = [];
 
-    // function scheduleNote(beatNumber, time) {
-    //   // push the note on the queue, even if we're not playing.
-    //   notesInQueue.push({ note: beatNumber, time: time });
-    //   // console.log(beatNumber, time);
-
-    //   if (pads[currentNote]) {
-    //     console.log(pads);
-    //     playBeatRef.current();
-    //   }
-    // }
-
     // let timerID;
     function scheduler() {
       // while there are notes that will need to play before the next interval,
@@ -122,13 +101,10 @@ const Pulse = (props) => {
     scheduleNote.current = (beatNumber, time) => {
       // push the note on the queue, even if we're not playing.
       notesInQueue.push({ note: beatNumber, time: time });
-      // console.log(beatNumber, time);
       if (pads[currPad[0].note]) {
         playBeatRef.current();
       }
     };
-
-    // We also need a draw function to update the UI, so we can see when the beat progresses.
 
     playBeatRef.current = () => {
       const sweepLength = sus;
@@ -148,7 +124,6 @@ const Pulse = (props) => {
     };
 
     play.current = (ev) => {
-      console.log(bpm);
       let isPlaying = !playing;
 
       if (isPlaying) {
@@ -187,6 +162,7 @@ const Pulse = (props) => {
 
   const renderPads = () => {
     const padsArr = [];
+
     let curr = currPad[0].note - 1;
 
     if (curr === -1) {
@@ -213,49 +189,75 @@ const Pulse = (props) => {
     <div className="module pulse">
       <div className="pulse-params">
         {/* attack, release, freq, durr, bpm */}
-        <Knob
-          onChange={(e) => checkDistance(e, setFreq, 2000, freq)}
-          step="1"
-          min={0}
-          max={10000}
-          value={freq}
-        />
-        <Knob
-          onChange={(e) => checkDistance(e, setAtt, 0.1, att)}
-          step="0.1"
-          min={0.01}
-          max={1}
-          value={att}
-        />
-        <Knob
-          onChange={(e) => checkDistance(e, setRel, 0.1, rel)}
-          step="0.1"
-          min={0}
-          max={1}
-          value={rel}
-        />
-        <Knob
-          onChange={(e) => checkDistance(e, setSus, 0.1, sus)}
-          step="0.1"
-          min={0}
-          max={1}
-          value={sus}
-        />
-        <Knob
-          onChange={(e) => checkDistance(e, setBpm, 20, bpm)}
-          step="1"
-          min={0}
-          max={800}
-          value={bpm}
-        />
+        <div className="knob">
+          <p className="module__text">freq</p>
+          <Knob
+            onChange={(e) => checkDistance(e, setFreq, 2000, freq)}
+            step="1"
+            min={0}
+            max={10000}
+            value={freq}
+          />
+        </div>
+        <div className="knob">
+          <p className="module__text">att</p>
+          <Knob
+            onChange={(e) => checkDistance(e, setAtt, 0.1, att)}
+            step="0.1"
+            min={0.01}
+            max={1}
+            value={att}
+          />
+        </div>
+        <div className="knob">
+          <p className="module__text">rel</p>
+          <Knob
+            onChange={(e) => checkDistance(e, setRel, 0.1, rel)}
+            step="0.1"
+            min={0}
+            max={1}
+            value={rel}
+          />
+        </div>
+        <div className="knob">
+          <p className="module__text">sus</p>
+          <Knob
+            onChange={(e) => checkDistance(e, setSus, 0.1, sus)}
+            step="0.1"
+            min={0}
+            max={1}
+            value={sus}
+          />
+        </div>
+        <div className="knob">
+          <p className="module__text">bpm</p>
+          <Knob
+            onChange={(e) => checkDistance(e, setBpm, 20, bpm)}
+            step="1"
+            min={0}
+            max={800}
+            value={bpm}
+          />
+        </div>
+        <div
+          className={
+            playing
+              ? "toggle-container toggle-container-on"
+              : "toggle-container"
+          }
+        >
+          <button
+            onClick={(ev) => play.current(ev)}
+            className="toggle-switch"
+          ></button>
+        </div>
       </div>
       <div className="beats">
         {/* pads */}
         {renderPads()}
       </div>
       <div className="pulse-io">
-        <button onClick={(ev) => play.current(ev)} className="pad"></button>
-        {/* <Output /> */}
+        <Output />
       </div>
     </div>
   );
