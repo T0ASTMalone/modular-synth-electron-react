@@ -19,3 +19,7 @@
   color: white;
   fill: white;
 }
+
+.knob {
+  align-self: center;
+}

@@ -20,6 +20,7 @@ import { defaultTemplate } from "./app-menu";
 import TitleBar from "frameless-titlebar";
 // import Logger from "./services/logger";
 import { useLogger } from "./utils/hooks/logger";
+import { log } from "util";
 
 const { ipcRenderer, remote } = window.require("electron");
 const { dialog } = remote;
@@ -39,10 +40,9 @@ function App() {
   const toggleSidebar = useCallback(
     (e, data) => {
       // add function that grabs sidebar and sbContent from context and use
-      // those for this function as follows, to remove the need to update the event
-      // emitter everytime the sidebar gets updated
-      // const {sidebar, sbContent} = context.getSbState();
-
+      // those for this function as follows, to remove the need to update the
+      // event emitter everytime the sidebar gets updated const {sidebar,
+      // sbContent} = context.getSbState();
       const context = refCtx.current;
 
       if (!data) {
@@ -289,19 +289,23 @@ function App() {
     });
   }, [refCtx]);
 
+  logger.info(process.platform);
+
   return (
     <div>
-      <TitleBar
-        // icon={sim} // app icon
-        currentWindow={currentWindow} // electron window instance
-        platform={process.platform} // win32, darwin, linux
-        menu={defaultTemplate}
-        title="modSynth"
-        onClose={() => currentWindow.close()}
-        onMinimize={() => currentWindow.minimize()}
-        onMaximize={() => currentWindow.maximize()}
-        onDoubleClick={() => currentWindow.maximize()}
-      />
+      <div class="title-bar-container">
+        <TitleBar
+          // icon={sim} // app icon
+          currentWindow={currentWindow} // electron window instance
+          platform={process.platform} // win32, darwin, linux
+          menu={defaultTemplate}
+          title="modSynth"
+          onClose={() => currentWindow.close()}
+          onMinimize={() => currentWindow.minimize()}
+          onMaximize={() => currentWindow.maximize()}
+          onDoubleClick={() => currentWindow.maximize()}
+        />
+      </div>
       <main className="app-main">
         <Sidebar size={sidebar} />
         <Rack modSettings={modSettings ? modSettings : null} />

@@ -55,8 +55,6 @@ const Oscillator = (props) => {
   return (
     <div className="module osc">
       <h3 className="module__text--bold">Oscillator</h3>
-
-      {/* {selected ? <button className='module__button'>X</button> : <></>} */}
       {/* outputs */}
       <div className="osc__outputs">
         <Output title="out" output={outputting} id={id} />
@@ -82,10 +80,6 @@ const Oscillator = (props) => {
             className="param-button"
             onClick={() => updateWav("square")}
           ></button>
-        </div>
-        <div className="button-container">
-          <p className="module__text">Sub</p>
-          <button className="param-button"></button>
         </div>
       </div>
       {/* frequency knob */}

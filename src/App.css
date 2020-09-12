@@ -101,3 +101,9 @@
 #Rectangle-Copy {
   fill: #7f99af;
 }
+
+.title-bar-container {
+  padding-left: 65px;
+  background-color: rgb(36, 41, 46);
+  border-bottom: 1px solid black;
+}

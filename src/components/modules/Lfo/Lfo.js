@@ -115,10 +115,6 @@ const Lfo = (props) => {
             onClick={() => updateWav("square")}
           ></button>
         </div>
-        <div className="button-container">
-          <p className="module__text">Sub</p>
-          <button className="param-button"></button>
-        </div>
       </div>
       {/* frequency knob */}
       <div className="knob">
