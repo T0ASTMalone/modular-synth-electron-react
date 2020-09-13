@@ -422,3 +422,12 @@ export const checkUnsavedRec = (path) => {
     return false;
   }
 };
+
+export const getModulesList = () => {
+  const modules = fs.readdirSync(
+    path.resolve(`../modular-synth-electron-react/src/components/modules`)
+  );
+  // removing .DS_Store
+  modules.shift();
+  return modules;
+};
