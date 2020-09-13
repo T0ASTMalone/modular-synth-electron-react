@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import "./Reverb.css";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
@@ -44,8 +50,19 @@ const Reverb = (props) => {
     return impulse;
   }
 
+  const refImpulseResponse = useRef(impulseResponse);
+  const refDec = useRef(decay);
+  const refDur = useRef(duration);
+  const refRev = useRef(reverse);
+  const refVal = useRef(values);
+
   //set up main reverb module
   useEffect(() => {
+    const reverse = refRev.current;
+    const duration = refDur.current;
+    const decay = refDec.current;
+    const values = refVal.current;
+    const impulseResponse = refImpulseResponse.current;
     const logger = refLogger.current;
     const context = refCtx.current;
     const { ctx } = context;
@@ -70,7 +87,16 @@ const Reverb = (props) => {
     }
     // use id created by context to add node
     context.addNode(id, convolverNode);
-  }, [refLogger, refCtx, id]);
+  }, [
+    refLogger,
+    refCtx,
+    id,
+    refImpulseResponse,
+    refDec,
+    refDur,
+    refRev,
+    refVal,
+  ]);
 
   const checkDistance = (val, oldVal, input) => {
     let roundNew = Math.round(val);

@@ -23,7 +23,7 @@ const Oscillator = (props) => {
   const refCtx = useRef(context);
 
   const logger = useLogger("Oscillator");
-  const refLogger = useLogger(logger);
+  const refLogger = useRef(logger);
 
   useEffect(() => {
     const logger = refLogger.current;
