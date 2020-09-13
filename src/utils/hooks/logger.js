@@ -1,5 +1,3 @@
-import React from "react";
-
 export const useLogger = (name) => {
   const _printLog = (lvl, msg) => {
     if (process.env.NODE_ENV === "production") {

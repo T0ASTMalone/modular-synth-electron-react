@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from "react";
 import "./Filter.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
@@ -27,6 +33,7 @@ const Filter = (props) => {
   const refCtx = useRef(context);
 
   const logger = useLogger("Filter");
+  const refLogger = useRef(logger);
 
   const filterTypes = [
     "lowpass",
@@ -59,6 +66,7 @@ const Filter = (props) => {
     setType(newType);
   };
 
+  const updateCallback = useCallback(updateType, [type]);
   // Though the AudioParam objects returned are read-only, the values they represent are not.
 
   // BiquadFilterNode.frequency Read only
@@ -76,6 +84,8 @@ const Filter = (props) => {
 
   // set up filter
   useEffect(() => {
+    const updateType = updateCallback.current;
+    const logger = refLogger.current;
     logger.info("initializing filter");
     const context = refCtx.current;
     const { ctx } = context;
@@ -112,7 +122,7 @@ const Filter = (props) => {
     }
 
     // setInId(inId);
-  }, [refCtx, values, id]);
+  }, [refCtx, values, id, refLogger, updateCallback]);
 
   return (
     <div className="module filter">

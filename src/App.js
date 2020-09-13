@@ -20,10 +20,9 @@ import { defaultTemplate } from "./app-menu";
 import TitleBar from "frameless-titlebar";
 // import Logger from "./services/logger";
 import { useLogger } from "./utils/hooks/logger";
-import { log } from "util";
 
 const { ipcRenderer, remote } = window.require("electron");
-const { dialog } = remote;
+const { dialog, process } = remote;
 const currentWindow = remote.getCurrentWindow();
 //const logger = new Logger("App");
 
@@ -36,9 +35,12 @@ function App() {
   // create reference to context for using its methods
   // inside of use effect
   const refCtx = useRef(context);
+  const refLogger = useRef(logger);
 
   const toggleSidebar = useCallback(
     (e, data) => {
+      const logger = refLogger.current;
+      logger.info(e.senderId);
       // add function that grabs sidebar and sbContent from context and use
       // those for this function as follows, to remove the need to update the
       // event emitter everytime the sidebar gets updated const {sidebar,
@@ -69,7 +71,7 @@ function App() {
         context.toggleSidebar();
       }
     },
-    [refCtx, sidebar, sbContent]
+    [refCtx, sidebar, sbContent, refLogger]
   );
 
   /* 
@@ -81,15 +83,17 @@ function App() {
   // set up event emitter for toggling the sidebare from
   // titlebar
   useEffect(() => {
+    const logger = refLogger.current;
     logger.info("initializing sidebar toggle");
     // remove all listeners for toggle sidebar
     ipcRenderer.removeAllListeners("toggle-sidebar");
     // create new listener for toggle sidebar
     ipcRenderer.on("toggle-sidebar", (e, data) => toggleSidebar(e, data));
-  }, [toggleSidebar]);
+  }, [toggleSidebar, refLogger]);
 
   // file manegment effect
   useEffect(() => {
+    const logger = refLogger.current;
     logger.info("initializing app");
     const context = refCtx.current;
     const { getCurrentState, setTmpobj, setRootPath, setIsExisting } = context;
@@ -287,25 +291,22 @@ function App() {
         return;
       }
     });
-  }, [refCtx]);
-
-  logger.info(process.platform);
+  }, [refCtx, refLogger]);
 
   return (
     <div>
-      <div class="title-bar-container">
-        <TitleBar
-          // icon={sim} // app icon
-          currentWindow={currentWindow} // electron window instance
-          platform={process.platform} // win32, darwin, linux
-          menu={defaultTemplate}
-          title="modSynth"
-          onClose={() => currentWindow.close()}
-          onMinimize={() => currentWindow.minimize()}
-          onMaximize={() => currentWindow.maximize()}
-          onDoubleClick={() => currentWindow.maximize()}
-        />
-      </div>
+      <TitleBar
+        // icon={sim} // app icon
+        currentWindow={currentWindow} // electron window instance
+        platform={process.platform} // win32, darwin, linux
+        menu={defaultTemplate}
+        title="modSynth"
+        onClose={() => currentWindow.close()}
+        onMinimize={() => currentWindow.minimize()}
+        onMaximize={() => currentWindow.maximize()}
+        onDoubleClick={() => currentWindow.maximize()}
+      />
+
       <main className="app-main">
         <Sidebar size={sidebar} />
         <Rack modSettings={modSettings ? modSettings : null} />

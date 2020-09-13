@@ -261,7 +261,7 @@ export class MsProvider extends Component {
    * @param {string} output
    */
   _createConnection = (input, output) => {
-    const { cables, updateCables, nodes } = this.state;
+    const { cables, updateCables } = this.state;
     cables[output] = input;
     // let currentInput = null;
     // const node = nodes[input.mod];

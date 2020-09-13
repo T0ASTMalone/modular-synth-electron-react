@@ -15,12 +15,12 @@ const Rack = (props) => {
   const logger = useLogger("Rack");
   const refLogger = useRef(logger);
 
-  const { nodes, update, sidebar, toggleSidebar } = context;
+  const { nodes, update, sidebar } = context;
   const { modSettings } = props;
 
   // create array of current modules from nodes object
   let currentModules = [];
-  Object.keys(nodes).forEach((key, i) => {
+  Object.keys(nodes).forEach((key) => {
     currentModules.push(nodes[key].type);
   });
 
@@ -32,26 +32,17 @@ const Rack = (props) => {
 
     const { getCurrentState } = ctx;
     const { nodes } = getCurrentState();
-    console.log(nodes);
-
     // create array of current modules from nodes array
     let currentModules = [];
-    Object.keys(nodes).forEach((key, i) => {
+    Object.keys(nodes).forEach((key) => {
       currentModules.push(nodes[key].type);
     });
-
-    currentModules.forEach((n) => console.log(n));
-
     // reduce array to only contain one of each of the current modules
     const imports = currentModules.filter(
       (item, i) => currentModules.indexOf(item) === i
     );
-
-    imports.forEach((im) => console.log(im));
-
     const getImports = (mod) => {
       if (mod && mod !== "main-gain") {
-        console.log(mod);
         return import(`../modules/${mod}/${mod}.js`);
       }
     };
@@ -68,6 +59,7 @@ const Rack = (props) => {
   }, [update, refLogger]);
 
   const renderModule = (name, i, id) => {
+    const logger = refLogger.current;
     logger.info(`rendering ${name}`);
     // get imported module by searching loadedModules for file with the same name
     const loadedMod = loadedModules.find((mod) => {
@@ -84,13 +76,14 @@ const Rack = (props) => {
   };
 
   useEffect(() => {
+    const logger = refLogger.current;
     logger.info("createing audio context");
     const context = latestContext.current;
     const ctx = new AudioContext();
     const mediaStream = ctx.createMediaStreamDestination();
     context.createCtx(ctx);
     context.setMediaStreamDestination(mediaStream);
-  }, [latestContext]);
+  }, [latestContext, refLogger]);
 
   let mainOutId;
 

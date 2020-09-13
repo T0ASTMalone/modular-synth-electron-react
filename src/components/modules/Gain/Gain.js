@@ -7,7 +7,7 @@ import {
   useCreateConnection,
   useCheckDistance,
 } from "../../../utils/module-utils";
-import { uesLogger, useLogger } from "../../../utils/hooks/logger";
+import { useLogger } from "../../../utils/hooks/logger";
 
 const Gain = (props) => {
   // gain value
@@ -21,9 +21,10 @@ const Gain = (props) => {
   const refCtx = useRef(context);
 
   const logger = useLogger("Gain");
-
+  const refLogger = useRef(logger);
   //set up main gain module
   useEffect(() => {
+    const logger = refLogger.current;
     logger.info("initializing gain");
     const context = refCtx.current;
     const { ctx } = context;
@@ -44,7 +45,7 @@ const Gain = (props) => {
     }
     // use id created by context to add node
     context.addNode(id, gainNode);
-  }, [refCtx, values, id]);
+  }, [refCtx, values, id, refLogger]);
 
   // if an id was not passed in as props use the
   // generated id
