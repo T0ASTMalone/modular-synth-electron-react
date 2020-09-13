@@ -2,14 +2,14 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import "./Pulse.scss";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
-import { useLogger } from "../../../utils/hooks/logger";
-import { Output, Input } from "../../io/io";
+// import { useLogger } from "../../../utils/hooks/logger";
+import { Output } from "../../io/io";
 // import {
 //   useCheckDistance,
 //   useCreateConnection,
 // } from "../../../utils/module-utils";
 
-const Pulse = (props) => {
+const Pulse = () => {
   const [freq, setFreq] = useState(440);
   const [att, setAtt] = useState(0.2);
   const [rel, setRel] = useState(0.5);
@@ -19,16 +19,16 @@ const Pulse = (props) => {
   const [playing, setPlaying] = useState(false);
   const [currPad, setCurrPad] = useState({ 0: { note: 8 } });
   const [timerId, setTimerId] = useState(undefined);
-  const Logger = useLogger("Pulse");
+  // const Logger = useLogger("Pulse");
 
   // const setAudioParam = useCheckDistance();
   const context = useContext(MsContext);
 
-  const { id, values } = props;
+  // const { id, values } = props;
 
   // update frequency using knob
   const checkDistance = (val, func, maxDistance, param) => {
-    const { nodes } = context;
+    // const { nodes } = context;
     let distance = Math.abs(val - param);
     // prevent knob from going past max value
     if (distance > maxDistance) {
@@ -123,7 +123,7 @@ const Pulse = (props) => {
       osc.stop(ctx.currentTime + sweepLength);
     };
 
-    play.current = (ev) => {
+    play.current = () => {
       let isPlaying = !playing;
 
       if (isPlaying) {

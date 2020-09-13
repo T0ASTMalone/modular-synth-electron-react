@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import "./Reverb.css";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
@@ -20,6 +20,9 @@ const Reverb = (props) => {
   const logger = useLogger("Reverb");
 
   const { ctx, nodes } = context;
+
+  const refCtx = useRef(context);
+  const refLogger = useRef(logger);
 
   // todo
   // make knobs for duration, decay, and a button for reverse
@@ -43,6 +46,9 @@ const Reverb = (props) => {
 
   //set up main reverb module
   useEffect(() => {
+    const logger = refLogger.current;
+    const context = refCtx.current;
+    const { ctx } = context;
     logger.info("initializing reverb");
     // create main reverb node
     const convolverNode = ctx.createConvolver();
@@ -64,7 +70,7 @@ const Reverb = (props) => {
     }
     // use id created by context to add node
     context.addNode(id, convolverNode);
-  }, []);
+  }, [refLogger, refCtx, id]);
 
   const checkDistance = (val, oldVal, input) => {
     let roundNew = Math.round(val);
