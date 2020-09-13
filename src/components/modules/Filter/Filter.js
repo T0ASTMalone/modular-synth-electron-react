@@ -66,7 +66,7 @@ const Filter = (props) => {
     setType(newType);
   };
 
-  const updateCallback = useCallback(updateType, [type]);
+  const updateCallback = useCallback(updateType, []);
   // Though the AudioParam objects returned are read-only, the values they represent are not.
 
   // BiquadFilterNode.frequency Read only
@@ -84,7 +84,7 @@ const Filter = (props) => {
 
   // set up filter
   useEffect(() => {
-    const updateType = updateCallback.current;
+    const updateType = updateCallback;
     const logger = refLogger.current;
     logger.info("initializing filter");
     const context = refCtx.current;
