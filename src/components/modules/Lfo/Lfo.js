@@ -32,6 +32,7 @@ const Lfo = (props) => {
   const isOutput = useCreateConnection(id);
 
   const logger = useLogger("Lfo");
+  const refLogger = useRef(logger);
 
   // update frequency using knob
   const checkDistance = (val) => {
@@ -47,6 +48,7 @@ const Lfo = (props) => {
   };
 
   useEffect(() => {
+    const logger = refLogger.current;
     logger.info("initializing Lfo");
     const context = refCtx.current;
     const { ctx } = context;
@@ -72,7 +74,7 @@ const Lfo = (props) => {
     // add to nodes object in context
     // uuid as key and osc as value
     context.addNode(id, osc);
-  }, [refCtx, values, id]);
+  }, [refCtx, values, id, refLogger]);
 
   // if audio node exists set frequency to current knob value
   if (nodes[id].node) {

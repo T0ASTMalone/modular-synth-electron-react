@@ -8,10 +8,8 @@ export const useCreateConnection = (id) => {
   const [isConnected, setIsConnected] = useState(false);
   const logger = useLogger("useCreateConnection");
   const refLogger = useRef(logger);
-  const refId = useRef(id);
 
   useEffect(() => {
-    const id = refId.current;
     const logger = refLogger.current;
     const { cables, nodes } = getCurrentState();
     const { node } = nodes[id];
@@ -48,7 +46,7 @@ export const useCreateConnection = (id) => {
       }
       setIsConnected(false);
     }
-  }, [updateCables, getCurrentState, refLogger, refId]);
+  }, [updateCables, getCurrentState, refLogger, id]);
 
   return isConnected;
 };
@@ -58,10 +56,7 @@ export const useIsOutput = (id) => {
   const { updateCables, getCurrentState } = context;
   const [isConnected, setIsConnected] = useState({});
 
-  const refId = useRef(id);
-
   useEffect(() => {
-    const id = refId.current;
     const { cables } = getCurrentState();
     // input is found
     // add input name to is connected
@@ -71,7 +66,7 @@ export const useIsOutput = (id) => {
         setIsConnected(color);
       }
     }
-  }, [updateCables, getCurrentState, refId]);
+  }, [updateCables, getCurrentState, id]);
 
   return isConnected;
 };
@@ -84,12 +79,10 @@ export const useIsModulated = (id, number) => {
   const { updateCables } = context;
 
   const refContext = useRef(context);
-  const refId = useRef(id);
   const refNum = useRef(number);
   const refLogger = useRef(logger);
 
   useEffect(() => {
-    const id = refId.current;
     const number = refNum.current;
     const ctx = refContext.current;
     const { cables } = ctx.getCurrentState();
@@ -122,7 +115,7 @@ export const useIsModulated = (id, number) => {
     number === -1 ? regInput() : mainInput();
 
     setIsConnected(inputs);
-  }, [updateCables, refContext, refId, refLogger, refNum]);
+  }, [updateCables, refContext, id, refLogger, refNum]);
 
   return isConnected;
 };

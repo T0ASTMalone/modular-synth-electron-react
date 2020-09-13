@@ -3,10 +3,7 @@ import "./Reverb.css";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
 import { Input, Output } from "../../io/io";
-import {
-  useCreateConnection,
-  useCheckDistance,
-} from "../../../utils/module-utils";
+import { useCreateConnection } from "../../../utils/module-utils";
 import { useLogger } from "../../../utils/hooks/logger";
 
 const Reverb = (props) => {
@@ -111,7 +108,9 @@ const Reverb = (props) => {
 
   return (
     <div className="module reverb">
-      <p className="module__text--bold">Reverb</p>
+      <p className="module__text--bold">
+        Reverb <span>{reverb}</span>
+      </p>
 
       {/* knob for controlling reverb duration */}
 

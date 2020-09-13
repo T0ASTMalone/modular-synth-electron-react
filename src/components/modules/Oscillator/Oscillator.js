@@ -23,8 +23,10 @@ const Oscillator = (props) => {
   const refCtx = useRef(context);
 
   const logger = useLogger("Oscillator");
+  const refLogger = useLogger(logger);
 
   useEffect(() => {
+    const logger = refLogger.current;
     logger.info("initializing Osillator");
     const context = refCtx.current;
     const { ctx } = context;
@@ -46,7 +48,7 @@ const Oscillator = (props) => {
     osc.start();
     // add to context
     context.addNode(id, osc);
-  }, [refCtx, values, id]);
+  }, [refCtx, values, id, refLogger]);
 
   const updateWav = (wav) => {
     node.type = wav;
