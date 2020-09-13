@@ -4,11 +4,16 @@ import MsContext from "../context/MsContext";
 
 export const useCreateConnection = (id) => {
   const context = useContext(MsContext);
-  const { cables, nodes, updateCables } = context;
+  const { updateCables, getCurrentState } = context;
   const [isConnected, setIsConnected] = useState(false);
   const logger = useLogger("useCreateConnection");
+  const refLogger = useRef(logger);
+  const refId = useRef(id);
 
   useEffect(() => {
+    const id = refId.current;
+    const logger = refLogger.current;
+    const { cables, nodes } = getCurrentState();
     const { node } = nodes[id];
 
     const out = cables[id];
@@ -43,17 +48,21 @@ export const useCreateConnection = (id) => {
       }
       setIsConnected(false);
     }
-  }, [updateCables]);
+  }, [updateCables, getCurrentState, refLogger, refId]);
 
   return isConnected;
 };
 
 export const useIsOutput = (id) => {
   const context = useContext(MsContext);
-  const { cables, updateCables } = context;
+  const { updateCables, getCurrentState } = context;
   const [isConnected, setIsConnected] = useState({});
 
+  const refId = useRef(id);
+
   useEffect(() => {
+    const id = refId.current;
+    const { cables } = getCurrentState();
     // input is found
     // add input name to is connected
     for (let k in cables) {
@@ -62,7 +71,7 @@ export const useIsOutput = (id) => {
         setIsConnected(color);
       }
     }
-  }, [updateCables]);
+  }, [updateCables, getCurrentState, refId]);
 
   return isConnected;
 };
@@ -76,9 +85,12 @@ export const useIsModulated = (id, number) => {
 
   const refContext = useRef(context);
   const refId = useRef(id);
+  const refNum = useRef(number);
   const refLogger = useRef(logger);
 
   useEffect(() => {
+    const id = refId.current;
+    const number = refNum.current;
     const ctx = refContext.current;
     const { cables } = ctx.getCurrentState();
     // input is found
@@ -110,7 +122,7 @@ export const useIsModulated = (id, number) => {
     number === -1 ? regInput() : mainInput();
 
     setIsConnected(inputs);
-  }, [updateCables, refContext, refId, refLogger]);
+  }, [updateCables, refContext, refId, refLogger, refNum]);
 
   return isConnected;
 };
