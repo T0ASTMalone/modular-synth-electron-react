@@ -170,9 +170,7 @@ const Filter = (props) => {
           </div>
         </div>
       </div>
-
       {/* output and volume */}
-
       <div className="filter__out">
         <Output title="out" output={output} id={id} />
         <div className="button-container">
