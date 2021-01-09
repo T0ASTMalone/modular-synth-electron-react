@@ -241,6 +241,12 @@ export const saveFile = (nodes, cables, oldPath, saveRecordings = false) => {
 
   fs.mkdir(path, { recursive: true }, async (err) => {
     await fs.promises.mkdir(pathToRecordings);
+
+    if (err) {
+      dialog.showErrorBox("Failed to Save", err);
+      return false;
+    }
+
     try {
       console.log("ran save file");
       fs.writeFileSync(pathToPatch, saveFile);
@@ -421,4 +427,13 @@ export const checkUnsavedRec = (path) => {
   } else {
     return false;
   }
+};
+
+export const getModulesList = () => {
+  const modules = fs.readdirSync(
+    path.resolve(`../modular-synth-electron-react/src/components/modules`)
+  );
+  // removing .DS_Store
+  modules.shift();
+  return modules;
 };

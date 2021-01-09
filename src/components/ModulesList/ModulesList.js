@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import "./ModulesList.css";
 import MsContext from "../../context/MsContext";
 import PatchListItem from "../PatchListItem/PatchListItem";
+import { getModulesList } from "../../utils/app-utils";
 
 const ModulesList = () => {
-  const installed = ["Oscillator", "Filter", "Lfo", "Gain", "Reverb", "Pulse"];
   const context = useContext(MsContext);
-  console.log(context);
+  const installed = useRef(getModulesList());
 
   const addModule = (mod) => {
     context.load(mod);
@@ -18,7 +18,7 @@ const ModulesList = () => {
         {/* list installed modules */}
         <h3 className="sidebar-title">Modules</h3>
         <ul className="sidebar-list">
-          {installed.map((mod, i) => {
+          {installed.current.map((mod) => {
             return (
               <PatchListItem
                 key={mod}

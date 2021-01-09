@@ -60,7 +60,6 @@ const MainGain = (props) => {
   const renderInputs = () => {
     const inputs = [];
 
-    console.log(inputCount);
     inputs.push(
       <Input key={0} number={0} title="in" id={nodeId} name="main-in" />
     );
