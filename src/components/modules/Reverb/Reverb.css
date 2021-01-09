@@ -1,0 +1,10 @@
+.reverb__outputs {
+  display: flex;
+}
+
+.reverb {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}

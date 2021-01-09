@@ -4,3 +4,11 @@
   justify-content: space-around;
   align-items: center;
 }
+.main-outputs {
+  max-width: 123px;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}

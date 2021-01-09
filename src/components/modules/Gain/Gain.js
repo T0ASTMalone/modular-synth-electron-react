@@ -1,38 +1,39 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import "./Gain.css";
 import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
 import { Input, Output } from "../../io/io";
 import {
   useCreateConnection,
-  useCheckDistance
+  useCheckDistance,
 } from "../../../utils/module-utils";
+import { useLogger } from "../../../utils/hooks/logger";
 
-const Gain = props => {
+const Gain = (props) => {
   // gain value
-  const [gainValue, setGain] = useState(3.4);
-  const [selected, select] = useState(null);
-  const { removeModule, id, values } = props;
+  const [gainValue, setGain] = useState(4.4);
+  const { id, values } = props;
 
   const context = useContext(MsContext);
   const setAudioParam = useCheckDistance();
   const outputting = useCreateConnection(id);
 
-  const { ctx, nodes } = context;
-  const { newId } = props;
+  const refCtx = useRef(context);
 
-  const nodeId = newId ? newId : id;
-
+  const logger = useLogger("Gain");
+  const refLogger = useRef(logger);
   //set up main gain module
   useEffect(() => {
+    const logger = refLogger.current;
+    logger.info("initializing gain");
+    const context = refCtx.current;
+    const { ctx } = context;
     // create main gain node
     const gainNode = ctx.createGain();
-    // connect to ctx destination
-    gainNode.connect(ctx.destination);
     // set value
-    gainNode.gain.value = gainValue;
     // set gainNode values
     if (values) {
+      logger.info("implementing patch settings for gain");
       for (let k in values) {
         if (typeof gainNode[k] === "object" && "value" in gainNode[k]) {
           gainNode[k].value = values[k];
@@ -44,44 +45,32 @@ const Gain = props => {
     }
     // use id created by context to add node
     context.addNode(id, gainNode);
-  }, []);
+  }, [refCtx, values, id, refLogger]);
 
   // if an id was not passed in as props use the
   // generated id
-  const mouseIn = () => {
-    select(true);
-  };
-
-  const mouseOut = () => {
-    select(false);
-  };
 
   return (
-    <div className='module gain' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
-      <div className='close-button'>
-        {selected ? (
-          <button className='module__button' onClick={() => removeModule(id)}>
-            X
-          </button>
-        ) : (
-          <p className='module__text--bold'>Gain</p>
-        )}
-      </div>
+    <div className="module gain">
+      <p className="module__text--bold">Gain</p>
+
       {/* knob for controlling gain */}
       <Knob
         min={0}
         max={6.8}
         value={gainValue}
-        onChange={e => setAudioParam(e, gainValue, "gain", nodeId, setGain)}
+        onChange={(e) => setAudioParam(e, gainValue, "gain", id, setGain)}
       />
       {/* input */}
-      <div className='gain__outputs'>
-        <Input title='in' id={nodeId} name='main-in' />
-        <Input title='gain' id={nodeId} name='gain' />
-        <Output title='out' output={outputting} id={id} />
+      <div className="gain__outputs">
+        <Input title="in" id={id} name="main-in" />
+        <Input title="gain" id={id} name="gain" />
+        <Output title="out" output={outputting} id={id} />
       </div>
     </div>
   );
 };
+
+Gain.Name = "Gain";
 
 export default Gain;

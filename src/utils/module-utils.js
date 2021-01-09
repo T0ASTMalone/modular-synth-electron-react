@@ -1,16 +1,23 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState, useRef } from "react";
+import { useLogger } from "./hooks/logger";
 import MsContext from "../context/MsContext";
 
-export const useCreateConnection = id => {
+export const useCreateConnection = (id) => {
   const context = useContext(MsContext);
-  const { cables, nodes, updateCables } = context;
+  const { updateCables, getCurrentState } = context;
   const [isConnected, setIsConnected] = useState(false);
+  const logger = useLogger("useCreateConnection");
+  const refLogger = useRef(logger);
 
   useEffect(() => {
+    const logger = refLogger.current;
+    const { cables, nodes } = getCurrentState();
     const { node } = nodes[id];
 
     const out = cables[id];
     // if this module is an output in a current cable
+    // outputs are the keys for the cables
+    // cables = {outputId : {input info}, ...}
     if (out && node) {
       const { mod, input } = out;
       // get cables module and input on that module
@@ -19,8 +26,14 @@ export const useCreateConnection = id => {
         if (input === "main-in") {
           // if input is main in, connect to module
           node.connect(nodes[mod].node);
+          logger.info(
+            `connecting node ${nodes[id].type} to ${nodes[mod].type}`
+          );
         } else {
           // if input is not main connect to corresponding audio parameter
+          logger.info(
+            `connecting node ${nodes[id].type} to ${nodes[mod].type} audio param ${input}`
+          );
           node.connect(nodes[mod].node[input]);
         }
         setIsConnected(out.color);
@@ -33,34 +46,86 @@ export const useCreateConnection = id => {
       }
       setIsConnected(false);
     }
-  }, [updateCables]);
+  }, [updateCables, getCurrentState, refLogger, id]);
 
   return isConnected;
 };
 
-export const useIsModulated = id => {
+export const useIsOutput = (id) => {
   const context = useContext(MsContext);
-  const { cables, updateCables } = context;
+  const { updateCables, getCurrentState } = context;
   const [isConnected, setIsConnected] = useState({});
 
   useEffect(() => {
+    const { cables } = getCurrentState();
     // input is found
     // add input name to is connected
-    const inputs = {};
     for (let k in cables) {
-      const cable = cables[k];
-      if (cable.mod === id) {
-        inputs[cable.input] = cable.color;
+      const color = cables[k];
+      if (k === id) {
+        setIsConnected(color);
       }
     }
-
-    setIsConnected(inputs);
-  }, [updateCables]);
+  }, [updateCables, getCurrentState, id]);
 
   return isConnected;
 };
 
-const getMaxDis = audioParam => {
+export const useIsModulated = (id, number) => {
+  const context = useContext(MsContext);
+  const [isConnected, setIsConnected] = useState({});
+  const logger = useLogger("useIsModulated");
+
+  const { updateCables } = context;
+
+  const refContext = useRef(context);
+  const refNum = useRef(number);
+  const refLogger = useRef(logger);
+
+  useEffect(() => {
+    const number = refNum.current;
+    const ctx = refContext.current;
+    const { cables } = ctx.getCurrentState();
+    // input is found
+    // add input name to is connected
+    const inputs = {};
+
+    const regInput = () => {
+      for (let k in cables) {
+        const cable = cables[k];
+        if (cable.mod === id) {
+          inputs[cable.input] = cable.color;
+        }
+      }
+    };
+
+    const mainInput = () => {
+      let count = 0;
+
+      for (let key in cables) {
+        if (cables[key].mod === id && count === number) {
+          inputs[cables[key].input] = cables[key].color;
+          break;
+        } else {
+          count++;
+        }
+      }
+    };
+
+    number === -1 ? regInput() : mainInput();
+
+    setIsConnected(inputs);
+  }, [updateCables, refContext, id, refLogger, refNum]);
+
+  return isConnected;
+};
+
+/**
+ * Calculates the max distance that a knob should be able to travel based on the
+ * min and max values for the provided audio parameter
+ * @param {AudioParam} audioParam
+ */
+const getMaxDis = (audioParam) => {
   let { minValue, maxValue } = audioParam;
   const min = minValue.toFixed(3).split("");
   const max = maxValue.toFixed(3).split("");
@@ -85,7 +150,7 @@ const getMaxDis = audioParam => {
   return mDis;
 };
 
-const getMaxDisInt = audioParam => {
+const getMaxDisInt = (audioParam) => {
   let { minValue, maxValue } = audioParam;
   const mDis = Math.abs(minValue - maxValue) * 0.1;
   return mDis;
@@ -115,10 +180,56 @@ export const useCheckDistance = () => {
     } else {
       // update function and audioNode value
       const realVal = val - modifier;
-      nodes[id].node[input].value = realVal;
+      if (nodes[id].node[input]) {
+        nodes[id].node[input].value = realVal;
+      }
+
       func(val);
     }
   };
 
   return setAudioParam;
+};
+
+export const useGetOut = () => {
+  const context = useContext(MsContext);
+  const { nodes } = context;
+  let mainGain;
+  for (let k in nodes) {
+    if (nodes[k].type === "main-gain") {
+      mainGain = nodes[k].node;
+    }
+  }
+
+  return mainGain;
+};
+
+export const createPathAndUpdate = (names, areTmp, root, func) => {
+  let success = null;
+
+  let path = areTmp ? `${root}\\recordings\\tmpRec` : `${root}\\recordings`;
+
+  const updatedNames = [];
+  // create full path names for saved recordings
+  for (let rec in names) {
+    const name = `${path}\\${rec}`;
+    updatedNames.push(name);
+    const deleted = func(name);
+    success = !success ? deleted : success;
+  }
+
+  return success;
+};
+
+export const createFullPaths = (names, areTmp, root) => {
+  let path = areTmp ? `${root}\\recordings\\tmpRec` : `${root}\\recordings`;
+
+  const updatedNames = [];
+  // create full path names for saved recordings
+  for (let rec in names) {
+    const name = `${path}\\${rec}`;
+    updatedNames.push(name);
+  }
+
+  return updatedNames;
 };

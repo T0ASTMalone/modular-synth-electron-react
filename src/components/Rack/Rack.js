@@ -1,94 +1,96 @@
-import React, { useEffect, useState, useContext } from "react";
-import "./Rack.css";
+import "./Rack.scss";
+import React, { useEffect, useState, useContext, useRef } from "react";
+import { useLogger } from "../../utils/hooks/logger";
 import MsContext from "../../context/MsContext";
-import MainGain from "../modules/MainGain/MainGain";
 
-const Rack = props => {
+import MainGain from "../modules/MainGain/MainGain";
+import Rec from "../Rec/Rec";
+
+const Rack = (props) => {
   const [loadedModules, loadModules] = useState([]);
 
   const context = useContext(MsContext);
+  const latestContext = useRef(context);
 
-  const { nodes, update } = context;
+  const logger = useLogger("Rack");
+  const refLogger = useRef(logger);
+
+  const { nodes, update, sidebar } = context;
   const { modSettings } = props;
 
   // create array of current modules from nodes object
-  let currentModules = Object.keys(nodes).map((key, i) => {
-    if (i > 0) {
-      return nodes[key].type;
-    }
+  let currentModules = [];
+  Object.keys(nodes).forEach((key) => {
+    currentModules.push(nodes[key].type);
   });
+
   // remove main out module (module 0)
-  currentModules.shift();
 
   useEffect(() => {
-    // create array of current modules from nodes array
-    let currentModules = Object.keys(nodes).map(key => {
-      const { type } = nodes[key];
-      if (type !== "main-gain" && type !== undefined) {
-        return type;
-      }
-    });
+    const ctx = latestContext.current;
+    const logger = refLogger.current;
 
+    const { getCurrentState } = ctx;
+    const { nodes } = getCurrentState();
+    // create array of current modules from nodes array
+    let currentModules = [];
+    Object.keys(nodes).forEach((key) => {
+      currentModules.push(nodes[key].type);
+    });
     // reduce array to only contain one of each of the current modules
     const imports = currentModules.filter(
       (item, i) => currentModules.indexOf(item) === i
     );
+    const getImports = (mod) => {
+      if (mod && mod !== "main-gain") {
+        return import(`../modules/${mod}/${mod}.js`);
+      }
+    };
 
-    const importModules = mods =>
-      // map over reduced array instead, in order to import only one of each module
-      Promise.all(
-        mods.map(mod => {
-          if (mod) {
-            return import(`../modules/${mod}/${mod}.js`);
-          }
-        })
-      );
+    // map over reduced array instead, in order to import only one of each module
+    const importModules = (mods) =>
+      Promise.all(mods.map((mod) => getImports(mod)));
 
     // add imports to state as loaded modules for rendering
-    importModules(imports).then(loadedModules => {
+    importModules(imports).then((loadedModules) => {
+      logger.info("loading modules");
       loadModules(loadedModules);
     });
-  }, [update]);
+  }, [update, refLogger]);
 
   const renderModule = (name, i, id) => {
+    const logger = refLogger.current;
+    logger.info(`rendering ${name}`);
     // get imported module by searching loadedModules for file with the same name
-    const loadedMod = loadedModules.find(mod => {
+    const loadedMod = loadedModules.find((mod) => {
       if (mod) {
-        return mod.default.name === name;
-      }
+        return mod.default.Name === name;
+      } else return undefined;
     });
     // if module was found return component
     if (loadedMod) {
       const values = modSettings ? modSettings[id] : null;
       const Module = loadedMod.default;
-      return (
-        <Module key={i} id={id} values={values} removeModule={removeModule} />
-      );
+      return <Module key={i} id={id} values={values} />;
     }
   };
 
   useEffect(() => {
+    const logger = refLogger.current;
+    logger.info("createing audio context");
+    const context = latestContext.current;
     const ctx = new AudioContext();
-
+    const mediaStream = ctx.createMediaStreamDestination();
     context.createCtx(ctx);
-  }, []);
-
-  const removeModule = id => {
-    context.unload(id);
-  };
+    context.setMediaStreamDestination(mediaStream);
+  }, [latestContext, refLogger]);
 
   let mainOutId;
 
   return (
-    <div className='rack'>
-      <div className='rack__controls'>
-        {/* rack controls */}
-        <button className='button'>Stop</button>
-        <button className='button'>Play</button>
-        <button className='button'>Rec</button>
-      </div>
-
-      <div className='rack__modules'>
+    <div className={sidebar ? "rack open" : "rack"}>
+      <Rec />
+      <div className="rack__modules">
         {/* 
           check if there are any current audio modules and 
           if those modules have been imported
@@ -109,8 +111,7 @@ const Rack = props => {
         {/* main output for the rack will always be loaded */}
         {context.ctx ? <MainGain newId={mainOutId} /> : <></>}
       </div>
-
-      <div className='rack__visualAudio'>
+      <div className="rack__visualAudio">
         {/* 
           General information about the output 
           i.e. visualization of the output, spectrum analyzer, (kind of like op-1 stuff)

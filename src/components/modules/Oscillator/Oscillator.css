@@ -1,9 +1,3 @@
-.knob {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .osc__outputs,
 .osc__inputs,
 .osc__types {
@@ -24,4 +18,8 @@
 #path-2 {
   color: white;
   fill: white;
+}
+
+.knob {
+  align-self: center;
 }

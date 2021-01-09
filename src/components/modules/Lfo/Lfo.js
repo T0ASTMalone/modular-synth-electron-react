@@ -6,33 +6,36 @@
   ----
   * find out what why it pops when adjusting the frequency
 
-  * find out why it sounds distorted when connected to main gain module
-
   * merge with regular oscillator by adding an lfo mode button that will change 
     the regular oscillator's frequency range to that of an lfo (0 - 20 Hz)
 
 */
 
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./Lfo.css";
 import { Knob } from "react-rotary-knob";
 import { Input, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import { useCreateConnection } from "../../../utils/module-utils";
+import { useLogger } from "../../../utils/hooks/logger";
 
-const Lfo = props => {
+const Lfo = (props) => {
+  const { id, values } = props;
+
   const [freq, updateFreq] = useState(1);
 
-  const [selected, select] = useState(null);
-
-  const { removeModule, id, values } = props;
-
   const context = useContext(MsContext);
-  const { ctx, cables, nodes, updateCables } = context;
-  const modulation = useCreateConnection(id);
+  const { nodes } = context;
+
+  const refCtx = useRef(context);
+
+  const isOutput = useCreateConnection(id);
+
+  const logger = useLogger("Lfo");
+  const refLogger = useRef(logger);
 
   // update frequency using knob
-  const checkDistance = val => {
+  const checkDistance = (val) => {
     let maxDistance = 200;
     let distance = Math.abs(val - freq);
     // prevent knob from going past max value
@@ -45,11 +48,16 @@ const Lfo = props => {
   };
 
   useEffect(() => {
-    const osc = ctx.createOscillator();
+    const logger = refLogger.current;
+    logger.info("initializing Lfo");
+    const context = refCtx.current;
+    const { ctx } = context;
 
+    const osc = ctx.createOscillator();
     // using values passed in as props
     // set osc values
     if (values) {
+      logger.info("setting patch settings in lfo ");
       for (let k in values) {
         if (typeof osc[k] === "object" && "value" in osc[k]) {
           osc[k].value = values[k];
@@ -66,71 +74,53 @@ const Lfo = props => {
     // add to nodes object in context
     // uuid as key and osc as value
     context.addNode(id, osc);
-  }, []);
+  }, [refCtx, values, id, refLogger]);
 
   // if audio node exists set frequency to current knob value
   if (nodes[id].node) {
     nodes[id].node.frequency.value = freq;
   }
 
-  const updateWav = wav => {
+  const updateWav = (wav) => {
     nodes[id].node.type = wav;
   };
 
-  const mouseIn = () => {
-    select(true);
-  };
-
-  const mouseOut = () => {
-    select(false);
-  };
-
   return (
-    <div className='module osc' onMouseEnter={mouseIn} onMouseLeave={mouseOut}>
+    <div className="module osc">
       {/* remove module button*/}
-      <div className='close-button'>
-        {selected ? (
-          <button className='module__button' onClick={() => removeModule(id)}>
-            X
-          </button>
-        ) : (
-          <p className='module__text--bold'>Lfo</p>
-        )}
-      </div>
+
+      <p className="module__text--bold">Lfo</p>
+
       {/* outputs */}
-      <div className='osc__outputs'>
-        <Output title='out' id={id} />
+      <div className="osc__outputs">
+        <Output title="out" output={isOutput} id={id} />
       </div>
-      <div className='osc__types'>
-        <div className='button-container'>
-          <p className='module__text'>Sin</p>
+      <div className="osc__types">
+        <div className="button-container">
+          <p className="module__text">Sin</p>
           <button
-            className='param-button'
+            className="param-button"
             onClick={() => updateWav("sine")}
           ></button>
         </div>
-        <div className='button-container'>
-          <p className='module__text'>Saw</p>
+        <div className="button-container">
+          <p className="module__text">Saw</p>
           <button
-            className='param-button'
+            className="param-button"
             onClick={() => updateWav("sawtooth")}
           ></button>
         </div>
-        <div className='button-container'>
-          <p className='module__text'>Sqr</p>
+        <div className="button-container">
+          <p className="module__text">Sqr</p>
           <button
-            className='param-button'
+            className="param-button"
             onClick={() => updateWav("square")}
           ></button>
         </div>
-        <div className='button-container'>
-          <p className='module__text'>Sub</p>
-          <button className='param-button'></button>
-        </div>
       </div>
       {/* frequency knob */}
-      <div className='knob'>
-        <p className='module__text'>Freq</p>
+      <div className="knob">
+        <p className="module__text">Freq</p>
         <Knob
           onChange={checkDistance.bind(this)}
           min={1}
@@ -140,11 +130,13 @@ const Lfo = props => {
       </div>
 
       {/* V/oct input */}
-      <div className='osc__inputs'>
-        <Input title='V/oct' id={id} name='frequency' />
+      <div className="osc__inputs">
+        <Input title="V/oct" id={id} name="frequency" />
       </div>
     </div>
   );
 };
+
+Lfo.Name = "Lfo";
 
 export default Lfo;

@@ -1,0 +1,8 @@
+.current-patch {
+  height: calc(100% - 60px);
+}
+
+.sidebar-list {
+  height: 100%;
+  overflow: scroll;
+}

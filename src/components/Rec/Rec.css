@@ -1,0 +1,30 @@
+.rack__controls {
+  height: 100px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.controls {
+  width: 25%;
+  height: 100%;
+}
+
+.main-controls {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#rack-sb-toggle {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.toggle-sidebar-icon {
+  width: 15px;
+  transform: rotate(180deg);
+}
