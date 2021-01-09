@@ -23,30 +23,19 @@ const Pulse = () => {
 
   // const setAudioParam = useCheckDistance();
   const context = useContext(MsContext);
-
   // const { id, values } = props;
-
   // update frequency using knob
   const checkDistance = (val, func, maxDistance, param) => {
-    // const { nodes } = context;
-    let distance = Math.abs(val - param);
-    // prevent knob from going past max value
-    if (distance > maxDistance) {
-      return;
-    } else {
-      func(val);
-    }
+    return Math.abs(val - param) <= maxDistance ? func(val) : null;
   };
 
   const selectPad = (pad) => {
-    const selectedPads = pads;
-    if (selectedPads[pad]) {
-      delete selectedPads[pad];
-      setSelectedPads({ ...selectedPads });
+    if (pads[pad]) {
+      delete pads[pad];
     } else {
-      selectedPads[pad] = true;
-      setSelectedPads({ ...selectedPads });
+      pads[pad] = true;
     }
+    setSelectedPads({ ...pads });
   };
 
   // const playBeatRef = useRef(playBeat);
@@ -162,13 +151,10 @@ const Pulse = () => {
 
   const renderPads = () => {
     const padsArr = [];
-
     let curr = currPad[0].note - 1;
-
     if (curr === -1) {
       curr = 7;
     }
-
     for (let i = 0; i <= 7; i++) {
       padsArr.push(
         <button
@@ -181,7 +167,6 @@ const Pulse = () => {
         ></button>
       );
     }
-
     return padsArr;
   };
 
