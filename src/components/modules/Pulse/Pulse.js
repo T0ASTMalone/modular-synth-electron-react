@@ -4,12 +4,15 @@ import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
 // import { useLogger } from "../../../utils/hooks/logger";
 import { Output } from "../../io/io";
+import { useCreateConnection } from "../../../utils/module-utils";
 // import {
 //   useCheckDistance,
 //   useCreateConnection,
 // } from "../../../utils/module-utils";
 
-const Pulse = () => {
+const Pulse = (props) => {
+  const {id} = props;
+
   const [freq, setFreq] = useState(440);
   const [att, setAtt] = useState(0.2);
   const [rel, setRel] = useState(0.5);
@@ -19,7 +22,9 @@ const Pulse = () => {
   const [playing, setPlaying] = useState(false);
   const [currPad, setCurrPad] = useState({ 0: { note: 8 } });
   const [timerId, setTimerId] = useState(undefined);
+  const outputting = useCreateConnection(id);
   // const Logger = useLogger("Pulse");
+
 
   // const setAudioParam = useCheckDistance();
   const context = useContext(MsContext);
@@ -50,6 +55,8 @@ const Pulse = () => {
     const { ctx } = getCurrentState();
     bpmRef.current = bpm;
 
+    const osc = ctx.createOscillator();
+    ctxRef.current.addNode(id, osc);
     const lookahead = 10.0; // How frequently to call scheduling function (in milliseconds)
     const scheduleAheadTime = 0.5; // How far ahead to schedule audio (sec)
     let currentNote = 0; // The note we are currently playing
@@ -97,7 +104,7 @@ const Pulse = () => {
 
     playBeatRef.current = () => {
       const sweepLength = sus;
-      const osc = ctx.createOscillator();
+
       osc.type = "square";
       osc.frequency.value = freq;
       // Envelope
@@ -107,7 +114,7 @@ const Pulse = () => {
       env.gain.linearRampToValueAtTime(1, ctx.currentTime + att);
       env.gain.linearRampToValueAtTime(0, ctx.currentTime + sweepLength - rel);
 
-      osc.connect(env).connect(ctx.destination);
+      osc.connect(env)
       osc.start();
       osc.stop(ctx.currentTime + sweepLength);
     };
@@ -147,6 +154,7 @@ const Pulse = () => {
     freq,
     bpmRef,
     currPad,
+    id
   ]);
 
   const renderPads = () => {
@@ -242,7 +250,7 @@ const Pulse = () => {
         {renderPads()}
       </div>
       <div className="pulse-io">
-        <Output />
+        <Output title="out" output={outputting} id={id}/>
       </div>
     </div>
   );
