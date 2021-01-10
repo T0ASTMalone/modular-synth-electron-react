@@ -27,9 +27,9 @@ const Gain = (props) => {
     const logger = refLogger.current;
     logger.info("initializing gain");
     const context = refCtx.current;
-    const { ctx } = context;
+    const { audioCtx } = context;
     // create main gain node
-    const gainNode = ctx.createGain();
+    const gainNode = audioCtx.createGain();
     // set value
     // set gainNode values
     if (values) {

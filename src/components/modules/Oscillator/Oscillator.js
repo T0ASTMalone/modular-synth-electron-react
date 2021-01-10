@@ -29,9 +29,9 @@ const Oscillator = (props) => {
     const logger = refLogger.current;
     logger.info("initializing Osillator");
     const context = refCtx.current;
-    const { ctx } = context;
+    const { audioCtx } = context;
     // create oscillator
-    const osc = ctx.createOscillator();
+    const osc = audioCtx.createOscillator();
     // using values passed in as props
     // set osc values
     if (values) {

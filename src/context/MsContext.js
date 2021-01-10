@@ -6,7 +6,7 @@ const MsContext = React.createContext({
   error: null,
   update: false,
   updateCables: false,
-  ctx: null,
+  audioCtx: null,
   mediaStreamDestination: null,
   tmpPathobj: {},
   rootPath: "",
@@ -46,7 +46,7 @@ export class MsProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ctx: null,
+      audioCtx: null,
       nodes: {},
       cables: {},
       mainInput: null,
@@ -65,10 +65,10 @@ export class MsProvider extends Component {
   }
   /**
    * Set Audio Context
-   * @param {AudioContext} ctx
+   * @param {AudioContext} audioCtx
    */
-  createCtx = (ctx) => {
-    this.setState({ ctx });
+  createCtx = (audioCtx) => {
+    this.setState({ audioCtx });
   };
 
   /**
@@ -489,14 +489,14 @@ export class MsProvider extends Component {
    * in context
    */
   getCurrentState = () => {
-    const { nodes, cables, tmpPathobj, isExisting, rootPath, ctx } = this.state;
-    return { nodes, cables, tmpPathobj, isExisting, rootPath, ctx };
+    const { nodes, cables, tmpPathobj, isExisting, rootPath, audioCtx } = this.state;
+    return { nodes, cables, tmpPathobj, isExisting, rootPath, audioCtx };
   };
 
   render() {
     const value = {
       // state
-      ctx: this.state.ctx,
+      audioCtx: this.state.audioCtx,
       mediaStreamDestination: this.state.mediaStreamDestination,
       nodes: this.state.nodes,
       cables: this.state.cables,

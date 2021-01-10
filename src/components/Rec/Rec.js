@@ -9,7 +9,7 @@ const Rec = () => {
   const [recorder, setRecorder] = useState(null);
   const context = useContext(MsContext);
   const dest = context.mediaStreamDestination;
-  const { ctx, rootPath, sidebar, toggleSidebar } = context;
+  const { audioCtx, rootPath, sidebar, toggleSidebar } = context;
   // get main node
   const main = useGetOut();
 
@@ -37,14 +37,14 @@ const Rec = () => {
     const arrBuffer = await e.data.arrayBuffer();
 
     // decode audio data
-    ctx.decodeAudioData(arrBuffer, (audioBuffer) => {
+    audioCtx.decodeAudioData(arrBuffer, (audioBuffer) => {
       // prompt user to save recording
       // or store recording and prompt to save at the end of a session
       // or have allow for user to say save all recordings automatically
 
       // testing save audio as .wav file
       saveWave(audioBuffer, rootPath);
-      ctx.resume();
+      audioCtx.resume();
 
       // clean up recorder
       setRecorder(null);
@@ -61,7 +61,7 @@ const Rec = () => {
     // stop media recorder
     recorder.stop();
     // pause audio context output
-    ctx.suspend();
+    audioCtx.suspend();
     // disconnect main out from media stream destination
     main.disconnect(dest);
     // set ondataavailble

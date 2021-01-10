@@ -19,7 +19,7 @@ const Reverb = (props) => {
 
   const logger = useLogger("Reverb");
 
-  const { ctx, nodes } = context;
+  const { audioCtx, nodes } = context;
 
   const refCtx = useRef(context);
   const refLogger = useRef(logger);
@@ -28,9 +28,9 @@ const Reverb = (props) => {
   // make knobs for duration, decay, and a button for reverse
   function impulseResponse(duration, decay, reverse) {
     logger.info("setting inpules response for reverb");
-    var sampleRate = ctx.sampleRate;
+    var sampleRate = audioCtx.sampleRate;
     var length = sampleRate * duration;
-    var impulse = ctx.createBuffer(2, length, sampleRate);
+    var impulse = audioCtx.createBuffer(2, length, sampleRate);
     var impulseL = impulse.getChannelData(0);
     var impulseR = impulse.getChannelData(1);
 
@@ -59,10 +59,10 @@ const Reverb = (props) => {
     const impulseResponse = refImpulseResponse.current;
     const logger = refLogger.current;
     const context = refCtx.current;
-    const { ctx } = context;
+    const { audioCtx } = context;
     logger.info("initializing reverb");
     // create main reverb node
-    const convolverNode = ctx.createConvolver();
+    const convolverNode = audioCtx.createConvolver();
     // setting up convolver node buffer
     convolverNode.buffer = impulseResponse(duration, decay, reverse);
 

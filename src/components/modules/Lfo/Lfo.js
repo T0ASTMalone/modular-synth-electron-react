@@ -51,9 +51,9 @@ const Lfo = (props) => {
     const logger = refLogger.current;
     logger.info("initializing Lfo");
     const context = refCtx.current;
-    const { ctx } = context;
+    const { audioCtx } = context;
 
-    const osc = ctx.createOscillator();
+    const osc = audioCtx.createOscillator();
     // using values passed in as props
     // set osc values
     if (values) {

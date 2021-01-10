@@ -293,6 +293,8 @@ function App() {
     });
   }, [refCtx, refLogger]);
 
+  console.log(context);
+
   return (
     <div>
       <TitleBar

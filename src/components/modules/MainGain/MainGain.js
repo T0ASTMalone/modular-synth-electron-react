@@ -30,11 +30,11 @@ const MainGain = (props) => {
     logger.info("initializing Main gain");
     // create main gain node
     const context = refCtx.current;
-    const ctx = context.ctx;
-    const gainNode = ctx.createGain();
+    const audioCtx = context.audioCtx;
+    const gainNode = audioCtx.createGain();
 
     // connect to ctx destination
-    gainNode.connect(ctx.destination);
+    gainNode.connect(audioCtx.destination);
     logger.info("connecting main gain to audio destination");
     // add to context
     const id = context.load("main-gain");

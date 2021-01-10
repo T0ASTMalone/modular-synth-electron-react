@@ -79,9 +79,9 @@ const Rack = (props) => {
     const logger = refLogger.current;
     logger.info("createing audio context");
     const context = latestContext.current;
-    const ctx = new AudioContext();
-    const mediaStream = ctx.createMediaStreamDestination();
-    context.createCtx(ctx);
+    const audioCtx = new AudioContext();
+    const mediaStream = audioCtx.createMediaStreamDestination();
+    context.createCtx(audioCtx);
     context.setMediaStreamDestination(mediaStream);
   }, [latestContext, refLogger]);
 
@@ -109,7 +109,7 @@ const Rack = (props) => {
         )}
 
         {/* main output for the rack will always be loaded */}
-        {context.ctx ? <MainGain newId={mainOutId} /> : <></>}
+        {context.audioCtx ? <MainGain newId={mainOutId} /> : <></>}
       </div>
       <div className="rack__visualAudio">
         {/* 

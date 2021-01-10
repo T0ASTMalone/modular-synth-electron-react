@@ -433,7 +433,9 @@ export const getModulesList = () => {
   const modules = fs.readdirSync(
     path.resolve(`../modular-synth-electron-react/src/components/modules`)
   );
+  console.log("getModulesList", modules);
   // removing .DS_Store
-  modules.shift();
+  // modules.shift();
+  console.log("getModulesList", modules);
   return modules;
 };

@@ -7,6 +7,7 @@ import { getModulesList } from "../../utils/app-utils";
 const ModulesList = () => {
   const context = useContext(MsContext);
   const installed = useRef(getModulesList());
+  console.log("modules : ", installed.current);
 
   const addModule = (mod) => {
     context.load(mod);

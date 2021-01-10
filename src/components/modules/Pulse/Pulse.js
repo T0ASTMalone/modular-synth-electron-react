@@ -52,11 +52,16 @@ const Pulse = (props) => {
 
   useEffect(() => {
     const { getCurrentState } = ctxRef.current;
-    const { ctx } = getCurrentState();
+    const { audioCtx, nodes } = getCurrentState();
     bpmRef.current = bpm;
 
-    const osc = ctx.createOscillator();
-    ctxRef.current.addNode(id, osc);
+    // get existing node from context
+    let osc = nodes[id].node;
+    // only add node if not created yet
+    if(osc === null){
+      osc = audioCtx.createOscillator();
+      ctxRef.current.addNode(id, osc);
+    }
     const lookahead = 10.0; // How frequently to call scheduling function (in milliseconds)
     const scheduleAheadTime = 0.5; // How far ahead to schedule audio (sec)
     let currentNote = 0; // The note we are currently playing
@@ -86,7 +91,7 @@ const Pulse = (props) => {
     function scheduler() {
       // while there are notes that will need to play before the next interval,
       // schedule them and advance the pointer.
-      while (nextNoteTime < ctx.currentTime + scheduleAheadTime) {
+      while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
         scheduleNote.current(currentNote, nextNoteTime);
         nextNote();
       }
@@ -108,15 +113,15 @@ const Pulse = (props) => {
       osc.type = "square";
       osc.frequency.value = freq;
       // Envelope
-      const env = ctx.createGain();
-      env.gain.cancelScheduledValues(ctx.currentTime);
-      env.gain.setValueAtTime(0, ctx.currentTime);
-      env.gain.linearRampToValueAtTime(1, ctx.currentTime + att);
-      env.gain.linearRampToValueAtTime(0, ctx.currentTime + sweepLength - rel);
+      const env = audioCtx.createGain();
+      env.gain.cancelScheduledValues(audioCtx.currentTime);
+      env.gain.setValueAtTime(0, audioCtx.currentTime);
+      env.gain.linearRampToValueAtTime(1, audioCtx.currentTime + att);
+      env.gain.linearRampToValueAtTime(0, audioCtx.currentTime + sweepLength - rel);
 
       osc.connect(env);
       osc.start();
-      osc.stop(ctx.currentTime + sweepLength);
+      osc.stop(audioCtx.currentTime + sweepLength);
     };
 
     play.current = () => {
@@ -125,12 +130,12 @@ const Pulse = (props) => {
       if (isPlaying) {
         // start playing
         // check if context is in suspended state (autoplay policy)
-        if (ctx.state === "suspended") {
-          ctx.resume();
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
         }
 
         currentNote = 0;
-        nextNoteTime = ctx.currentTime;
+        nextNoteTime = audioCtx.currentTime;
         scheduler(); // kick off scheduling
         //requestAnimationFrame(draw); // start the drawing loop.
         //ev.target.dataset.playing = "true";

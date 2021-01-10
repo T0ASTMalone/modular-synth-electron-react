@@ -88,9 +88,9 @@ const Filter = (props) => {
     const logger = refLogger.current;
     logger.info("initializing filter");
     const context = refCtx.current;
-    const { ctx } = context;
+    const { audioCtx } = context;
     // create filter
-    const filter = ctx.createBiquadFilter();
+    const filter = audioCtx.createBiquadFilter();
     // add to nodes object in context
     // uuid as key and filter as value
     context.addNode(id, filter);
