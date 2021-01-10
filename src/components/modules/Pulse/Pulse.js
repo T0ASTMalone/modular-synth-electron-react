@@ -5,13 +5,14 @@ import MsContext from "../../../context/MsContext";
 // import { useLogger } from "../../../utils/hooks/logger";
 import { Output } from "../../io/io";
 import { useCreateConnection } from "../../../utils/module-utils";
+import NumDisplay from "../../displays/NumDisplay/NumDisplay";
 // import {
 //   useCheckDistance,
 //   useCreateConnection,
 // } from "../../../utils/module-utils";
 
 const Pulse = (props) => {
-  const {id} = props;
+  const { id } = props;
 
   const [freq, setFreq] = useState(440);
   const [att, setAtt] = useState(0.2);
@@ -24,7 +25,6 @@ const Pulse = (props) => {
   const [timerId, setTimerId] = useState(undefined);
   const outputting = useCreateConnection(id);
   // const Logger = useLogger("Pulse");
-
 
   // const setAudioParam = useCheckDistance();
   const context = useContext(MsContext);
@@ -114,7 +114,7 @@ const Pulse = (props) => {
       env.gain.linearRampToValueAtTime(1, ctx.currentTime + att);
       env.gain.linearRampToValueAtTime(0, ctx.currentTime + sweepLength - rel);
 
-      osc.connect(env)
+      osc.connect(env);
       osc.start();
       osc.stop(ctx.currentTime + sweepLength);
     };
@@ -154,7 +154,7 @@ const Pulse = (props) => {
     freq,
     bpmRef,
     currPad,
-    id
+    id,
   ]);
 
   const renderPads = () => {
@@ -225,13 +225,20 @@ const Pulse = (props) => {
         <div className="knob">
           <p className="module__text">bpm</p>
           <Knob
-            onChange={(e) => checkDistance(e, setBpm, 20, bpm)}
-            step="1"
+            onChange={(e) => checkDistance(Math.floor(e), setBpm, 20, bpm)}
+            step={1}
             min={0}
             max={800}
             value={bpm}
           />
         </div>
+        <NumDisplay value={bpm} label="BPM" />
+      </div>
+      <div className="beats">
+        {/* pads */}
+        {renderPads()}
+      </div>
+      <div className="pulse-io">
         <div
           className={
             playing
@@ -244,13 +251,7 @@ const Pulse = (props) => {
             className="toggle-switch"
           ></button>
         </div>
-      </div>
-      <div className="beats">
-        {/* pads */}
-        {renderPads()}
-      </div>
-      <div className="pulse-io">
-        <Output title="out" output={outputting} id={id}/>
+        <Output title="out" output={outputting} id={id} />
       </div>
     </div>
   );

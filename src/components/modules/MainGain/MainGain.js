@@ -5,6 +5,7 @@ import MsContext from "../../../context/MsContext";
 import { Input } from "../../io/io";
 import { useCheckDistance } from "../../../utils/module-utils";
 import { useLogger } from "../../../utils/hooks/logger";
+import NumDisplay from "../../displays/NumDisplay/NumDisplay";
 
 const MainGain = (props) => {
   // gain value
@@ -86,6 +87,7 @@ const MainGain = (props) => {
         value={gainValue}
         onChange={(e) => setAudioParam(e, gainValue, "gain", nodeId, setGain)}
       />
+      <NumDisplay value={gainValue} label="BPM" />
       {/* input */}
       <div className="main-outputs">{renderInputs()}</div>
       <Input title="gain" id={nodeId} name="gain" />
