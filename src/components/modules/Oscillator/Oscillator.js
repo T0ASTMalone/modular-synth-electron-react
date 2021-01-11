@@ -8,9 +8,11 @@ import {
   useCheckDistance,
 } from "../../../utils/module-utils";
 import { useLogger } from "../../../utils/hooks/logger";
+import AudioVisualizer from "../../displays/AudioVisualizer/AudioVisualizer";
 
 const Oscillator = (props) => {
   const [freq, setFreq] = useState(440);
+  const [analyser, setAnalyser] = useState(null)
   const { id, values } = props;
 
   const context = useContext(MsContext);
@@ -44,10 +46,13 @@ const Oscillator = (props) => {
         }
       }
     }
+
+    const analyser = audioCtx.createAnalyser();
     // start osc
     osc.start();
+    osc.connect(analyser);
     // add to context
-    context.addNode(id, osc);
+    context.addNode(id, osc, analyser);
   }, [refCtx, values, id, refLogger]);
 
   const updateWav = (wav) => {
@@ -97,6 +102,7 @@ const Oscillator = (props) => {
 
       {/* V/oct input */}
       <div className="osc__inputs">
+       {nodes[id].node && nodes[id].analyser &&  <AudioVisualizer id={id} height="50" width = "50" />}
         <Input title="V/oct" id={id} name="frequency" />
       </div>
     </div>

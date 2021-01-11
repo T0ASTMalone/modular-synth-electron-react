@@ -12,7 +12,7 @@ export const useCreateConnection = (id) => {
   useEffect(() => {
     const logger = refLogger.current;
     const { cables, nodes } = getCurrentState();
-    const { node } = nodes[id];
+    const { node, analyser } = nodes[id];
 
     const out = cables[id];
     // if this module is an output in a current cable
@@ -25,24 +25,44 @@ export const useCreateConnection = (id) => {
       if (nodes[mod].node) {
         if (input === "main-in") {
           // if input is main in, connect to module
-          node.connect(nodes[mod].node);
-          logger.info(
-            `connecting node ${nodes[id].type} to ${nodes[mod].type}`
-          );
+          if(analyser) {
+            analyser.connect(nodes[mod].node);
+            logger.info(
+              `connecting node analyser ${nodes[id].type} to ${nodes[mod].type}`
+            );
+          } else {
+            node.connect(nodes[mod].node);
+            logger.info(
+              `connecting node ${nodes[id].type} to ${nodes[mod].type}`
+            );
+          }
+
         } else {
+
           // if input is not main connect to corresponding audio parameter
-          logger.info(
-            `connecting node ${nodes[id].type} to ${nodes[mod].type} audio param ${input}`
-          );
-          node.connect(nodes[mod].node[input]);
+
+          if(analyser){
+            logger.info(
+              `connecting node ${nodes[id].type} to ${nodes[mod].type} audio param ${input}`
+            );
+            analyser.connect(nodes[mod].node[input]);
+          } else {
+            logger.info(
+              `connecting node ${nodes[id].type} to ${nodes[mod].type} audio param ${input}`
+            );
+            node.connect(nodes[mod].node[input]);
+          }
+
         }
         setIsConnected(out.color);
       }
     } else {
       // if no cable with this module as an output is found
       // disconnect from any connections that the module may have
-      if (node) {
+      if (node && !analyser) {
         node.disconnect();
+      } else if(node && analyser){
+        analyser.disconnect()
       }
       setIsConnected(false);
     }

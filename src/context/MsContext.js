@@ -87,9 +87,10 @@ export class MsProvider extends Component {
    * @param {string} id
    * @param {AudioNode} audioNode
    */
-  addNode = (id, audioNode) => {
+  addNode = (id, audioNode, analyser) => {
     const { nodes, updateCables } = this.state;
     nodes[id].node = audioNode;
+    nodes[id].analyser = analyser;
     // futer miguel doesn't get why I am updating cables here
     this.setState({ nodes, updateCables: !updateCables });
   };

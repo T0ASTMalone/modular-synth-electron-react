@@ -1,41 +1,62 @@
-import React, { useRef } from "react";
-import PropTypes from "prop-types";
-import { useEffect } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import './AudioVisualizer.scss'
+import Canvas from "../Canvas/Canvas";
+import MsContext from "../../../context/MsContext";
 
 const AudioVisualizer = (props) => {
-  const canvasRef = useRef(null);
+  const {id, ...rest} = props;
+  const context = useContext(MsContext);
+  const {nodes} = context;
 
+  // const ctxRef = useRef(context)
+
+  function cdraw(ctx){
+    var bufferLength = nodes[id].analyser.frequencyBinCount;
+    var dataArray = new Uint8Array(bufferLength);
+    // let drawVisual = requestAnimationFrame(cdraw);
+    nodes[id].analyser.getByteTimeDomainData(dataArray);
+
+    ctx.fillStyle = 'rgb(200, 200, 200)';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgb(0, 0, 0)';
+    ctx.beginPath();
+
+    var sliceWidth = ctx.canvas.width * 1.0 / bufferLength;
+    var x = 0;
+
+    for(var i = 0; i < bufferLength; i++) {
+
+      var v = dataArray[i] / 128.0;
+      var y = v * ctx.canvas.height/2;
+
+      if(i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+
+      x += sliceWidth;
+    }
+
+    ctx.lineTo(ctx.canvas.width, ctx.canvas.height/2);
+    ctx.stroke();
+  }
+  
   const draw = (ctx, frameCount) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-    ctx.fillStyle = '#000000'
+    ctx.fillStyle = '#000fff'
     ctx.beginPath()
-    ctx.arc(50, 100, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
+    ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
     ctx.fill()
   }
 
-  useEffect(() => {
-      const canvas = canvasRef.current;
-      const context = canvas.getContext('2d');
-      let frameCount = 0
-      let animationFrameId
-      
-      //Our draw came here
-      const render = () => {
-        frameCount++
-        draw(context, frameCount)
-        animationFrameId = window.requestAnimationFrame(render)
-      }
-      render()
-      
-      return () => {
-        window.cancelAnimationFrame(animationFrameId)
-      }
-  }, [canvasRef, draw])
-  return <div>
-      <canvas width="135" height="300" ref={canvasRef}></canvas>
-  </div>;
+  return (
+    <div className="auido-visualizer">
+        <Canvas draw={cdraw} {...rest}/>
+    </div>
+  );
 };
 
-AudioVisualizer.propTypes = {};
 
 export default AudioVisualizer;

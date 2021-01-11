@@ -32,14 +32,16 @@ const MainGain = (props) => {
     const context = refCtx.current;
     const audioCtx = context.audioCtx;
     const gainNode = audioCtx.createGain();
+    const analyser = audioCtx.createAnalyser();
 
     // connect to ctx destination
-    gainNode.connect(audioCtx.destination);
+    gainNode.connect(analyser);
+    analyser.connect(audioCtx.destination);
     logger.info("connecting main gain to audio destination");
     // add to context
     const id = context.load("main-gain");
     // use id created by context to add node
-    context.addNode(id, gainNode);
+    context.addNode(id, gainNode, analyser);
     // set to id
     setId(id);
     //set input ids

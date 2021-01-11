@@ -57,10 +57,17 @@ const Pulse = (props) => {
 
     // get existing node from context
     let osc = nodes[id].node;
+    let passthrough = nodes[id].analyser;
+
+    
     // only add node if not created yet
     if(osc === null){
       osc = audioCtx.createOscillator();
-      ctxRef.current.addNode(id, osc);
+      passthrough = audioCtx.createGain();
+      passthrough.value = 1;
+
+      osc.connect(passthrough);
+      ctxRef.current.addNode(id, osc, passthrough);
     }
     const lookahead = 10.0; // How frequently to call scheduling function (in milliseconds)
     const scheduleAheadTime = 0.5; // How far ahead to schedule audio (sec)
@@ -110,6 +117,7 @@ const Pulse = (props) => {
     playBeatRef.current = () => {
       const sweepLength = sus;
 
+      const osc = audioCtx.createOscillator();
       osc.type = "square";
       osc.frequency.value = freq;
       // Envelope
@@ -121,7 +129,11 @@ const Pulse = (props) => {
 
       osc.connect(env);
       osc.start();
-      osc.stop(audioCtx.currentTime + sweepLength);
+      osc.connect(passthrough);
+      // osc.stop(audioCtx.currentTime + sweepLength);
+      setTimeout(() => {
+        passthrough.disconnect(osc);
+      }, [audioCtx.currentTime + sweepLength])
     };
 
     play.current = () => {
