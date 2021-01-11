@@ -59,9 +59,8 @@ const Pulse = (props) => {
     let osc = nodes[id].node;
     let passthrough = nodes[id].analyser;
 
-    
     // only add node if not created yet
-    if(osc === null){
+    if (osc === null) {
       osc = audioCtx.createOscillator();
       passthrough = audioCtx.createGain();
       passthrough.value = 1;
@@ -125,15 +124,15 @@ const Pulse = (props) => {
       env.gain.cancelScheduledValues(audioCtx.currentTime);
       env.gain.setValueAtTime(0, audioCtx.currentTime);
       env.gain.linearRampToValueAtTime(1, audioCtx.currentTime + att);
-      env.gain.linearRampToValueAtTime(0, audioCtx.currentTime + sweepLength - rel);
+      env.gain.linearRampToValueAtTime(
+        0,
+        audioCtx.currentTime + sweepLength - rel
+      );
 
       osc.connect(env);
       osc.start();
       osc.connect(passthrough);
-      // osc.stop(audioCtx.currentTime + sweepLength);
-      setTimeout(() => {
-        passthrough.disconnect();
-      }, [audioCtx.currentTime + sweepLength])
+      osc.stop(audioCtx.currentTime + sweepLength);
     };
 
     play.current = () => {
@@ -196,51 +195,51 @@ const Pulse = (props) => {
   };
 
   return (
-    <div className="module pulse">
-      <div className="pulse-params">
+    <div className='module pulse'>
+      <div className='pulse-params'>
         {/* attack, release, freq, durr, bpm */}
-        <div className="knob">
-          <p className="module__text">freq</p>
+        <div className='knob'>
+          <p className='module__text'>freq</p>
           <Knob
             onChange={(e) => checkDistance(e, setFreq, 2000, freq)}
-            step="1"
+            step='1'
             min={0}
             max={10000}
             value={freq}
           />
         </div>
-        <div className="knob">
-          <p className="module__text">att</p>
+        <div className='knob'>
+          <p className='module__text'>att</p>
           <Knob
             onChange={(e) => checkDistance(e, setAtt, 0.1, att)}
-            step="0.1"
+            step='0.1'
             min={0.01}
             max={1}
             value={att}
           />
         </div>
-        <div className="knob">
-          <p className="module__text">rel</p>
+        <div className='knob'>
+          <p className='module__text'>rel</p>
           <Knob
             onChange={(e) => checkDistance(e, setRel, 0.1, rel)}
-            step="0.1"
+            step='0.1'
             min={0}
             max={1}
             value={rel}
           />
         </div>
-        <div className="knob">
-          <p className="module__text">sus</p>
+        <div className='knob'>
+          <p className='module__text'>sus</p>
           <Knob
             onChange={(e) => checkDistance(e, setSus, 0.1, sus)}
-            step="0.1"
+            step='0.1'
             min={0}
             max={1}
             value={sus}
           />
         </div>
-        <div className="knob">
-          <p className="module__text">bpm</p>
+        <div className='knob'>
+          <p className='module__text'>bpm</p>
           <Knob
             onChange={(e) => checkDistance(Math.floor(e), setBpm, 20, bpm)}
             step={1}
@@ -249,13 +248,13 @@ const Pulse = (props) => {
             value={bpm}
           />
         </div>
-        <NumDisplay value={bpm} label="BPM" />
+        <NumDisplay value={bpm} label='BPM' />
       </div>
-      <div className="beats">
+      <div className='beats'>
         {/* pads */}
         {renderPads()}
       </div>
-      <div className="pulse-io">
+      <div className='pulse-io'>
         <div
           className={
             playing
@@ -265,10 +264,10 @@ const Pulse = (props) => {
         >
           <button
             onClick={(ev) => play.current(ev)}
-            className="toggle-switch"
+            className='toggle-switch'
           ></button>
         </div>
-        <Output title="out" output={outputting} id={id} />
+        <Output title='out' output={outputting} id={id} />
       </div>
     </div>
   );
