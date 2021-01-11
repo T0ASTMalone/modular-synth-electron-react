@@ -132,7 +132,7 @@ const Pulse = (props) => {
       osc.connect(passthrough);
       // osc.stop(audioCtx.currentTime + sweepLength);
       setTimeout(() => {
-        passthrough.disconnect(osc);
+        passthrough.disconnect();
       }, [audioCtx.currentTime + sweepLength])
     };
 
