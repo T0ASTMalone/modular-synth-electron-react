@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import "./Gain.css";
-import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
-import { Input, Output } from "../../io/io";
+import { Input, Nob, Output } from "../../io/io";
 import {
   useCreateConnection,
   useCheckDistance,
@@ -10,19 +9,15 @@ import {
 import { useLogger } from "../../../utils/hooks/logger";
 
 const Gain = (props) => {
-  // gain value
-  const [gainValue, setGain] = useState(4.4);
   const { id, values } = props;
-
+  const [gainValue, setGain] = useState(4.4);
   const context = useContext(MsContext);
   const setAudioParam = useCheckDistance();
   const outputting = useCreateConnection(id);
-
   const refCtx = useRef(context);
-
   const logger = useLogger("Gain");
   const refLogger = useRef(logger);
-  //set up main gain module
+
   useEffect(() => {
     const logger = refLogger.current;
     logger.info("initializing gain");
@@ -43,25 +38,18 @@ const Gain = (props) => {
         }
       }
     }
-    // use id created by context to add node
     context.addNode(id, gainNode);
   }, [refCtx, values, id, refLogger]);
-
-  // if an id was not passed in as props use the
-  // generated id
 
   return (
     <div className="module gain">
       <p className="module__text--bold">Gain</p>
-
-      {/* knob for controlling gain */}
-      <Knob
+      <Nob
         min={0}
         max={6.8}
         value={gainValue}
         onChange={(e) => setAudioParam(e, gainValue, "gain", id, setGain)}
       />
-      {/* input */}
       <div className="gain__outputs">
         <Input title="in" id={id} name="main-in" />
         <Input title="gain" id={id} name="gain" />

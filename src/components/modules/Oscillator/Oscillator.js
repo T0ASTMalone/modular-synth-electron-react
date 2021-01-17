@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import "./Oscillator.css";
-import { Knob } from "react-rotary-knob";
-import { Input, Output } from "../../io/io";
+import { Input, Nob, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import {
   useCreateConnection,
@@ -12,7 +11,7 @@ import AudioVisualizer from "../../displays/AudioVisualizer/AudioVisualizer";
 
 const Oscillator = (props) => {
   const [freq, setFreq] = useState(440);
-  const [analyser, setAnalyser] = useState(null)
+  // const [analyser, setAnalyser] = useState(null);
   const { id, values } = props;
 
   const context = useContext(MsContext);
@@ -89,20 +88,19 @@ const Oscillator = (props) => {
           ></button>
         </div>
       </div>
-      {/* frequency knob */}
-      <div className="knob">
-        <p className="module__text">Freq</p>
-        <Knob
-          onChange={(e) => setAudioParam(e, freq, "frequency", id, setFreq)}
-          min={0}
-          max={24000}
-          value={freq}
-        />
-      </div>
+      <Nob
+        title="freq"
+        onChange={(e) => setAudioParam(e, freq, "frequency", id, setFreq)}
+        min={0}
+        max={24000}
+        value={freq}
+      />
 
       {/* V/oct input */}
       <div className="osc__inputs">
-       {nodes[id].node && nodes[id].analyser &&  <AudioVisualizer id={id} height="50" width = "50" />}
+        {nodes[id].node && nodes[id].analyser && (
+          <AudioVisualizer id={id} height="50" width="50" />
+        )}
         <Input title="V/oct" id={id} name="frequency" />
       </div>
     </div>

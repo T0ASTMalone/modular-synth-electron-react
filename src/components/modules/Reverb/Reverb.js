@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import "./Reverb.css";
-import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
-import { Input, Output } from "../../io/io";
+import { Input, Nob, Output } from "../../io/io";
 import { useCreateConnection } from "../../../utils/module-utils";
 import { useLogger } from "../../../utils/hooks/logger";
 
@@ -137,23 +136,21 @@ const Reverb = (props) => {
       <p className="module__text--bold">
         Reverb <span>{reverb}</span>
       </p>
-
-      {/* knob for controlling reverb duration */}
-
-      <Knob
+      <Nob
+        title="duration"
         min={0.1}
         max={5}
         step={1}
         value={duration}
-        onChange={(e) => checkDistance(e, duration, "duration")}
+        onChange={(e) => checkDistance(e, duration, "duration")}      
       />
-      {/* knob for controlling reverb decay */}
-      <Knob
+      <Nob
+        title="decay"
         min={0.1}
         max={5}
         step={1}
         value={decay}
-        onChange={(e) => checkDistance(e, decay, "decay")}
+        onChange={(e) => checkDistance(e, decay, "decay")}   
       />
       {/* button to control reverse */}
       <button

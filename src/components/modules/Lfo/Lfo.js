@@ -13,8 +13,7 @@
 
 import React, { useState, useContext, useEffect, useRef } from "react";
 import "./Lfo.css";
-import { Knob } from "react-rotary-knob";
-import { Input, Output } from "../../io/io";
+import { Input, Nob, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import { useCreateConnection } from "../../../utils/module-utils";
 import { useLogger } from "../../../utils/hooks/logger";
@@ -87,11 +86,7 @@ const Lfo = (props) => {
 
   return (
     <div className="module osc">
-      {/* remove module button*/}
-
       <p className="module__text--bold">Lfo</p>
-
-      {/* outputs */}
       <div className="osc__outputs">
         <Output title="out" output={isOutput} id={id} />
       </div>
@@ -118,18 +113,13 @@ const Lfo = (props) => {
           ></button>
         </div>
       </div>
-      {/* frequency knob */}
-      <div className="knob">
-        <p className="module__text">Freq</p>
-        <Knob
-          onChange={checkDistance.bind(this)}
-          min={1}
-          max={2000}
-          value={freq}
-        />
-      </div>
-
-      {/* V/oct input */}
+      <Nob
+        title="freq"
+        onChange={checkDistance.bind(this)}
+        min={1}
+        max={2000}
+        value={freq}
+      />
       <div className="osc__inputs">
         <Input title="V/oct" id={id} name="frequency" />
       </div>

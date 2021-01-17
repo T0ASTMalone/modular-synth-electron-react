@@ -1,9 +1,8 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import "./Pulse.scss";
-import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
 // import { useLogger } from "../../../utils/hooks/logger";
-import { Output } from "../../io/io";
+import { Nob, Output } from "../../io/io";
 import { useCreateConnection } from "../../../utils/module-utils";
 import NumDisplay from "../../displays/NumDisplay/NumDisplay";
 // import {
@@ -195,66 +194,55 @@ const Pulse = (props) => {
   };
 
   return (
-    <div className='module pulse'>
-      <div className='pulse-params'>
-        {/* attack, release, freq, durr, bpm */}
-        <div className='knob'>
-          <p className='module__text'>freq</p>
-          <Knob
-            onChange={(e) => checkDistance(e, setFreq, 2000, freq)}
-            step='1'
-            min={0}
-            max={10000}
-            value={freq}
-          />
-        </div>
-        <div className='knob'>
-          <p className='module__text'>att</p>
-          <Knob
-            onChange={(e) => checkDistance(e, setAtt, 0.1, att)}
-            step='0.1'
-            min={0.01}
-            max={1}
-            value={att}
-          />
-        </div>
-        <div className='knob'>
-          <p className='module__text'>rel</p>
-          <Knob
-            onChange={(e) => checkDistance(e, setRel, 0.1, rel)}
-            step='0.1'
-            min={0}
-            max={1}
-            value={rel}
-          />
-        </div>
-        <div className='knob'>
-          <p className='module__text'>sus</p>
-          <Knob
-            onChange={(e) => checkDistance(e, setSus, 0.1, sus)}
-            step='0.1'
-            min={0}
-            max={1}
-            value={sus}
-          />
-        </div>
-        <div className='knob'>
-          <p className='module__text'>bpm</p>
-          <Knob
-            onChange={(e) => checkDistance(Math.floor(e), setBpm, 20, bpm)}
-            step={1}
-            min={0}
-            max={800}
-            value={bpm}
-          />
-        </div>
-        <NumDisplay value={bpm} label='BPM' />
+    <div className="module pulse">
+      <div className="pulse-params">
+        <Nob
+          title="freq"
+          onChange={(e) => checkDistance(e, setFreq, 2000, freq)}
+          step="1"
+          min={0}
+          max={10000}
+          value={freq}
+        />
+        <Nob
+          title="att"
+          onChange={(e) => checkDistance(e, setAtt, 0.1, att)}
+          step="0.1"
+          min={0.01}
+          max={1}
+          value={att}
+        />
+        <Nob
+          title="rel"
+          onChange={(e) => checkDistance(e, setRel, 0.1, rel)}
+          step="0.1"
+          min={0}
+          max={1}
+          value={rel}
+        />
+        <Nob
+          title="sus"
+          onChange={(e) => checkDistance(e, setSus, 0.1, sus)}
+          step="0.1"
+          min={0}
+          max={1}
+          value={sus}
+        />
+        <Nob
+          title="bpm"
+          onChange={(e) => checkDistance(Math.floor(e), setBpm, 20, bpm)}
+          step={1}
+          min={0}
+          max={800}
+          value={bpm}
+        />
+        <NumDisplay value={bpm} label="BPM" />
       </div>
-      <div className='beats'>
+      <div className="beats">
         {/* pads */}
         {renderPads()}
       </div>
-      <div className='pulse-io'>
+      <div className="pulse-io">
         <div
           className={
             playing
@@ -264,10 +252,10 @@ const Pulse = (props) => {
         >
           <button
             onClick={(ev) => play.current(ev)}
-            className='toggle-switch'
+            className="toggle-switch"
           ></button>
         </div>
-        <Output title='out' output={outputting} id={id} />
+        <Output title="out" output={outputting} id={id} />
       </div>
     </div>
   );

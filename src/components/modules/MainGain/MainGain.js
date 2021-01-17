@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import "./MainGain.css";
-import { Knob } from "react-rotary-knob";
 import MsContext from "../../../context/MsContext";
-import { Input } from "../../io/io";
+import { Input, Nob } from "../../io/io";
 import { useCheckDistance } from "../../../utils/module-utils";
 import { useLogger } from "../../../utils/hooks/logger";
 import NumDisplay from "../../displays/NumDisplay/NumDisplay";
@@ -62,7 +61,6 @@ const MainGain = (props) => {
 
   const renderInputs = () => {
     const inputs = [];
-
     inputs.push(
       <Input key={0} number={0} title="in" id={nodeId} name="main-in" />
     );
@@ -76,21 +74,16 @@ const MainGain = (props) => {
     return inputs;
   };
 
-  // if an id was not passed in as props use the
-  // generated id
-
   return (
     <div className="module gain">
       <h3 className="module__text">Amp</h3>
-      {/* knob for controlling gain */}
-      <Knob
+      <Nob
         min={0}
         max={6.8}
         value={gainValue}
         onChange={(e) => setAudioParam(e, gainValue, "gain", nodeId, setGain)}
       />
       <NumDisplay value={gainValue} label="BPM" />
-      {/* input */}
       <div className="main-outputs">{renderInputs()}</div>
       <Input title="gain" id={nodeId} name="gain" />
     </div>
