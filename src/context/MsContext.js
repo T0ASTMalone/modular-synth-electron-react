@@ -198,7 +198,7 @@ export class MsProvider extends Component {
    */
   loadPatch = (mods) => {
     let { nodes, update } = this.state;
-    let { mainOutId, mainOut } = this._findMainOut();
+    let { mainOutId, mainOut } = this.findMainOut();
     // delete any loaded modules
     nodes = {};
 
@@ -413,7 +413,7 @@ export class MsProvider extends Component {
    * Returns the main output for the rack and its id
    * @return mainOutId, mainOut (AudioNode)
    */
-  _findMainOut = () => {
+  findMainOut = () => {
     // find main out
     let { nodes } = this.state;
     let mainOut;
@@ -455,7 +455,7 @@ export class MsProvider extends Component {
     this._removeLastCable();
 
     // get main out id and node
-    const { id, mainOut } = this._findMainOut();
+    const { id, mainOut } = this.findMainOut();
 
     // delete audio nodes
     const nodes = {};
@@ -537,6 +537,7 @@ export class MsProvider extends Component {
       triggerUpdate: this.triggerUpdate,
       createMainInput: this.createMainInput,
       removeMainInput: this.removeMainInput,
+      findMainOut: this.findMainOut
     };
 
     return (

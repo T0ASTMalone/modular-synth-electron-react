@@ -98,9 +98,9 @@ const Oscillator = (props) => {
 
       {/* V/oct input */}
       <div className="osc__inputs">
-        {nodes[id].node && nodes[id].analyser && (
+        {/* {nodes[id].node && nodes[id].analyser && (
           <AudioVisualizer id={id} height="50" width="50" />
-        )}
+        )} */}
         <Input title="V/oct" id={id} name="frequency" />
       </div>
     </div>

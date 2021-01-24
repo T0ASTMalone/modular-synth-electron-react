@@ -2,7 +2,6 @@ import { useRef, useEffect } from "react";
 
 const useCanvas = (draw) => {
   const canvasRef = useRef(null);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -11,12 +10,12 @@ const useCanvas = (draw) => {
 
     const render = () => {
       frameCount++;
-      if (frameCount % 20 === 0) {
+      if (frameCount % 15 === 0) {
         draw(context, frameCount);
       }
-
       animationFrameId = window.requestAnimationFrame(render);
     };
+    
     render();
 
     return () => {

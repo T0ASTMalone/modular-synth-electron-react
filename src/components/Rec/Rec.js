@@ -3,13 +3,14 @@ import "./Rec.css";
 import MsContext from "../../context/MsContext";
 import { useGetOut } from "../../utils/module-utils";
 import { saveWave } from "../../utils/app-utils";
+import AudioVisualizer from "../displays/AudioVisualizer/AudioVisualizer";
 
 const Rec = () => {
   // set recorder in state when new recording starts
   const [recorder, setRecorder] = useState(null);
   const context = useContext(MsContext);
   const dest = context.mediaStreamDestination;
-  const { audioCtx, rootPath, sidebar, toggleSidebar } = context;
+  const { audioCtx, rootPath, sidebar, toggleSidebar, findMainOut } = context;
   // get main node
   const main = useGetOut();
 
@@ -99,7 +100,9 @@ const Rec = () => {
           Rec
         </button>
       </div>
-      <div className="controls right-controls"></div>
+      <div className="controls right-controls">
+        {audioCtx && findMainOut().mainOutId && <AudioVisualizer id={findMainOut().mainOutId} style={{height: "75px", width: "100%", maxWidth: "300px"}} />}
+      </div>
     </div>
   );
 };

@@ -18,13 +18,11 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import MsContext from "./context/MsContext";
 import { defaultTemplate } from "./app-menu";
 import TitleBar from "frameless-titlebar";
-// import Logger from "./services/logger";
 import { useLogger } from "./utils/hooks/logger";
 
 const { ipcRenderer, remote } = window.require("electron");
 const { dialog, process } = remote;
 const currentWindow = remote.getCurrentWindow();
-//const logger = new Logger("App");
 
 function App() {
   const context = useContext(MsContext);
