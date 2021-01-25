@@ -13,10 +13,10 @@ const AudioVisualizer = (props) => {
     var dataArray = new Uint8Array(bufferLength);
     // let drawVisual = requestAnimationFrame(cdraw);
     nodes[id].analyser.getByteTimeDomainData(dataArray);
-
+    // console.log(bufferLength);
     ctx.fillStyle = 'rgba(40, 44, 52, 1)';
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.strokeStyle = 'rgb(224, 194, 252)';
     ctx.beginPath();
 
@@ -24,7 +24,6 @@ const AudioVisualizer = (props) => {
     var x = 0;
 
     for(var i = 0; i < bufferLength; i++) {
-
       var v = dataArray[i] / 128.0;
       var y = v * ctx.canvas.height/2;
 

@@ -23,3 +23,7 @@
 .knob {
   align-self: center;
 }
+
+.freq-container{
+  display: flex;
+}
