@@ -6,8 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import "./Filter.css";
-import { Knob } from "react-rotary-knob";
-import { Input, Output } from "../../io/io";
+import { Input, Nob, Output } from "../../io/io";
 import MsContext from "../../../context/MsContext";
 import {
   useCreateConnection,
@@ -16,25 +15,19 @@ import {
 import { useLogger } from "../../../utils/hooks/logger";
 
 const Filter = (props) => {
-  // state
+  const { id, values } = props;
   const [freq, setFreq] = useState(0);
   const [reso, setReso] = useState(3.4);
   const [gain, setGain] = useState(3.4);
   // const [inId, setInId] = useState(null);
   const [type, setType] = useState(0);
-
-  const { id, values } = props;
-
   const context = useContext(MsContext);
   const output = useCreateConnection(id);
   const setAudioParam = useCheckDistance();
-  const { nodes } = context;
-
   const refCtx = useRef(context);
-
   const logger = useLogger("Filter");
   const refLogger = useRef(logger);
-
+  const { nodes } = context;
   const filterTypes = [
     "lowpass",
     "highpass",
@@ -48,7 +41,6 @@ const Filter = (props) => {
 
   // filter types
   // lowpass, highpass, bandpass, lowshelf, highshelf, peaking, notch, allpass
-
   const updateType = () => {
     let newType = type;
     // if type is less than filterTypes.length
@@ -67,8 +59,8 @@ const Filter = (props) => {
   };
 
   const updateCallback = useCallback(updateType, []);
-  // Though the AudioParam objects returned are read-only, the values they represent are not.
 
+  // Though the AudioParam objects returned are read-only, the values they represent are not.
   // BiquadFilterNode.frequency Read only
   // Is an a-rate AudioParam, a double representing a frequency in the current filtering algorithm measured in hertz (Hz).
   // BiquadFilterNode.detune Read only
@@ -79,8 +71,6 @@ const Filter = (props) => {
   // Is an a-rate AudioParam, a double representing the gain used in the current filtering algorithm.
   // BiquadFilterNode.type
   // Is a string value defining the kind of filtering algorithm the node is implementing.
-
-  // use effect
 
   // set up filter
   useEffect(() => {
@@ -126,17 +116,11 @@ const Filter = (props) => {
 
   return (
     <div className="module filter">
-      {/* remove module button*/}
-
       <p className="module__text--bold">{filterTypes[type]}</p>
-
-      {/* inputs for all filter types */}
       <div className="filter__ins">
         <Input title="in" id={id} name="main-in" />
         <Input title="freq/in" id={id} name="frequency" />
       </div>
-
-      {/* Frequency and Reso Knob */}
       <div className="filter__settings">
         <div id="filter-type" className="button-container">
           <p className="module__text">Type</p>
@@ -147,41 +131,33 @@ const Filter = (props) => {
           ></button>
         </div>
         <div className="filter__knobs">
-          <div className="button-container">
-            <p className="module__text">Freq</p>
-            <Knob
-              // onChange={checkDistance.bind(this, "freq", freq)}
-              onChange={(e) => setAudioParam(e, freq, "frequency", id, setFreq)}
-              min={0}
-              max={24000}
-              value={freq}
-            />
-          </div>
-          <div className="button-container">
-            <p className="module__text">Q</p>
-            <Knob
-              id="reso"
-              onChange={(e) => setAudioParam(e, reso, "Q", id, setReso)}
-              // onChange={checkDistance.bind(this, "reso", reso)}
-              min={0}
-              max={6.8}
-              value={reso}
-            />
-          </div>
+          <Nob
+            title="freq"
+            onChange={(e) => setAudioParam(e, freq, "frequency", id, setFreq)}
+            min={0}
+            max={24000}
+            value={freq}
+          />
+          <Nob
+            title="reso"
+            id="reso"
+            onChange={(e) => setAudioParam(e, reso, "Q", id, setReso)}
+            min={0}
+            max={6.8}
+            value={reso}
+          />
         </div>
       </div>
       {/* output and volume */}
       <div className="filter__out">
         <Output title="out" output={output} id={id} />
-        <div className="button-container">
-          <p className="module__text">Gain</p>
-          <Knob
-            onChange={(e) => setAudioParam(e, gain, "gain", id, setGain)}
-            min={0}
-            max={6.8}
-            value={gain}
-          />
-        </div>
+        <Nob
+          title="gain"
+          onChange={(e) => setAudioParam(e, gain, "gain", id, setGain)}
+          min={0}
+          max={6.8}
+          value={gain}
+        />
       </div>
     </div>
   );

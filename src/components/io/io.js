@@ -3,6 +3,7 @@ import "./io.css";
 import MsContext from "../../context/MsContext";
 import { useIsModulated } from "../../utils/module-utils";
 import { useLogger } from "../../utils/hooks/logger";
+import { Knob } from "react-rotary-knob";
 
 const Input = (props) => {
   const { title, id, name, number = -1 } = props;
@@ -120,4 +121,14 @@ const Output = (props) => {
   );
 };
 
-export { Input, Output };
+const Nob = (props) => {
+  const { title, ...rest } = props;
+  return (
+    <div className="knob">
+      <p className="module__text">{title}</p>
+      <Knob {...rest} />
+    </div>
+  );
+};
+
+export { Input, Output, Nob };

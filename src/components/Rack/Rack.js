@@ -6,13 +6,12 @@ import MsContext from "../../context/MsContext";
 import MainGain from "../modules/MainGain/MainGain";
 import Rec from "../Rec/Rec";
 import AudioVisualizer from "../displays/AudioVisualizer/AudioVisualizer";
+import useResize from "../../utils/hooks/use-resize";
 
 const Rack = (props) => {
   const [loadedModules, loadModules] = useState([]);
-
   const context = useContext(MsContext);
   const latestContext = useRef(context);
-
   const logger = useLogger("Rack");
   const refLogger = useRef(logger);
 
@@ -33,6 +32,7 @@ const Rack = (props) => {
 
     const { getCurrentState } = ctx;
     const { nodes } = getCurrentState();
+
     // create array of current modules from nodes array
     let currentModules = [];
     Object.keys(nodes).forEach((key) => {
@@ -111,13 +111,6 @@ const Rack = (props) => {
 
         {/* main output for the rack will always be loaded */}
         {context.audioCtx && <MainGain newId={mainOutId} />}
-      </div>
-      <div className='rack__visualAudio'>
-        {/* {context.audioCtx && <AudioVisualizer id={mainOutId} height="100" width="600" />} */}
-        {/* 
-          General information about the output 
-          i.e. visualization of the output, spectrum analyzer, (kind of like op-1 stuff)
-        */}
       </div>
     </div>
   );
