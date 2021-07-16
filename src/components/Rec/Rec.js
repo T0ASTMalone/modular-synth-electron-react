@@ -3,6 +3,7 @@ import "./Rec.css";
 import MsContext from "../../context/MsContext";
 import { useGetOut } from "../../utils/module-utils";
 import { saveWave } from "../../utils/app-utils";
+import Toggle from "../../assets/svg/toggle-light.svg";
 
 const Rec = () => {
   // set recorder in state when new recording starts
@@ -74,32 +75,36 @@ const Rec = () => {
   };
 
   return (
-    <div className="rack__controls">
-      <div id="rack-sb-toggle" className="controls sidebar-toggle">
+    <div className='rack__controls'>
+      <div id='rack-sb-toggle' className='controls sidebar-toggle'>
         <button
           onClick={toggleSidebar}
-          className={
-            !sidebar
-              ? "sidebar-button show"
-              : "sidebar-button button--closed hidden"
-          }
+          style={{
+            width: "25px",
+            height: "25px",
+            padding: "0px",
+            border: "none",
+            borderRadius: "50%",
+            backgroundColor: "transparent",
+          }}
+          className={!sidebar ? "show" : "button--closed hidden"}
         >
-          &lt;
+          <img style={{ width: "100%" }} src={Toggle} alt='toggle' />
         </button>
       </div>
-      <div className="controls main-controls">
+      <div className='controls main-controls'>
         {/* rack controls */}
-        <button className="button" onClick={() => stop()}>
+        <button className='button' onClick={() => stop()}>
           Stop
         </button>
-        <button className="button" onClick={() => play()}>
+        <button className='button' onClick={() => play()}>
           Play
         </button>
-        <button className="button" onClick={() => rec()}>
+        <button className='button' onClick={() => rec()}>
           Rec
         </button>
       </div>
-      <div className="controls right-controls"></div>
+      <div className='controls right-controls'></div>
     </div>
   );
 };

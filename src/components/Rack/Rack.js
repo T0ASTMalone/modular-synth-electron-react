@@ -91,7 +91,7 @@ const Rack = (props) => {
   return (
     <div className={sidebar ? "rack open" : "rack"}>
       <Rec />
-      <div className="rack__modules">
+      <div className='rack__modules'>
         {/* 
           check if there are any current audio modules and 
           if those modules have been imported
@@ -112,8 +112,8 @@ const Rack = (props) => {
         {/* main output for the rack will always be loaded */}
         {context.audioCtx && <MainGain newId={mainOutId} />}
       </div>
-      <div className="rack__visualAudio">
-        {context.audioCtx && <AudioVisualizer id={mainOutId} height="100" width="600" />}
+      <div className='rack__visualAudio'>
+        {/* {context.audioCtx && <AudioVisualizer id={mainOutId} height="100" width="600" />} */}
         {/* 
           General information about the output 
           i.e. visualization of the output, spectrum analyzer, (kind of like op-1 stuff)

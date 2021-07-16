@@ -6,6 +6,7 @@ import ModulesList from "../ModulesList/ModulesList";
 import Search from "../Search/Search";
 import CurrentPatch from "../CurrentPatch/CurrentPatch";
 import Recordings from "../Recordings/Recordings";
+import Toggle from "../../assets/svg/toggle-light.svg";
 
 const Sidebar = (props) => {
   const context = useContext(MsContext);
@@ -40,9 +41,17 @@ const Sidebar = (props) => {
       >
         <button
           onClick={toggleSidebar}
-          className={!size ? "sidebar-button" : "sidebar-button button--closed"}
+          style={{
+            width: "25px",
+            height: "25px",
+            padding: "0px",
+            border: "none",
+            borderRadius: "50%",
+            backgroundColor: "transparent",
+          }}
+          className={!size ? "hidden" : "button--closed"}
         >
-          &lt;
+          <img style={{ width: "100%" }} src={Toggle} alt='toggle' />
         </button>
       </div>
       <div
